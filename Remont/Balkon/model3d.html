@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Balkon 3D - Model</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; }
+  canvas { display: block; }
+  #info {
+    position: absolute; top: 16px; left: 16px;
+    background: rgba(0,0,0,0.75); color: #fff; padding: 16px 20px;
+    border-radius: 10px; font-size: 13px; line-height: 1.6;
+    backdrop-filter: blur(8px); max-width: 280px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  #info h2 { font-size: 16px; margin-bottom: 8px; color: #4fc3f7; }
+  #info .dim { color: #aaa; font-size: 12px; }
+  #controls {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.75); color: #fff; padding: 10px 20px;
+    border-radius: 8px; font-size: 12px; text-align: center;
+    backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);
+  }
+  #legend {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(0,0,0,0.75); color: #fff; padding: 14px 18px;
+    border-radius: 10px; font-size: 12px; line-height: 2;
+    backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);
+  }
+  #legend h3 { font-size: 13px; margin-bottom: 6px; color: #4fc3f7; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div id="info">
+  <h2>Balkon - Model 3D</h2>
+  <div class="dim">Dlugosc: 465 cm</div>
+  <div class="dim">Szer. przy scianie: 107 cm</div>
+  <div class="dim">Szer. przy balustradzie: 99 cm</div>
+  <div class="dim">Wys. balustrady: 80 cm</div>
+  <div class="dim">Wys. sciany: 260 cm</div>
+  <div class="dim">Powierzchnia: ~4.6 m²</div>
+  <div class="dim" style="margin-top:6px; color:#4fc3f7">--- Wneka drzwi/okna ---</div>
+  <div class="dim">Od lewej sciany: 169 cm</div>
+  <div class="dim">Szerokosc wneki: 226 cm</div>
+  <div class="dim">Glebokosc wneki: 30 cm</div>
+  <div class="dim">Prawa sciana: 70 cm</div>
+</div>
+<div id="legend">
+  <h3>Elementy</h3>
+  <div><span class="dot" style="background:#b0a090"></span> Sciany (tynk kremowy)</div>
+  <div><span class="dot" style="background:#5d4037"></span> Balustrada (metal brazowy)</div>
+  <div><span class="dot" style="background:#c17a40"></span> Plycinowe wypelnienia</div>
+  <div><span class="dot" style="background:#e0e0e0"></span> Okno i drzwi PCV</div>
+  <div><span class="dot" style="background:#6d6d6d"></span> Podloga (beton)</div>
+  <div><span class="dot" style="background:#8d6e63"></span> Meble ratanowe</div>
+  <div><span class="dot" style="background:#333"></span> Parasol</div>
+  <div><span class="dot" style="background:rgba(200,200,100,0.5)"></span> Siatka (dla kota)</div>
+</div>
+<div id="controls">LPM + przeciaganie = obrot &nbsp;|&nbsp; Scroll = zoom &nbsp;|&nbsp; PPM + przeciaganie = przesuniecie</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// --- SCENE SETUP ---
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87CEEB);
+scene.fog = new THREE.Fog(0x87CEEB, 20, 40);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(4, 3, 5);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.target.set(2.3, 1, 0.5);
+
+// --- LIGHTS ---
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+dirLight.position.set(5, 8, 3);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.set(2048, 2048);
+dirLight.shadow.camera.near = 0.1;
+dirLight.shadow.camera.far = 30;
+dirLight.shadow.camera.left = -8;
+dirLight.shadow.camera.right = 8;
+dirLight.shadow.camera.top = 8;
+dirLight.shadow.camera.bottom = -8;
+scene.add(dirLight);
+
+const fillLight = new THREE.DirectionalLight(0x9ec5e8, 0.3);
+fillLight.position.set(-3, 4, -2);
+scene.add(fillLight);
+
+// --- MATERIALS ---
+const wallMat = new THREE.MeshStandardMaterial({ color: 0xd4c8b0, roughness: 0.9, metalness: 0 });
+const ceilingMat = new THREE.MeshStandardMaterial({ color: 0xe8e0d0, roughness: 0.85, metalness: 0 });
+const floorMat = new THREE.MeshStandardMaterial({ color: 0x6d6d6d, roughness: 0.95, metalness: 0.05 });
+const railMat = new THREE.MeshStandardMaterial({ color: 0x4a3228, roughness: 0.4, metalness: 0.8 });
+const panelMat = new THREE.MeshStandardMaterial({ color: 0xc17a40, roughness: 0.6, metalness: 0.3 });
+const pcvMat = new THREE.MeshStandardMaterial({ color: 0xf0f0f0, roughness: 0.3, metalness: 0.1 });
+const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x88bbdd, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.3, transmission: 0.6 });
+const rattanMat = new THREE.MeshStandardMaterial({ color: 0x8d6e63, roughness: 0.8, metalness: 0.1 });
+const parasol_mat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7, metalness: 0.1 });
+const netMat = new THREE.MeshStandardMaterial({ color: 0xc8c864, roughness: 0.6, metalness: 0.2, transparent: true, opacity: 0.25, side: THREE.DoubleSide, wireframe: true });
+
+// Conversion: all measurements in meters
+const L = 4.65; // length
+const W_wall = 1.07; // width at wall
+const W_rail = 0.99; // width at railing
+const H_rail = 0.80; // railing height
+const H_wall = 2.60; // wall height
+const H_slab = 0.17; // slab thickness
+
+// --- FLOOR (tapered) ---
+const floorShape = new THREE.Shape();
+floorShape.moveTo(0, 0);
+floorShape.lineTo(L, 0);
+floorShape.lineTo(L, W_rail);
+floorShape.lineTo(0, W_wall);
+floorShape.closePath();
+const floorGeo = new THREE.ExtrudeGeometry(floorShape, { depth: H_slab, bevelEnabled: false });
+const floor = new THREE.Mesh(floorGeo, floorMat);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = 0;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// --- BACK WALL with recess for door/window ---
+// Layout (from left): 169cm wall | 226cm recess (30cm deep) | 70cm wall
+const RECESS_START = 1.69;  // 169cm from left
+const RECESS_WIDTH = 2.26;  // 226cm opening
+const RECESS_DEPTH = 0.30;  // 30cm deep
+const RECESS_END = RECESS_START + RECESS_WIDTH; // 3.95m
+const WALL_RIGHT = L - RECESS_END; // 70cm
+const WALL_T = 0.20; // wall thickness
+
+// Left wall section (0 to 1.69m)
+const wallLeftGeo = new THREE.BoxGeometry(RECESS_START, H_wall, WALL_T);
+const wallLeft = new THREE.Mesh(wallLeftGeo, wallMat);
+wallLeft.position.set(RECESS_START / 2, H_wall / 2, -WALL_T / 2);
+wallLeft.receiveShadow = true;
+scene.add(wallLeft);
+
+// Right wall section (3.95 to 4.65m)
+const wallRightGeo = new THREE.BoxGeometry(WALL_RIGHT, H_wall, WALL_T);
+const wallRightSec = new THREE.Mesh(wallRightGeo, wallMat);
+wallRightSec.position.set(RECESS_END + WALL_RIGHT / 2, H_wall / 2, -WALL_T / 2);
+wallRightSec.receiveShadow = true;
+scene.add(wallRightSec);
+
+// Recess back wall (at z = -RECESS_DEPTH)
+const recessBackGeo = new THREE.BoxGeometry(RECESS_WIDTH, H_wall, WALL_T);
+const recessBack = new THREE.Mesh(recessBackGeo, wallMat);
+recessBack.position.set(RECESS_START + RECESS_WIDTH / 2, H_wall / 2, -RECESS_DEPTH - WALL_T / 2);
+recessBack.receiveShadow = true;
+scene.add(recessBack);
+
+// Recess left side wall (connecting front wall to back wall)
+const recessSideGeo = new THREE.BoxGeometry(WALL_T, H_wall, RECESS_DEPTH);
+const recessSideL = new THREE.Mesh(recessSideGeo, wallMat);
+recessSideL.position.set(RECESS_START - WALL_T / 2, H_wall / 2, -RECESS_DEPTH / 2);
+scene.add(recessSideL);
+
+// Recess right side wall
+const recessSideR = new THREE.Mesh(recessSideGeo, wallMat);
+recessSideR.position.set(RECESS_END + WALL_T / 2, H_wall / 2, -RECESS_DEPTH / 2);
+scene.add(recessSideR);
+
+// Recess ceiling (soffit above the opening)
+const recessCeilGeo = new THREE.BoxGeometry(RECESS_WIDTH, 0.10, RECESS_DEPTH);
+const recessCeil = new THREE.Mesh(recessCeilGeo, ceilingMat);
+recessCeil.position.set(RECESS_START + RECESS_WIDTH / 2, H_wall - 0.05, -RECESS_DEPTH / 2);
+scene.add(recessCeil);
+
+// Recess floor
+const recessFloorGeo = new THREE.BoxGeometry(RECESS_WIDTH, 0.02, RECESS_DEPTH);
+const recessFloor = new THREE.Mesh(recessFloorGeo, floorMat);
+recessFloor.position.set(RECESS_START + RECESS_WIDTH / 2, 0.01, -RECESS_DEPTH / 2);
+scene.add(recessFloor);
+
+// --- LEFT SIDE WALL ---
+const sideWallGeo = new THREE.BoxGeometry(WALL_T, H_wall, W_wall);
+const leftWall = new THREE.Mesh(sideWallGeo, wallMat);
+leftWall.position.set(-WALL_T / 2, H_wall / 2, W_wall / 2);
+leftWall.receiveShadow = true;
+scene.add(leftWall);
+
+// --- RIGHT SIDE WALL (partial - neighbor separator) ---
+const rightWallGeo = new THREE.BoxGeometry(WALL_T, H_wall, W_wall * 0.3);
+const rightWall = new THREE.Mesh(rightWallGeo, wallMat);
+rightWall.position.set(L + WALL_T / 2, H_wall / 2, W_wall * 0.15);
+scene.add(rightWall);
+
+// --- CEILING ---
+const ceilShape = new THREE.Shape();
+ceilShape.moveTo(0, 0);
+ceilShape.lineTo(L, 0);
+ceilShape.lineTo(L, W_rail);
+ceilShape.lineTo(0, W_wall);
+ceilShape.closePath();
+const ceilGeo = new THREE.ExtrudeGeometry(ceilShape, { depth: 0.15, bevelEnabled: false });
+const ceiling = new THREE.Mesh(ceilGeo, ceilingMat);
+ceiling.rotation.x = -Math.PI / 2;
+ceiling.position.y = H_wall;
+ceiling.receiveShadow = true;
+scene.add(ceiling);
+
+// --- DOOR & WINDOWS inside recess ---
+// All positioned at z = -RECESS_DEPTH (back wall of recess)
+const RECESS_Z = -RECESS_DEPTH;
+const DOOR_W = 0.90;
+const DOOR_H = 2.10;
+const WIN_W = 1.30; // double window total width (2 x 0.65)
+const WIN_H = 1.40;
+const WIN_SILL = 0.80;
+
+// Door (left side of recess opening)
+function createDoor(x, z, w, h) {
+  const frameGeo = new THREE.BoxGeometry(w, h, 0.08);
+  const frame = new THREE.Mesh(frameGeo, pcvMat);
+  frame.position.set(x, h / 2, z);
+  frame.castShadow = true;
+  scene.add(frame);
+
+  // Upper glass panel
+  const upperH = h * 0.55;
+  const upperGlassGeo = new THREE.BoxGeometry(w - 0.08, upperH - 0.06, 0.02);
+  const upperGlass = new THREE.Mesh(upperGlassGeo, glassMat);
+  upperGlass.position.set(x, h - upperH / 2 - 0.03, z);
+  scene.add(upperGlass);
+
+  // Lower glass panel
+  const lowerH = h * 0.40;
+  const lowerGlassGeo = new THREE.BoxGeometry(w - 0.08, lowerH - 0.06, 0.02);
+  const lowerGlass = new THREE.Mesh(lowerGlassGeo, glassMat);
+  lowerGlass.position.set(x, lowerH / 2 + 0.03, z);
+  scene.add(lowerGlass);
+
+  // Horizontal bar (szpros)
+  const barGeo = new THREE.BoxGeometry(w, 0.05, 0.06);
+  const bar = new THREE.Mesh(barGeo, pcvMat);
+  bar.position.set(x, h * 0.42, z);
+  scene.add(bar);
+}
+
+const doorX = RECESS_START + DOOR_W / 2;
+createDoor(doorX, RECESS_Z, DOOR_W, DOOR_H);
+
+// Double window (right side of door, inside recess)
+function createDoubleWindow(x, z, totalW, h, sillY) {
+  // Outer frame
+  const frameGeo = new THREE.BoxGeometry(totalW, h, 0.08);
+  const frame = new THREE.Mesh(frameGeo, pcvMat);
+  frame.position.set(x, sillY + h / 2, z);
+  frame.castShadow = true;
+  scene.add(frame);
+
+  // Two glass panes
+  const paneW = (totalW - 0.12) / 2; // subtract frame + center mullion
+  for (let i = 0; i < 2; i++) {
+    const offset = (i === 0) ? -(paneW + 0.02) / 2 : (paneW + 0.02) / 2;
+    const glassGeo = new THREE.BoxGeometry(paneW, h - 0.08, 0.02);
+    const glass = new THREE.Mesh(glassGeo, glassMat);
+    glass.position.set(x + offset, sillY + h / 2, z);
+    scene.add(glass);
+  }
+
+  // Center mullion (vertical bar between panes)
+  const mullionGeo = new THREE.BoxGeometry(0.04, h, 0.06);
+  const mullion = new THREE.Mesh(mullionGeo, pcvMat);
+  mullion.position.set(x, sillY + h / 2, z);
+  scene.add(mullion);
+
+  // Sill (parapet)
+  const sillGeo = new THREE.BoxGeometry(totalW + 0.08, 0.04, 0.15);
+  const sill = new THREE.Mesh(sillGeo, pcvMat);
+  sill.position.set(x, sillY, z + 0.06);
+  scene.add(sill);
+
+  // Wall below window (podokiennik)
+  const belowH = sillY;
+  if (belowH > 0.1) {
+    const belowGeo = new THREE.BoxGeometry(totalW, belowH, 0.08);
+    const below = new THREE.Mesh(belowGeo, wallMat);
+    below.position.set(x, belowH / 2, z);
+    scene.add(below);
+  }
+}
+
+const winX = RECESS_START + DOOR_W + WIN_W / 2 + 0.06; // 6cm gap between door and window frame
+createDoubleWindow(winX, RECESS_Z, WIN_W, WIN_H, WIN_SILL);
+
+// --- RAILING ---
+function lerpW(t) {
+  return W_wall + (W_rail - W_wall) * t;
+}
+
+// Top rail
+const railCurve = new THREE.LineCurve3(
+  new THREE.Vector3(0, H_rail, W_wall),
+  new THREE.Vector3(L, H_rail, W_rail)
+);
+const topRailGeo = new THREE.TubeGeometry(railCurve, 20, 0.02, 8, false);
+const topRail = new THREE.Mesh(topRailGeo, railMat);
+topRail.castShadow = true;
+scene.add(topRail);
+
+// Bottom rail
+const bottomCurve = new THREE.LineCurve3(
+  new THREE.Vector3(0, 0.05, W_wall),
+  new THREE.Vector3(L, 0.05, W_rail)
+);
+const bottomRailGeo = new THREE.TubeGeometry(bottomCurve, 20, 0.015, 8, false);
+const bottomRail = new THREE.Mesh(bottomRailGeo, railMat);
+scene.add(bottomRail);
+
+// Middle rail
+const midCurve = new THREE.LineCurve3(
+  new THREE.Vector3(0, H_rail * 0.55, W_wall),
+  new THREE.Vector3(L, H_rail * 0.55, W_rail)
+);
+const midRailGeo = new THREE.TubeGeometry(midCurve, 20, 0.015, 8, false);
+const midRail = new THREE.Mesh(midRailGeo, railMat);
+scene.add(midRail);
+
+// Vertical posts
+const postCount = 24;
+for (let i = 0; i <= postCount; i++) {
+  const t = i / postCount;
+  const x = t * L;
+  const z = lerpW(t);
+  const postGeo = new THREE.CylinderGeometry(0.012, 0.012, H_rail, 8);
+  const post = new THREE.Mesh(postGeo, railMat);
+  post.position.set(x, H_rail / 2, z);
+  post.castShadow = true;
+  scene.add(post);
+}
+
+// Panel infills (plyciny - every 2 posts)
+for (let i = 0; i < postCount; i += 2) {
+  const t1 = i / postCount;
+  const t2 = (i + 2) / postCount;
+  if (t2 > 1) break;
+  const x1 = t1 * L;
+  const x2 = t2 * L;
+  const z1 = lerpW(t1);
+  const z2 = lerpW(t2);
+  const cx = (x1 + x2) / 2;
+  const cz = (z1 + z2) / 2;
+  const w = x2 - x1;
+
+  const panelGeo = new THREE.BoxGeometry(w - 0.02, H_rail * 0.5, 0.01);
+  const panel = new THREE.Mesh(panelGeo, panelMat);
+  panel.position.set(cx, H_rail * 0.3, cz);
+  const angle = Math.atan2(z2 - z1, x2 - x1);
+  panel.rotation.y = -angle;
+  scene.add(panel);
+}
+
+// --- FURNITURE ---
+
+// Chair 1
+function createChair(x, z, rotY) {
+  const group = new THREE.Group();
+  // seat
+  const seatGeo = new THREE.BoxGeometry(0.42, 0.03, 0.42);
+  const seat = new THREE.Mesh(seatGeo, rattanMat);
+  seat.position.y = 0.45;
+  seat.castShadow = true;
+  group.add(seat);
+  // back
+  const backGeo = new THREE.BoxGeometry(0.42, 0.40, 0.03);
+  const back = new THREE.Mesh(backGeo, rattanMat);
+  back.position.set(0, 0.67, -0.195);
+  back.castShadow = true;
+  group.add(back);
+  // legs
+  const legMat = new THREE.MeshStandardMaterial({ color: 0x666666, metalness: 0.8, roughness: 0.3 });
+  for (let lx of [-0.17, 0.17]) {
+    for (let lz of [-0.17, 0.17]) {
+      const legGeo = new THREE.CylinderGeometry(0.012, 0.012, 0.45, 6);
+      const leg = new THREE.Mesh(legGeo, legMat);
+      leg.position.set(lx, 0.225, lz);
+      group.add(leg);
+    }
+  }
+  group.position.set(x, 0, z);
+  group.rotation.y = rotY || 0;
+  scene.add(group);
+}
+
+createChair(1.5, 0.55, 0);
+createChair(3.2, 0.55, 0);
+
+// Table
+function createTable(x, z) {
+  const group = new THREE.Group();
+  const topGeo = new THREE.BoxGeometry(0.55, 0.03, 0.55);
+  const top = new THREE.Mesh(topGeo, rattanMat);
+  top.position.y = 0.72;
+  top.castShadow = true;
+  group.add(top);
+  const legMat2 = new THREE.MeshStandardMaterial({ color: 0x666666, metalness: 0.8, roughness: 0.3 });
+  for (let lx of [-0.22, 0.22]) {
+    for (let lz of [-0.22, 0.22]) {
+      const legGeo = new THREE.CylinderGeometry(0.012, 0.012, 0.72, 6);
+      const leg = new THREE.Mesh(legGeo, legMat2);
+      leg.position.set(lx, 0.36, lz);
+      group.add(leg);
+    }
+  }
+  group.position.set(x, 0, z);
+  scene.add(group);
+}
+
+createTable(2.1, 0.55);
+
+// Parasol (folded)
+function createParasol(x, z) {
+  const group = new THREE.Group();
+  // pole
+  const poleGeo = new THREE.CylinderGeometry(0.02, 0.02, 2.3, 8);
+  const pole = new THREE.Mesh(poleGeo, new THREE.MeshStandardMaterial({ color: 0xeeeeee, metalness: 0.5, roughness: 0.3 }));
+  pole.position.y = 1.15;
+  group.add(pole);
+  // folded canopy
+  const canopyGeo = new THREE.CylinderGeometry(0.04, 0.12, 0.8, 8);
+  const canopy = new THREE.Mesh(canopyGeo, parasol_mat);
+  canopy.position.y = 1.8;
+  canopy.castShadow = true;
+  group.add(canopy);
+  // base
+  const baseGeo = new THREE.CylinderGeometry(0.2, 0.22, 0.08, 12);
+  const base = new THREE.Mesh(baseGeo, new THREE.MeshStandardMaterial({ color: 0x444444, metalness: 0.6, roughness: 0.4 }));
+  base.position.y = 0.04;
+  group.add(base);
+  group.position.set(x, 0, z);
+  scene.add(group);
+}
+
+createParasol(3.8, 0.5);
+
+// Floor mat
+const matGeo = new THREE.BoxGeometry(0.8, 0.01, 0.6);
+const matMesh = new THREE.Mesh(matGeo, new THREE.MeshStandardMaterial({ color: 0x9e9e9e, roughness: 0.9 }));
+matMesh.position.set(3.8, 0.01, 0.45);
+matMesh.receiveShadow = true;
+scene.add(matMesh);
+
+// --- SAFETY NET (siatka dla kota) ---
+const netWidth = L;
+const netHeight = H_wall - H_rail;
+const netGeo = new THREE.PlaneGeometry(netWidth, netHeight, 40, 20);
+const net = new THREE.Mesh(netGeo, netMat);
+net.position.set(L / 2, H_rail + netHeight / 2, (W_wall + W_rail) / 2);
+net.rotation.y = Math.atan2(W_rail - W_wall, L);
+scene.add(net);
+
+// Steel cable (vertical, left side)
+const cableMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.9, roughness: 0.2 });
+const cableGeo = new THREE.CylinderGeometry(0.005, 0.005, H_wall - H_rail, 6);
+
+// Left cable
+const cableL = new THREE.Mesh(cableGeo, cableMat);
+cableL.position.set(0.02, H_rail + (H_wall - H_rail) / 2, W_wall);
+scene.add(cableL);
+
+// Right cable
+const cableR = new THREE.Mesh(cableGeo, cableMat);
+cableR.position.set(L - 0.02, H_rail + (H_wall - H_rail) / 2, W_rail);
+scene.add(cableR);
+
+// Turnbuckle (napinacz)
+const tbGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.1, 6);
+const tb1 = new THREE.Mesh(tbGeo, cableMat);
+tb1.position.set(0.02, H_wall - 0.15, W_wall * 0.5);
+scene.add(tb1);
+
+// --- DIMENSION LINES ---
+function createDimensionLabel(text, x, y, z, rotY) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(0,0,0,0.7)';
+  ctx.roundRect(0, 0, 256, 64, 8);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 28px Segoe UI';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, 128, 32);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true });
+  const sprite = new THREE.Sprite(spriteMat);
+  sprite.position.set(x, y, z);
+  sprite.scale.set(0.8, 0.2, 1);
+  scene.add(sprite);
+}
+
+createDimensionLabel('465 cm', L / 2, -0.2, (W_wall + W_rail) / 2 + 0.3);
+createDimensionLabel('107 cm', -0.3, -0.2, W_wall / 2);
+createDimensionLabel('80 cm', -0.25, H_rail / 2, W_wall + 0.2);
+createDimensionLabel('169 cm', RECESS_START / 2, H_wall + 0.25, -0.15);
+createDimensionLabel('226 cm (wneka)', RECESS_START + RECESS_WIDTH / 2, H_wall + 0.25, -RECESS_DEPTH / 2);
+createDimensionLabel('70 cm', RECESS_END + WALL_RIGHT / 2, H_wall + 0.25, -0.15);
+createDimensionLabel('30 cm', RECESS_START - 0.15, H_wall * 0.7, -RECESS_DEPTH / 2);
+
+// --- SKYBOX hint - ground below ---
+const groundGeo = new THREE.PlaneGeometry(40, 40);
+const groundMat2 = new THREE.MeshStandardMaterial({ color: 0x5a8a4a, roughness: 1 });
+const ground = new THREE.Mesh(groundGeo, groundMat2);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -25;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// Distant buildings hint
+for (let i = 0; i < 8; i++) {
+  const bw = 2 + Math.random() * 3;
+  const bh = 5 + Math.random() * 15;
+  const bd = 2 + Math.random() * 3;
+  const bGeo = new THREE.BoxGeometry(bw, bh, bd);
+  const bMat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(0.1, 0.1, 0.5 + Math.random() * 0.2), roughness: 0.8 });
+  const bMesh = new THREE.Mesh(bGeo, bMat);
+  bMesh.position.set(
+    -10 + Math.random() * 30,
+    -25 + bh / 2,
+    8 + Math.random() * 15
+  );
+  scene.add(bMesh);
+}
+
+// --- ANIMATION ---
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

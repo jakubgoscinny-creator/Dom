@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Projekt B - IVAR 50cm | Balkon 3D</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; }
+  canvas { display: block; }
+  #info {
+    position: absolute; top: 16px; left: 16px;
+    background: rgba(0,0,0,0.8); color: #fff; padding: 16px 20px;
+    border-radius: 10px; font-size: 13px; line-height: 1.7;
+    backdrop-filter: blur(8px); max-width: 300px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  #info h2 { font-size: 15px; margin-bottom: 6px; color: #ef9a9a; }
+  #info h3 { font-size: 13px; margin: 8px 0 4px; color: #4fc3f7; }
+  #info .dim { color: #bbb; font-size: 11.5px; }
+  #info .prod { color: #fff; font-size: 11.5px; }
+  #info .price { color: #ffd54f; font-size: 11.5px; font-weight: bold; }
+  #controls {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.7); color: #fff; padding: 10px 20px;
+    border-radius: 8px; font-size: 12px; text-align: center;
+    backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);
+  }
+  #legend {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(0,0,0,0.8); color: #fff; padding: 14px 18px;
+    border-radius: 10px; font-size: 12px; line-height: 2;
+    backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);
+  }
+  #legend h3 { font-size: 13px; margin-bottom: 6px; color: #ef9a9a; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  #popup {
+    display: none; position: absolute;
+    background: rgba(0,0,0,0.92); color: #fff; padding: 16px 20px;
+    border-radius: 12px; font-size: 13px; line-height: 1.8;
+    backdrop-filter: blur(10px); max-width: 360px; z-index: 100;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  #popup h3 { color: #ef9a9a; margin-bottom: 6px; font-size: 14px; }
+  #popup a { color: #64b5f6; text-decoration: none; display: block; padding: 3px 0; }
+  #popup a:hover { color: #90caf9; text-decoration: underline; }
+  #popup .close { position: absolute; top: 8px; right: 12px; cursor: pointer; color: #999; font-size: 18px; }
+  #popup .close:hover { color: #fff; }
+  #popup .price-tag { color: #ffd54f; font-weight: bold; }
+  #popup .store { color: #aaa; font-size: 11px; }
+  #ivar-config {
+    position: absolute; right: 16px; top: 260px;
+    background: rgba(0,0,0,0.88); color: #fff; padding: 14px 16px;
+    border-radius: 10px; font-size: 11.5px; line-height: 1.6;
+    backdrop-filter: blur(8px); width: 240px;
+    border: 1px solid rgba(239,154,154,0.3);
+    max-height: calc(100vh - 290px); overflow-y: auto;
+  }
+  #ivar-config h3 { font-size: 13px; margin-bottom: 8px; color: #ef9a9a; }
+  #ivar-config .cfg-section { margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; }
+  #ivar-config .cfg-section:last-child { border-bottom: none; margin-bottom: 0; }
+  #ivar-config .cfg-label { color: #aaa; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  #ivar-config label { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 2px 0; color: #ddd; }
+  #ivar-config label:hover { color: #fff; }
+  #ivar-config input[type="radio"], #ivar-config input[type="checkbox"] { accent-color: #ef9a9a; width: 14px; height: 14px; cursor: pointer; }
+  #ivar-config .price-add { color: #ffd54f; font-size: 10px; margin-left: auto; }
+  #ivar-config .total-bar {
+    margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(239,154,154,0.3);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: bold;
+  }
+  #ivar-config .total-bar .total-price { color: #ffd54f; font-size: 15px; }
+  #ivar-config .btn-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+  #ivar-config .btn-row label {
+    background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 5px; font-size: 11px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  #ivar-config .btn-row label:has(input:checked) { background: rgba(239,154,154,0.25); color: #ef9a9a; }
+  #ivar-config .btn-row input { display: none; }
+  #ivar-config .ikea-link { display: block; text-align: center; margin-top: 6px; color: #64b5f6; text-decoration: none; font-size: 11px; }
+  #ivar-config .ikea-link:hover { color: #90caf9; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div id="info">
+  <h2>PROJEKT B - IVAR 50cm</h2>
+  <div class="dim">IVAR plecami do lewej sciany</div>
+  <div class="dim">Lawenda w donicach podlogowych, bluszcz po prawej</div>
+  <h3>Meble i wyposazenie:</h3>
+  <div class="prod" id="ivar-info-line">IKEA IVAR 89x50x179 cm <span class="price">480 zl</span></div>
+  <div class="prod">Skrzynia Keter Comfy 117x45x57 (lawka) <span class="price">248 zl</span></div>
+  <div class="prod">Stolik KADAX wiszacy na balustradzie 60x40 <span class="price">~80 zl</span></div>
+  <div class="prod">2x Donica podlogowa 60cm (lawenda) <span class="price">2x ~40 zl</span></div>
+  <div class="prod">Bluszcz pospolity + kratka <span class="price">~60 zl</span></div>
+  <div class="prod">Podest GoodHome akacja 30x30 ~52szt <span class="price">~650 zl</span></div>
+  <div class="prod">Lawenda 6-pak <span class="price">~20 zl</span></div>
+  <h3 style="color:#ffd54f" id="total-display">SUMA: ~1618 zl</h3>
+</div>
+<div id="legend">
+  <h3>Legenda</h3>
+  <div><span class="dot" style="background:#c8a86e"></span> Podloga drewniana 30x30</div>
+  <div><span class="dot" style="background:#deb887"></span> IVAR (sosna)</div>
+  <div><span class="dot" style="background:#6d4c41"></span> Skrzynia Keter (lawka+schowek)</div>
+  <div><span class="dot" style="background:#78909c"></span> Stolik wiszacy KADAX</div>
+  <div><span class="dot" style="background:#7b5eae"></span> Lawenda (donice podlogowe)</div>
+  <div><span class="dot" style="background:#2e7d32"></span> Bluszcz (prawa sciana + siatka)</div>
+  <div><span class="dot" style="background:#5d4037"></span> Balustrada</div>
+</div>
+<div id="popup"><span class="close" onclick="document.getElementById('popup').style.display='none'">&times;</span><div id="popup-content"></div></div>
+<div id="controls">LPM = obrot | Scroll = zoom | PPM = przesuniecie | Kliknij na mebel = linki zakupowe</div>
+
+<div id="ivar-config">
+  <h3>IVAR Konfigurator</h3>
+  <div class="cfg-section">
+    <div class="cfg-label">Wysokosc</div>
+    <div class="btn-row">
+      <label><input type="radio" name="ivar-height" value="1.24"> 124cm</label>
+      <label><input type="radio" name="ivar-height" value="1.79" checked> 179cm</label>
+      <label><input type="radio" name="ivar-height" value="2.26"> 226cm</label>
+    </div>
+  </div>
+  <div class="cfg-section">
+    <div class="cfg-label">Szuflada</div>
+    <label><input type="checkbox" id="ivar-drawer"> Szuflada drewniana <span class="price-add">+130 zl</span></label>
+    <label style="margin-left:20px;font-size:10px;color:#aaa">Sekcja: <select id="ivar-drawer-pos" style="background:#222;color:#fff;border:1px solid #555;border-radius:3px;padding:1px 4px;font-size:10px;accent-color:#ef9a9a">
+      <option value="0">1 (dol)</option><option value="1">2</option><option value="2">3</option><option value="3">4</option>
+    </select></label>
+  </div>
+  <div class="cfg-section">
+    <div class="cfg-label">Drzwi / szafka</div>
+    <label><input type="radio" name="ivar-doors" value="none" checked> Brak</label>
+    <label><input type="radio" name="ivar-doors" value="wood"> Drewniane sosna <span class="price-add">+235 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="felt"> Filcowe ciemnoszare <span class="price-add">+230 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="mesh"> Siatkowe czarne <span class="price-add">+400 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="meshgreen"> Siatkowe zielone <span class="price-add">+400 zl</span></label>
+    <label style="margin-top:4px;font-size:10px;color:#aaa">Sekcja drzwi: <select id="ivar-doors-pos" style="background:#222;color:#fff;border:1px solid #555;border-radius:3px;padding:1px 4px;font-size:10px;accent-color:#ef9a9a">
+      <option value="0">1 (dol)</option><option value="1">2</option><option value="2">3</option>
+    </select></label>
+  </div>
+  <div class="cfg-section">
+    <div class="cfg-label">Dodatki</div>
+    <label><input type="checkbox" id="ivar-hooks"> Haki 3 szt. <span class="price-add">+10 zl</span></label>
+    <label><input type="checkbox" id="ivar-bottle"> Polka na butelki <span class="price-add">+50 zl</span></label>
+    <label><input type="checkbox" id="ivar-rail"> Drazek (wieszak) <span class="price-add">+8 zl</span></label>
+    <label><input type="checkbox" id="ivar-container"> Pojemnik z kolkami <span class="price-add">+170 zl</span></label>
+  </div>
+  <div class="total-bar">
+    <span>IVAR:</span>
+    <span class="total-price" id="ivar-price-display">480 zl</span>
+  </div>
+  <a class="ikea-link" id="ivar-ikea-link" href="https://www.ikea.com/pl/pl/p/ivar-regal-sosna-s39407070/" target="_blank">Zobacz na IKEA.pl</a>
+</div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87CEEB);
+scene.fog = new THREE.Fog(0x87CEEB, 20, 40);
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(3.5, 3.5, 5);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(devicePixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+document.body.appendChild(renderer.domElement);
+
+const ctrl = new OrbitControls(camera, renderer.domElement);
+ctrl.enableDamping = true; ctrl.dampingFactor = 0.05;
+ctrl.target.set(2.3, 0.8, 0.5);
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+sun.position.set(5, 8, 3); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 0.1; sun.shadow.camera.far = 30;
+sun.shadow.camera.left = -8; sun.shadow.camera.right = 8;
+sun.shadow.camera.top = 8; sun.shadow.camera.bottom = -8;
+scene.add(sun);
+scene.add(new THREE.DirectionalLight(0x9ec5e8, 0.3).translateX(-3).translateY(4).translateZ(-2));
+
+const wallMat = new THREE.MeshStandardMaterial({ color: 0xd4c8b0, roughness: 0.9 });
+const ceilMat = new THREE.MeshStandardMaterial({ color: 0xe8e0d0, roughness: 0.85 });
+const railMat = new THREE.MeshStandardMaterial({ color: 0x4a3228, roughness: 0.4, metalness: 0.8 });
+const panelMat = new THREE.MeshStandardMaterial({ color: 0xc17a40, roughness: 0.6, metalness: 0.3 });
+const pcvMat = new THREE.MeshStandardMaterial({ color: 0xf0f0f0, roughness: 0.3, metalness: 0.1 });
+const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x88bbdd, roughness: 0.05, transparent: true, opacity: 0.3, transmission: 0.6 });
+const netMat = new THREE.MeshStandardMaterial({ color: 0xc8c864, roughness: 0.6, metalness: 0.2, transparent: true, opacity: 0.2, side: THREE.DoubleSide, wireframe: true });
+
+const L = 4.65, W_wall = 1.07, W_rail = 0.99, H_rail = 0.80, H_wall = 2.60, H_slab = 0.17;
+const RECESS_START = 1.69, RECESS_WIDTH = 2.26, RECESS_DEPTH = 0.30;
+const RECESS_END = RECESS_START + RECESS_WIDTH, WALL_RIGHT = L - RECESS_END, WT = 0.20;
+
+// ===================== FLOOR =====================
+function createWoodFloor() {
+  const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
+  const ctx = canvas.getContext('2d'); const ts = 128;
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+    const x = c*ts, y = r*ts, hz = (r+c)%2===0;
+    for (let s = 0; s < 6; s++) {
+      ctx.fillStyle = `hsl(${25+Math.random()*10}, 50%, ${55+Math.random()*15}%)`;
+      if (hz) ctx.fillRect(x+1, y+s*ts/6+1, ts-2, ts/6-2);
+      else ctx.fillRect(x+s*ts/6+1, y+1, ts/6-2, ts-2);
+    }
+    ctx.strokeStyle='#333'; ctx.lineWidth=2; ctx.strokeRect(x,y,ts,ts);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(L/1.2, W_wall/1.2);
+  return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.05 });
+}
+const floorShape = new THREE.Shape();
+floorShape.moveTo(0,0); floorShape.lineTo(L,0); floorShape.lineTo(L,W_rail); floorShape.lineTo(0,W_wall); floorShape.closePath();
+const woodFloor = new THREE.Mesh(new THREE.ExtrudeGeometry(floorShape,{depth:0.025,bevelEnabled:false}), createWoodFloor());
+woodFloor.rotation.x=-Math.PI/2; woodFloor.position.y=H_slab+0.025; woodFloor.receiveShadow=true; scene.add(woodFloor);
+const slab = new THREE.Mesh(new THREE.ExtrudeGeometry(floorShape,{depth:H_slab,bevelEnabled:false}), new THREE.MeshStandardMaterial({color:0x6d6d6d,roughness:0.95}));
+slab.rotation.x=-Math.PI/2; slab.receiveShadow=true; scene.add(slab);
+const FLOOR_Y = H_slab + 0.025;
+
+// ===================== WALLS =====================
+const wl=new THREE.Mesh(new THREE.BoxGeometry(RECESS_START,H_wall,WT),wallMat); wl.position.set(RECESS_START/2,H_wall/2,-WT/2); wl.receiveShadow=true; scene.add(wl);
+const wr=new THREE.Mesh(new THREE.BoxGeometry(WALL_RIGHT,H_wall,WT),wallMat); wr.position.set(RECESS_END+WALL_RIGHT/2,H_wall/2,-WT/2); wr.receiveShadow=true; scene.add(wr);
+const rb=new THREE.Mesh(new THREE.BoxGeometry(RECESS_WIDTH,H_wall,WT),wallMat); rb.position.set(RECESS_START+RECESS_WIDTH/2,H_wall/2,-RECESS_DEPTH-WT/2); rb.receiveShadow=true; scene.add(rb);
+const rsGeo=new THREE.BoxGeometry(WT,H_wall,RECESS_DEPTH);
+scene.add(new THREE.Mesh(rsGeo,wallMat).translateX(RECESS_START-WT/2).translateY(H_wall/2).translateZ(-RECESS_DEPTH/2));
+scene.add(new THREE.Mesh(rsGeo.clone(),wallMat).translateX(RECESS_END+WT/2).translateY(H_wall/2).translateZ(-RECESS_DEPTH/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(RECESS_WIDTH,0.1,RECESS_DEPTH),ceilMat).translateX(RECESS_START+RECESS_WIDTH/2).translateY(H_wall-0.05).translateZ(-RECESS_DEPTH/2));
+const lw=new THREE.Mesh(new THREE.BoxGeometry(WT,H_wall,W_wall),wallMat); lw.position.set(-WT/2,H_wall/2,W_wall/2); lw.receiveShadow=true; scene.add(lw);
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(WT,H_wall,W_wall*0.3),wallMat).translateX(L+WT/2).translateY(H_wall/2).translateZ(W_wall*0.15));
+const cs=new THREE.Shape(); cs.moveTo(0,0); cs.lineTo(L,0); cs.lineTo(L,W_rail); cs.lineTo(0,W_wall); cs.closePath();
+const ceil=new THREE.Mesh(new THREE.ExtrudeGeometry(cs,{depth:0.15,bevelEnabled:false}),ceilMat);
+ceil.rotation.x=-Math.PI/2; ceil.position.y=H_wall; ceil.receiveShadow=true; scene.add(ceil);
+
+// ===================== DOOR & WINDOW =====================
+const RZ=-RECESS_DEPTH;
+function mkDoor(x,z,w,h){const f=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.08),pcvMat);f.position.set(x,h/2,z);f.castShadow=true;scene.add(f);scene.add(new THREE.Mesh(new THREE.BoxGeometry(w-0.08,h*0.55-0.06,0.02),glassMat).translateX(x).translateY(h-h*0.55/2-0.03).translateZ(z));scene.add(new THREE.Mesh(new THREE.BoxGeometry(w-0.08,h*0.40-0.06,0.02),glassMat).translateX(x).translateY(h*0.40/2+0.03).translateZ(z));scene.add(new THREE.Mesh(new THREE.BoxGeometry(w,0.05,0.06),pcvMat).translateX(x).translateY(h*0.42).translateZ(z));}
+mkDoor(RECESS_START+0.45,RZ,0.90,2.10);
+function mkDblWin(x,z,tw,h,sy){const f=new THREE.Mesh(new THREE.BoxGeometry(tw,h,0.08),pcvMat);f.position.set(x,sy+h/2,z);f.castShadow=true;scene.add(f);const pw=(tw-0.12)/2;for(let i=0;i<2;i++){const off=i===0?-(pw+0.02)/2:(pw+0.02)/2;scene.add(new THREE.Mesh(new THREE.BoxGeometry(pw,h-0.08,0.02),glassMat).translateX(x+off).translateY(sy+h/2).translateZ(z));}scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.04,h,0.06),pcvMat).translateX(x).translateY(sy+h/2).translateZ(z));scene.add(new THREE.Mesh(new THREE.BoxGeometry(tw+0.08,0.04,0.15),pcvMat).translateX(x).translateY(sy).translateZ(z+0.06));if(sy>0.1)scene.add(new THREE.Mesh(new THREE.BoxGeometry(tw,sy,0.08),wallMat).translateX(x).translateY(sy/2).translateZ(z));}
+mkDblWin(RECESS_START+0.90+0.65+0.06,RZ,1.30,1.40,0.80);
+
+// ===================== RAILING =====================
+function lerpW(t){return W_wall+(W_rail-W_wall)*t;}
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,H_rail,W_wall),new THREE.Vector3(L,H_rail,W_rail)),20,0.02,8,false),railMat));
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,0.05,W_wall),new THREE.Vector3(L,0.05,W_rail)),20,0.015,8,false),railMat));
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,H_rail*0.55,W_wall),new THREE.Vector3(L,H_rail*0.55,W_rail)),20,0.015,8,false),railMat));
+for(let i=0;i<=24;i++){const t=i/24,x=t*L,z=lerpW(t);const p=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,H_rail,8),railMat);p.position.set(x,H_rail/2,z);p.castShadow=true;scene.add(p);}
+for(let i=0;i<24;i+=2){const t1=i/24,t2=(i+2)/24;if(t2>1)break;const x1=t1*L,x2=t2*L,z1=lerpW(t1),z2=lerpW(t2);const pan=new THREE.Mesh(new THREE.BoxGeometry(x2-x1-0.02,H_rail*0.5,0.01),panelMat);pan.position.set((x1+x2)/2,H_rail*0.3,(z1+z2)/2);pan.rotation.y=-Math.atan2(z2-z1,x2-x1);scene.add(pan);}
+const netH2=H_wall-H_rail;
+scene.add(new THREE.Mesh(new THREE.PlaneGeometry(L,netH2,40,20),netMat).translateX(L/2).translateY(H_rail+netH2/2).translateZ((W_wall+W_rail)/2).rotateY(Math.atan2(W_rail-W_wall,L)));
+
+// ===================== IVAR CONFIGURATOR =====================
+const IVAR_DEPTH = 0.50, IVAR_WIDTH = 0.89;
+let ivarGroup = null, ivarClickZoneMesh = null, ivarLabelSprite = null;
+
+const ivarBasePrice = { 1.24: 330, 1.79: 480, 2.26: 580 };
+const ivarIkeaLinks = {
+  1.24: 'https://www.ikea.com/pl/pl/cat/wszystkie-elementy-ivar-11705/',
+  1.79: 'https://www.ikea.com/pl/pl/p/ivar-regal-sosna-s39407070/',
+  2.26: 'https://www.ikea.com/pl/pl/cat/wszystkie-elementy-ivar-11705/'
+};
+const ivarAddons = { drawer: 130, doorsWood: 235, doorsFelt: 230, doorsMesh: 400, doorsMeshGreen: 400, hooks: 10, bottleShelf: 50, rail: 8, container: 170 };
+const OTHER_COSTS = 248 + 80 + 80 + 60 + 650 + 20;
+
+function getIVARConfig() {
+  return {
+    height: parseFloat(document.querySelector('input[name="ivar-height"]:checked').value),
+    depth: IVAR_DEPTH,
+    drawer: document.getElementById('ivar-drawer').checked,
+    drawerPos: parseInt(document.getElementById('ivar-drawer-pos').value),
+    doors: document.querySelector('input[name="ivar-doors"]:checked').value,
+    doorsPos: parseInt(document.getElementById('ivar-doors-pos').value),
+    hooks: document.getElementById('ivar-hooks').checked,
+    bottleShelf: document.getElementById('ivar-bottle').checked,
+    rail: document.getElementById('ivar-rail').checked,
+    container: document.getElementById('ivar-container').checked,
+  };
+}
+
+function updateSectionSelectors() {
+  const h = parseFloat(document.querySelector('input[name="ivar-height"]:checked').value);
+  const nShelves = h <= 1.30 ? 4 : h <= 1.85 ? 5 : 6;
+  const nSections = nShelves - 1;
+  const drawerSel = document.getElementById('ivar-drawer-pos');
+  const doorsSel = document.getElementById('ivar-doors-pos');
+  const prevDrawer = drawerSel.value;
+  drawerSel.innerHTML = '';
+  for (let i = 0; i < nSections; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = (i + 1) + (i === 0 ? ' (dol)' : i === nSections - 1 ? ' (gora)' : '');
+    drawerSel.appendChild(opt);
+  }
+  drawerSel.value = Math.min(parseInt(prevDrawer) || 0, nSections - 1);
+  const prevDoors = doorsSel.value;
+  doorsSel.innerHTML = '';
+  const maxDoorPos = Math.max(0, nSections - 2);
+  for (let i = 0; i <= maxDoorPos; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = (i + 1) + (i === 0 ? ' (dol)' : '');
+    doorsSel.appendChild(opt);
+  }
+  doorsSel.value = Math.min(parseInt(prevDoors) || 0, maxDoorPos);
+}
+
+function calcIVARPrice(cfg) {
+  let p = ivarBasePrice[cfg.height] || 480;
+  if (cfg.drawer) p += ivarAddons.drawer;
+  if (cfg.doors === 'wood') p += ivarAddons.doorsWood;
+  if (cfg.doors === 'felt') p += ivarAddons.doorsFelt;
+  if (cfg.doors === 'mesh') p += ivarAddons.doorsMesh;
+  if (cfg.doors === 'meshgreen') p += ivarAddons.doorsMeshGreen;
+  if (cfg.hooks) p += ivarAddons.hooks;
+  if (cfg.bottleShelf) p += ivarAddons.bottleShelf;
+  if (cfg.rail) p += ivarAddons.rail;
+  if (cfg.container) p += ivarAddons.container;
+  return p;
+}
+
+function buildIVAR(cfg) {
+  if (ivarGroup) { scene.remove(ivarGroup); ivarGroup.traverse(c => { if(c.geometry)c.geometry.dispose(); if(c.material){if(Array.isArray(c.material))c.material.forEach(m=>m.dispose());else c.material.dispose();}}); }
+  if (ivarClickZoneMesh) { scene.remove(ivarClickZoneMesh); const idx=clickZones.indexOf(ivarClickZoneMesh); if(idx>=0)clickZones.splice(idx,1); }
+  if (ivarLabelSprite) scene.remove(ivarLabelSprite);
+
+  const g = new THREE.Group();
+  const pineMat = new THREE.MeshStandardMaterial({ color: 0xdeb887, roughness: 0.7, metalness: 0.05 });
+  const pineDoorMat = new THREE.MeshStandardMaterial({ color: 0xd4ad7a, roughness: 0.65, metalness: 0.05 });
+  const metalMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.3, metalness: 0.8 });
+  const braceMat = new THREE.MeshStandardMaterial({ color: 0xc0a070, roughness: 0.6 });
+  const sideT = 0.03, shelfT = 0.02;
+  const iW = IVAR_WIDTH, iD = cfg.depth, iH = cfg.height;
+  const shelfW = iW - 2 * sideT;
+  const nShelves = iH <= 1.30 ? 4 : iH <= 1.85 ? 5 : 6;
+  const secH = (iH - shelfT) / (nShelves - 1);
+
+  // Side panels
+  for (const s of [0, iW - sideT]) {
+    const side = new THREE.Mesh(new THREE.BoxGeometry(iD, iH, sideT), pineMat);
+    side.position.set(iD/2, iH/2, s + sideT/2); side.castShadow = true; g.add(side);
+  }
+
+  // Shelves
+  for (let i = 0; i < nShelves; i++) {
+    const sy = i * secH;
+    if (cfg.bottleShelf && i === 2) {
+      const bMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.3, metalness: 0.6 });
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(iD - 0.02, shelfT, shelfW), bMat).translateX(iD/2).translateY(sy + shelfT/2).translateZ(iW/2));
+      for (let d = 0; d < 7; d++) {
+        const dz = sideT + 0.06 + d * (shelfW - 0.12) / 6;
+        g.add(new THREE.Mesh(new THREE.BoxGeometry(iD - 0.04, 0.06, 0.003), bMat).translateX(iD/2).translateY(sy + shelfT + 0.03).translateZ(dz));
+      }
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.06, shelfW), bMat).translateX(iD - 0.01).translateY(sy + shelfT + 0.03).translateZ(iW/2));
+      continue;
+    }
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(iD, shelfT, shelfW), pineMat);
+    shelf.position.set(iD/2, sy + shelfT/2, iW/2); shelf.castShadow = true; g.add(shelf);
+  }
+
+  // Cross brace
+  const braceLen = Math.sqrt(iH*iH + (iW-0.06)*(iW-0.06));
+  for (const d of [1, -1]) {
+    const brace = new THREE.Mesh(new THREE.BoxGeometry(0.02, braceLen, 0.02), braceMat);
+    brace.position.set(0.01, iH/2, iW/2); brace.rotation.x = d * Math.atan2(iH, iW - 0.06); g.add(brace);
+  }
+
+  // Drawer (position based on cfg.drawerPos)
+  if (cfg.drawer) {
+    const dH = 0.17;
+    const drawerBaseY = cfg.drawerPos * secH + shelfT + 0.005;
+    const dY = drawerBaseY + dH/2;
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.018, dH, shelfW + 0.002), pineDoorMat).translateX(iD + 0.009).translateY(dY).translateZ(iW/2));
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(iD - 0.05, dH - 0.02, shelfW - 0.02), new THREE.MeshStandardMaterial({color:0xc89b65,roughness:0.8})).translateX(iD/2 - 0.01).translateY(dY).translateZ(iW/2));
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.012, 0.10), metalMat).translateX(iD + 0.024).translateY(dY).translateZ(iW/2));
+  }
+
+  // Wooden doors (position based on cfg.doorsPos)
+  if (cfg.doors === 'wood') {
+    const doorH = 0.83, doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const halfW = (shelfW - 0.008) / 2;
+    for (let di = 0; di < 2; di++) {
+      const dz = sideT + halfW/2 + di * (halfW + 0.008);
+      const door = new THREE.Mesh(new THREE.BoxGeometry(0.018, doorH - 0.01, halfW), pineDoorMat);
+      door.position.set(iD + 0.009, doorStartY + doorH/2, dz); door.castShadow = true; g.add(door);
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.003, doorH * 0.6, halfW * 0.7), new THREE.MeshStandardMaterial({color:0xc9a066,roughness:0.7})).translateX(iD + 0.020).translateY(doorStartY + doorH/2).translateZ(dz));
+      const hzOff = di === 0 ? halfW * 0.35 : -halfW * 0.35;
+      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.04, 8), metalMat);
+      handle.rotation.z = Math.PI/2; handle.position.set(iD + 0.026, doorStartY + doorH/2, dz + hzOff); g.add(handle);
+    }
+  }
+
+  // Felt doors (position based on cfg.doorsPos)
+  if (cfg.doors === 'felt') {
+    const doorH = 0.83, doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const feltMat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.95, metalness: 0 });
+    const halfW = (shelfW - 0.008) / 2;
+    for (let di = 0; di < 2; di++) {
+      const dz = sideT + halfW/2 + di * (halfW + 0.008);
+      const door = new THREE.Mesh(new THREE.BoxGeometry(0.018, doorH - 0.01, halfW), feltMat);
+      door.position.set(iD + 0.009, doorStartY + doorH/2, dz); door.castShadow = true; g.add(door);
+      const tabMat = new THREE.MeshStandardMaterial({ color: 0x8b5e3c, roughness: 0.7 });
+      const hzOff = di === 0 ? halfW * 0.35 : -halfW * 0.35;
+      const tab = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.06, 0.025), tabMat);
+      tab.position.set(iD + 0.022, doorStartY + doorH/2, dz + hzOff); g.add(tab);
+    }
+  }
+
+  // Mesh doors (position based on cfg.doorsPos)
+  if (cfg.doors === 'mesh') {
+    const doorH = 0.83, doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const meshMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3, metalness: 0.85 });
+    const fT = 0.022;
+    [[0.012,fT,shelfW,iD+0.008,doorStartY+fT/2,iW/2],[0.012,fT,shelfW,iD+0.008,doorStartY+doorH-fT/2,iW/2],
+     [0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,sideT+fT/2],[0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,iW-sideT-fT/2],
+     [0.012,doorH,0.012,iD+0.008,doorStartY+doorH/2,iW/2]].forEach(([w,h,d,x,y,z])=>{
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w,h,d),meshMat).translateX(x).translateY(y).translateZ(z));
+    });
+    const gridSp=0.032, iH2=doorH-2*fT, iW2=shelfW-2*fT;
+    for(let gy=fT+gridSp;gy<doorH-fT;gy+=gridSp){const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,iW2,4),meshMat);w.rotation.x=Math.PI/2;w.position.set(iD+0.008,doorStartY+gy,iW/2);g.add(w);}
+    for(let gz=sideT+fT+gridSp;gz<iW-sideT-fT;gz+=gridSp){if(Math.abs(gz-iW/2)<0.008)continue;const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,iH2,4),meshMat);w.position.set(iD+0.008,doorStartY+doorH/2,gz);g.add(w);}
+    for(const side of [-1,1])g.add(new THREE.Mesh(new THREE.BoxGeometry(0.010,0.010,0.05),meshMat).translateX(iD+0.020).translateY(doorStartY+doorH/2).translateZ(iW/2+side*0.04));
+  }
+
+  // Mesh doors sage green (position based on cfg.doorsPos)
+  if (cfg.doors === 'meshgreen') {
+    const doorH = 0.83, doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const mgMat = new THREE.MeshStandardMaterial({ color: 0x8aaa7a, roughness: 0.3, metalness: 0.85 });
+    const fT = 0.022;
+    [[0.012,fT,shelfW,iD+0.008,doorStartY+fT/2,iW/2],[0.012,fT,shelfW,iD+0.008,doorStartY+doorH-fT/2,iW/2],
+     [0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,sideT+fT/2],[0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,iW-sideT-fT/2],
+     [0.012,doorH,0.012,iD+0.008,doorStartY+doorH/2,iW/2]].forEach(([w,h,d,x,y,z])=>{
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mgMat).translateX(x).translateY(y).translateZ(z));
+    });
+    const gridSp=0.032, iH2=doorH-2*fT, iW2=shelfW-2*fT;
+    for(let gy=fT+gridSp;gy<doorH-fT;gy+=gridSp){const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,iW2,4),mgMat);w.rotation.x=Math.PI/2;w.position.set(iD+0.008,doorStartY+gy,iW/2);g.add(w);}
+    for(let gz=sideT+fT+gridSp;gz<iW-sideT-fT;gz+=gridSp){if(Math.abs(gz-iW/2)<0.008)continue;const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,iH2,4),mgMat);w.position.set(iD+0.008,doorStartY+doorH/2,gz);g.add(w);}
+    for(const side of [-1,1])g.add(new THREE.Mesh(new THREE.BoxGeometry(0.010,0.010,0.05),mgMat).translateX(iD+0.020).translateY(doorStartY+doorH/2).translateZ(iW/2+side*0.04));
+  }
+
+  // Container on wheels (pojemnik z kolkami)
+  if (cfg.container) {
+    const cW = 0.78, cD = cfg.depth - 0.02, cH = 0.37, cY = shelfT + 0.005;
+    const containerMat = new THREE.MeshStandardMaterial({ color: 0xdeb887, roughness: 0.7, metalness: 0.05 });
+    const cBox = new THREE.Mesh(new THREE.BoxGeometry(cD, cH - 0.04, cW), containerMat);
+    cBox.position.set(iD/2, cY + (cH - 0.04)/2 + 0.04, iW/2); cBox.castShadow = true; g.add(cBox);
+    const rimMat = new THREE.MeshStandardMaterial({ color: 0xc49b60, roughness: 0.8 });
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(cD - 0.04, 0.02, cW - 0.04), rimMat).translateX(iD/2).translateY(cY + cH - 0.02).translateZ(iW/2));
+    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.4, metalness: 0.5 });
+    for (const [wx, wz] of [[-cD/2+0.05,-cW/2+0.05],[-cD/2+0.05,cW/2-0.05],[cD/2-0.05,-cW/2+0.05],[cD/2-0.05,cW/2-0.05]]) {
+      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.015, 8), wheelMat);
+      wheel.rotation.x = Math.PI/2; wheel.position.set(iD/2 + wx, cY + 0.018, iW/2 + wz); g.add(wheel);
+    }
+  }
+
+  // Hooks
+  if (cfg.hooks) {
+    const hookMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.3, metalness: 0.7 });
+    for (let hi = 0; hi < 3; hi++) {
+      const hy = 0.5 + hi * 0.40; if (hy > iH - 0.15) break;
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.05, 0.012), hookMat).translateX(iD/2).translateY(hy).translateZ(iW + 0.007));
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.012, 0.05), hookMat).translateX(iD/2).translateY(hy - 0.02).translateZ(iW + 0.032));
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(0.008, 6, 4), hookMat).translateX(iD/2).translateY(hy - 0.02).translateZ(iW + 0.055));
+    }
+  }
+
+  // Rail
+  if (cfg.rail) {
+    const railY = secH * 2 + 0.20;
+    if (railY < iH - 0.1) {
+      const rm = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, shelfW, 8), metalMat);
+      rm.rotation.x = Math.PI/2; rm.position.set(iD * 0.7, railY, iW/2); g.add(rm);
+      for (const sz of [sideT + 0.01, iW - sideT - 0.01])
+        g.add(new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 0.015), metalMat).translateX(iD * 0.7).translateY(railY).translateZ(sz));
+    }
+  }
+
+  g.position.set(0.01, FLOOR_Y, 0.01);
+  scene.add(g);
+  ivarGroup = g;
+
+  // Label
+  const hCm = Math.round(cfg.height * 100), dCm = Math.round(cfg.depth * 100);
+  ivarLabelSprite = label(`IVAR 89x${dCm}x${hCm}`, 0.30, FLOOR_Y + cfg.height + 0.15, 0.50);
+
+  // Click zone
+  const price = calcIVARPrice(cfg);
+  const ikeaUrl = ivarIkeaLinks[cfg.height] || ivarIkeaLinks[1.79];
+  ivarClickZoneMesh = addClickZone(iD/2 + 0.01, FLOOR_Y + cfg.height/2, iW/2 + 0.01, iD + 0.08, cfg.height, iW, {
+    name: `IKEA IVAR 89x${dCm}x${hCm} cm`,
+    links: [
+      { store: 'IKEA', price: price + ' zl', url: ikeaUrl },
+      { store: 'Allegro', price: '~400-600 zl', url: `https://allegro.pl/listing?string=ikea%20ivar%2089x${dCm}x${hCm}` }
+    ]
+  });
+
+  document.getElementById('ivar-price-display').textContent = price + ' zl';
+  document.getElementById('ivar-info-line').innerHTML = `IKEA IVAR 89x${dCm}x${hCm} cm <span class="price">${price} zl</span>`;
+  document.getElementById('total-display').textContent = `SUMA: ~${OTHER_COSTS + price} zl`;
+  document.getElementById('ivar-ikea-link').href = ikeaUrl;
+}
+
+// ===================== KETER COMFY =====================
+function createKeterComfy(x, z) {
+  const g = new THREE.Group();
+  const keterMat = new THREE.MeshStandardMaterial({ color: 0x5d4037, roughness: 0.8, metalness: 0.05 });
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.17, 0.50, 0.45), keterMat); body.position.set(0, 0.25, 0); body.castShadow = true; g.add(body);
+  const lid = new THREE.Mesh(new THREE.BoxGeometry(1.17, 0.04, 0.45), new THREE.MeshStandardMaterial({color:0x6d4c41,roughness:0.7})); lid.position.set(0, 0.52, 0); lid.castShadow = true; g.add(lid);
+  const lineMat = new THREE.MeshStandardMaterial({ color: 0x4e342e, roughness: 0.9 });
+  for (let i = -4; i <= 4; i++) g.add(new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.005, 0.005), lineMat).translateY(0.10 + i * 0.05).translateZ(0.226));
+  const cush = new THREE.Mesh(new THREE.BoxGeometry(1.10, 0.06, 0.40), new THREE.MeshStandardMaterial({color:0x78909c,roughness:0.9})); cush.position.set(0, 0.57, 0); cush.castShadow = true; g.add(cush);
+  g.position.set(x, FLOOR_Y, z); scene.add(g);
+}
+createKeterComfy(0.89 + 0.585 + 0.05, 0.225);
+
+// ===================== KADAX HANGING TABLE =====================
+function createHangingTable(xCenter) {
+  const g = new THREE.Group(); const t = xCenter / L; const z = lerpW(t);
+  const metalMat2 = new THREE.MeshStandardMaterial({ color: 0x78909c, roughness: 0.3, metalness: 0.7 });
+  const topMat = new THREE.MeshStandardMaterial({ color: 0xeceff1, roughness: 0.5 });
+  const top = new THREE.Mesh(new THREE.BoxGeometry(0.60, 0.025, 0.40), topMat); top.position.set(0, H_rail + 0.02, -0.22); top.castShadow = true; g.add(top);
+  for (const sx of [-0.25, 0.25]) {
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.15, 0.025), metalMat2).translateX(sx).translateY(H_rail - 0.05).translateZ(0.02));
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.025, 0.08), metalMat2).translateX(sx).translateY(H_rail + 0.01).translateZ(-0.01));
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.025, 0.40), metalMat2).translateX(sx).translateY(H_rail).translateZ(-0.22));
+  }
+  g.position.set(xCenter, 0, z); scene.add(g);
+}
+createHangingTable(4.10);
+
+// ===================== LAWENDA =====================
+function createFloorPlanter(x, z, rotY) {
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(0.60, 0.25, 0.25), new THREE.MeshStandardMaterial({color:0x5a5a5a,roughness:0.8})).translateY(0.125));
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.03, 0.21), new THREE.MeshStandardMaterial({color:0x4a3520,roughness:1})).translateY(0.24));
+  const lavMat = new THREE.MeshStandardMaterial({ color: 0x7b5eae, roughness: 0.9 });
+  const leafMat = new THREE.MeshStandardMaterial({ color: 0x6b8e6b, roughness: 0.9 });
+  for (let i = -2; i <= 2; i++) {
+    const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), leafMat); leaf.position.set(i*0.12, 0.32, 0); leaf.scale.y = 1.8; g.add(leaf);
+    g.add(new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.10, 6), lavMat).translateX(i*0.12).translateY(0.48 + Math.random()*0.04));
+  }
+  g.position.set(x, FLOOR_Y, z); g.rotation.y = rotY || 0; scene.add(g);
+}
+createFloorPlanter(0.85, 0.15, Math.PI/2);
+createFloorPlanter(4.30, 0.15, 0);
+
+// ===================== BLUSZCZ =====================
+function createIvy() {
+  const ivyLeafMat = new THREE.MeshStandardMaterial({ color: 0x2e7d32, roughness: 0.8, side: THREE.DoubleSide });
+  const ivyDarkMat = new THREE.MeshStandardMaterial({ color: 0x1b5e20, roughness: 0.85, side: THREE.DoubleSide });
+  const vineMat = new THREE.MeshStandardMaterial({ color: 0x33691e, roughness: 0.7 });
+  const ig = new THREE.Group();
+  for (let i = 0; i < 80; i++) {
+    const lx=RECESS_END+Math.random()*WALL_RIGHT, ly=Math.random()*H_wall*0.85+0.3, lz=-0.02+Math.random()*0.15;
+    const leaf = new THREE.Mesh(new THREE.PlaneGeometry(0.04+Math.random()*0.05, 0.05+Math.random()*0.06), Math.random()>0.4?ivyLeafMat:ivyDarkMat);
+    leaf.position.set(lx,ly,lz); leaf.rotation.set(Math.random()*0.5,Math.random()*Math.PI*2,Math.random()*0.3); ig.add(leaf);
+  }
+  for (let v = 0; v < 5; v++) {
+    const vx=RECESS_END+0.1+Math.random()*(WALL_RIGHT-0.2), pts=[];
+    for (let p=0;p<8;p++) pts.push(new THREE.Vector3(vx+(Math.random()-0.5)*0.1,p*0.3+0.2,0.01+Math.random()*0.05));
+    ig.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),12,0.005,4,false),vineMat));
+  }
+  for (let i = 0; i < 40; i++) {
+    const t=0.75+Math.random()*0.25, lx=t*L, lz=lerpW(t)+(Math.random()-0.5)*0.1, ly=H_rail+Math.random()*(H_wall-H_rail)*0.6;
+    const leaf = new THREE.Mesh(new THREE.PlaneGeometry(0.03+Math.random()*0.04,0.04+Math.random()*0.05), Math.random()>0.3?ivyLeafMat:ivyDarkMat);
+    leaf.position.set(lx,ly,lz); leaf.rotation.set(Math.random()*0.5,Math.random()*Math.PI*2,Math.random()*0.3); ig.add(leaf);
+  }
+  for (let v = 0; v < 4; v++) {
+    const startT=0.78+Math.random()*0.2, pts=[];
+    for (let p=0;p<6;p++){const t=startT-p*0.03; pts.push(new THREE.Vector3(t*L,H_rail+(H_wall-H_rail)*(0.7-p*0.1)+(Math.random()-0.5)*0.1,lerpW(t)+(Math.random()-0.5)*0.05));}
+    ig.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),10,0.004,4,false),vineMat));
+  }
+  scene.add(ig);
+}
+createIvy();
+
+// ===================== LABELS =====================
+function label(text, x, y, z, scale) {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 80;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.roundRect(0,0,512,80,10); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 30px Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, 256, 40);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true }));
+  s.position.set(x, y, z); s.scale.set(scale || 0.9, 0.15, 1); scene.add(s); return s;
+}
+label('Skrzynia Keter (lawka)', 1.52, 0.95, 0.225);
+label('Stolik KADAX wiszacy', 4.10, 1.1, lerpW(4.10/L) - 0.15);
+label('Lawenda', 0.85, 0.85, 0.15);
+label('Lawenda', 4.30, 0.85, 0.15);
+label('Bluszcz', RECESS_END + WALL_RIGHT/2, 1.8, 0.1);
+
+// Ground + buildings
+scene.add(new THREE.Mesh(new THREE.PlaneGeometry(40,40), new THREE.MeshStandardMaterial({color:0x5a8a4a,roughness:1})).translateY(-25).rotateX(-Math.PI/2));
+for (let i=0;i<8;i++){const bw=2+Math.random()*3,bh=5+Math.random()*15,bd=2+Math.random()*3;
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(bw,bh,bd),new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(0.1,0.1,0.5+Math.random()*0.2),roughness:0.8})).translateX(-10+Math.random()*30).translateY(-25+bh/2).translateZ(8+Math.random()*15));}
+
+// ===================== CLICKABLE ZONES =====================
+const clickZones = [];
+function addClickZone(x, y, z, w, h, d, data) {
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
+  mesh.position.set(x,y,z); mesh.userData = data; scene.add(mesh); clickZones.push(mesh); return mesh;
+}
+
+// Build initial IVAR
+updateSectionSelectors();
+buildIVAR(getIVARConfig());
+
+addClickZone(1.52, FLOOR_Y+0.30, 0.225, 1.20, 0.60, 0.50, {
+  name: 'Skrzynia Keter Comfy 117x45x57.5 (270L)', links: [
+    { store:'Castorama', price:'248 zl', url:'https://www.castorama.pl/skrzynia-keter-comfy-117-x-45-x-57-5-cm-270-l-brazowa/7290106930179_CAPL.prd' },
+    { store:'Allegro', price:'~220-280 zl', url:'https://allegro.pl/listing?string=keter%20comfy%20270l' },
+    { store:'Amazon', price:'~240-300 zl', url:'https://www.amazon.pl/s?k=keter+comfy+270l' }
+  ]
+});
+addClickZone(4.10, H_rail+0.03, lerpW(4.10/L)-0.20, 0.65, 0.10, 0.45, {
+  name: 'Stolik KADAX wiszacy na balustrade 60x40', links: [
+    { store:'Castorama', price:'~80 zl', url:'https://www.castorama.pl/departments/st-balkonowy-kadax-stolik-sk-adany-wisz-cy-metal-bia-y-1szt-/5903699431320_CAPL.prd' },
+    { store:'Allegro', price:'~60-100 zl', url:'https://allegro.pl/listing?string=stolik%20balkonowy%20wiszacy%20na%20balustrade' }
+  ]
+});
+addClickZone(L/2, FLOOR_Y-0.01, W_wall/2, L, 0.05, W_wall, {
+  name: 'Podest tarasowy drewniany 30x30 cm (~55 szt)', links: [
+    { store:'Castorama', price:'~50 zl/4szt', url:'https://www.castorama.pl/podest-tarasowy-goodhome-30-x-30-cm-akacja-4-szt-/5059340066035_CAPL.prd' },
+    { store:'Allegro', price:'~126 zl/30szt', url:'https://allegro.pl/listing?string=podest%20tarasowy%20akacja%2030x30' }
+  ]
+});
+addClickZone(0.85, FLOOR_Y+0.30, 0.15, 0.65, 0.60, 0.30, {
+  name: 'Lawenda + donica podlogowa', links: [
+    { store:'Castorama (lawenda)', price:'~20 zl/6szt', url:'https://www.castorama.pl/lawenda-doniczka-9-cm-6-pak/5907714354137_CAPL.prd' },
+    { store:'Castorama (donica)', price:'~40 zl', url:'https://www.castorama.pl/donica-balkonowa-berberis-60-cm-antracyt/8590415011224_CAPL.prd' }
+  ]
+});
+addClickZone(RECESS_END+WALL_RIGHT/2, H_wall/2, 0.05, WALL_RIGHT+0.2, H_wall, 0.30, {
+  name: 'Bluszcz pospolity + kratka', links: [
+    { store:'Castorama (bluszcz)', price:'~15-25 zl/szt', url:'https://www.castorama.pl/bluszcz-pospolity-verve-2-l/5059340414539_CAPL.prd' },
+    { store:'Castorama (kratka)', price:'~30-50 zl', url:'https://www.castorama.pl/kratka-do-pnaczy-180-x-90-cm/3663602430728_CAPL.prd' }
+  ]
+});
+
+// ===================== RAYCASTER =====================
+const raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2(); let clickStart = new THREE.Vector2();
+renderer.domElement.addEventListener('pointerdown', e => clickStart.set(e.clientX, e.clientY));
+renderer.domElement.addEventListener('pointerup', e => {
+  if (Math.hypot(e.clientX-clickStart.x, e.clientY-clickStart.y) > 5) return;
+  mouse.set((e.clientX/innerWidth)*2-1, -(e.clientY/innerHeight)*2+1);
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(clickZones);
+  if (hits.length > 0) {
+    const data = hits[0].object.userData, popup = document.getElementById('popup'), content = document.getElementById('popup-content');
+    let html = `<h3>${data.name}</h3>`;
+    data.links.forEach(l => html += `<a href="${l.url}" target="_blank"><span class="store">${l.store}</span> — <span class="price-tag">${l.price}</span></a>`);
+    content.innerHTML = html; popup.style.display = 'block';
+    popup.style.left = Math.min(e.clientX+10, innerWidth-380)+'px';
+    popup.style.top = Math.min(e.clientY+10, innerHeight-200)+'px';
+  } else document.getElementById('popup').style.display = 'none';
+});
+
+// ===================== CONFIGURATOR EVENTS =====================
+document.querySelectorAll('#ivar-config input').forEach(input => {
+  input.addEventListener('change', () => {
+    if (input.name === 'ivar-height') updateSectionSelectors();
+    buildIVAR(getIVARConfig());
+  });
+});
+document.querySelectorAll('#ivar-config select').forEach(sel => {
+  sel.addEventListener('change', () => buildIVAR(getIVARConfig()));
+});
+
+// ===================== ANIMATE =====================
+function animate() { requestAnimationFrame(animate); ctrl.update(); renderer.render(scene, camera); }
+animate();
+addEventListener('resize', () => { camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+</script>
+</body>
+</html>

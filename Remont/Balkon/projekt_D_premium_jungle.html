@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Projekt D - Miejska Dzungla | Balkon Premium 3D</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; background: #0a1a0a; font-family: 'Segoe UI', sans-serif; }
+  canvas { display: block; }
+  #info {
+    position: absolute; top: 16px; left: 16px;
+    background: rgba(10,25,10,0.88); color: #fff; padding: 16px 20px;
+    border-radius: 10px; font-size: 13px; line-height: 1.7;
+    backdrop-filter: blur(8px); max-width: 320px;
+    border: 1px solid rgba(100,200,100,0.2);
+  }
+  #info h2 { font-size: 15px; margin-bottom: 6px; color: #8fce8f; }
+  #info h3 { font-size: 13px; margin: 8px 0 4px; color: #a0d8a0; }
+  #info .dim { color: #bbb; font-size: 11.5px; }
+  #info .prod { color: #fff; font-size: 11.5px; }
+  #info .price { color: #ffd54f; font-size: 11.5px; font-weight: bold; }
+  #info .premium { color: #8fce8f; font-size: 10px; font-style: italic; margin-top: 6px; }
+  #controls {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: rgba(10,25,10,0.8); color: #fff; padding: 10px 20px;
+    border-radius: 8px; font-size: 12px; text-align: center;
+    backdrop-filter: blur(8px); border: 1px solid rgba(100,200,100,0.15);
+  }
+  #legend {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(10,25,10,0.88); color: #fff; padding: 14px 18px;
+    border-radius: 10px; font-size: 12px; line-height: 2;
+    backdrop-filter: blur(8px); border: 1px solid rgba(100,200,100,0.2);
+  }
+  #legend h3 { font-size: 13px; margin-bottom: 6px; color: #8fce8f; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  #popup {
+    display: none; position: absolute;
+    background: rgba(10,25,10,0.95); color: #fff; padding: 16px 20px;
+    border-radius: 12px; font-size: 13px; line-height: 1.8;
+    backdrop-filter: blur(10px); max-width: 360px; z-index: 100;
+    border: 1px solid rgba(100,200,100,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  }
+  #popup h3 { color: #8fce8f; margin-bottom: 6px; font-size: 14px; }
+  #popup a { color: #a0d8a0; text-decoration: none; display: block; padding: 3px 0; }
+  #popup a:hover { color: #c0f0c0; text-decoration: underline; }
+  #popup .close { position: absolute; top: 8px; right: 12px; cursor: pointer; color: #999; font-size: 18px; }
+  #popup .close:hover { color: #fff; }
+  #popup .price-tag { color: #ffd54f; font-weight: bold; }
+  #popup .store { color: #aaa; font-size: 11px; }
+  #mode-toggle {
+    position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%);
+    background: rgba(10,25,10,0.8); color: #8fce8f; padding: 8px 18px;
+    border-radius: 20px; font-size: 12px; cursor: pointer; border: 1px solid rgba(100,200,100,0.3);
+    transition: all 0.3s;
+  }
+  #mode-toggle:hover { background: rgba(20,40,20,0.9); color: #c0f0c0; }
+  /* IVAR Configurator - Jungle theme */
+  #ivar-config {
+    position: absolute; right: 16px; top: 280px;
+    background: rgba(10,25,10,0.90); color: #fff; padding: 14px 16px;
+    border-radius: 10px; font-size: 11.5px; line-height: 1.6;
+    backdrop-filter: blur(8px); width: 240px;
+    border: 1px solid rgba(100,200,100,0.3);
+    max-height: calc(100vh - 310px); overflow-y: auto;
+  }
+  #ivar-config h3 { font-size: 13px; margin-bottom: 8px; color: #8fce8f; }
+  #ivar-config .cfg-section { margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; }
+  #ivar-config .cfg-section:last-child { border-bottom: none; margin-bottom: 0; }
+  #ivar-config .cfg-label { color: #6aaa6a; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  #ivar-config label { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 2px 0; color: #ddd; }
+  #ivar-config label:hover { color: #fff; }
+  #ivar-config input[type="radio"], #ivar-config input[type="checkbox"] { accent-color: #8fce8f; width: 14px; height: 14px; cursor: pointer; }
+  #ivar-config .price-add { color: #ffd54f; font-size: 10px; margin-left: auto; }
+  #ivar-config .total-bar {
+    margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(143,206,143,0.3);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: bold;
+  }
+  #ivar-config .total-bar .total-price { color: #ffd54f; font-size: 15px; }
+  #ivar-config .btn-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+  #ivar-config .btn-row label {
+    background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 5px; font-size: 11px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  #ivar-config .btn-row label:has(input:checked) { background: rgba(143,206,143,0.25); color: #8fce8f; }
+  #ivar-config .btn-row input { display: none; }
+  #ivar-config .ikea-link { display: block; text-align: center; margin-top: 6px; color: #a0d8a0; text-decoration: none; font-size: 11px; }
+  #ivar-config .ikea-link:hover { color: #c0f0c0; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div id="info">
+  <h2>PROJEKT D - Miejska Dzungla</h2>
+  <div class="dim">Bujna zielen, boho, rosliny wszedzie, ciepla ambiance</div>
+  <h3>Meble i wyposazenie:</h3>
+  <div class="prod" id="ivar-info-line">IKEA IVAR 89x50x179 cm <span class="price">480 zl</span></div>
+  <div class="prod">Skrzynia Keter Comfy 270L (lawka) <span class="price">248 zl</span></div>
+  <div class="prod">Stolik KADAX wiszacy na balustrade <span class="price">~80 zl</span></div>
+  <h3>Oswietlenie:</h3>
+  <div class="prod">Girlanda solarna Lumiled 15 LED 2700K <span class="price">~90 zl</span></div>
+  <div class="prod">2x Latarenka solarna Bamboo 3000K <span class="price">~140 zl</span></div>
+  <h3>Tekstylia i dekoracje:</h3>
+  <div class="prod">Poduszka na lawke ~108x45 <span class="price">~60 zl</span></div>
+  <div class="prod">3x Wieszak makrama GoodHome <span class="price">~75 zl</span></div>
+  <div class="prod">2x Doniczka wiszaca KADAX 29.5cm <span class="price">~40 zl</span></div>
+  <h3>Rosliny:</h3>
+  <div class="prod">Lawenda, bluszcz x5, ziola, kratka <span class="price">~220 zl</span></div>
+  <div class="prod">Podest GoodHome akacja 30x30 ~55szt <span class="price">~650 zl</span></div>
+  <h3 style="color:#ffd54f" id="total-display">SUMA: ~2143 zl</h3>
+  <div class="premium">Premium = zielona oaza w centrum miasta</div>
+</div>
+<div id="legend">
+  <h3>Legenda</h3>
+  <div><span class="dot" style="background:#c8a86e"></span> Podloga drewniana 30x30</div>
+  <div><span class="dot" style="background:#deb887"></span> IVAR 50cm (sosna)</div>
+  <div><span class="dot" style="background:#6d4c41"></span> Keter Comfy (lawka+schowek)</div>
+  <div><span class="dot" style="background:#78909c"></span> Stolik wiszacy KADAX</div>
+  <div><span class="dot" style="background:#ffcc66"></span> Girlanda + latarenki</div>
+  <div><span class="dot" style="background:#4a8a4a"></span> Rosliny (ziola, paprocie)</div>
+  <div><span class="dot" style="background:#7b5eae"></span> Lawenda</div>
+  <div><span class="dot" style="background:#2e7d32"></span> Bluszcz + makramy</div>
+</div>
+<div id="popup"><span class="close" onclick="document.getElementById('popup').style.display='none'">&times;</span><div id="popup-content"></div></div>
+<div id="mode-toggle" onclick="toggleMode()">Tryb: Wieczor</div>
+<div id="controls">LPM = obrot | Scroll = zoom | PPM = przesuniecie | Kliknij na element = linki zakupowe</div>
+
+<div id="ivar-config">
+  <h3>IVAR Konfigurator</h3>
+  <div class="cfg-section">
+    <div class="cfg-label">Wysokosc</div>
+    <div class="btn-row">
+      <label><input type="radio" name="ivar-height" value="1.24"> 124cm</label>
+      <label><input type="radio" name="ivar-height" value="1.79" checked> 179cm</label>
+      <label><input type="radio" name="ivar-height" value="2.26"> 226cm</label>
+    </div>
+  </div>
+  <div class="cfg-section">
+    <div class="cfg-label">Szuflada</div>
+    <label><input type="checkbox" id="ivar-drawer"> Szuflada drewniana <span class="price-add">+130 zl</span></label>
+    <label style="margin-left:20px;font-size:10px;color:#8fce8f">Sekcja: <select id="ivar-drawer-pos" style="background:#222;color:#fff;border:1px solid #555;border-radius:3px;padding:1px 4px;font-size:10px;accent-color:#8fce8f">
+      <option value="0">1 (dol)</option><option value="1">2</option><option value="2">3</option><option value="3">4</option>
+    </select></label>
+  </div>
+  <div class="cfg-section">
+    <div class="cfg-label">Drzwi / szafka</div>
+    <label><input type="radio" name="ivar-doors" value="none" checked> Brak</label>
+    <label><input type="radio" name="ivar-doors" value="wood"> Drewniane sosna <span class="price-add">+235 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="felt"> Filcowe ciemnoszare <span class="price-add">+230 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="mesh"> Siatkowe czarne <span class="price-add">+400 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="meshgreen"> Siatkowe zielone <span class="price-add">+400 zl</span></label>
+    <label style="margin-top:4px;font-size:10px;color:#8fce8f">Sekcja drzwi: <select id="ivar-doors-pos" style="background:#222;color:#fff;border:1px solid #555;border-radius:3px;padding:1px 4px;font-size:10px;accent-color:#8fce8f">
+      <option value="0">1 (dol)</option><option value="1">2</option><option value="2">3</option>
+    </select></label>
+  </div>
+  <div class="cfg-section">
+    <div class="cfg-label">Dodatki</div>
+    <label><input type="checkbox" id="ivar-hooks"> Haki 3 szt. <span class="price-add">+10 zl</span></label>
+    <label><input type="checkbox" id="ivar-bottle"> Polka na butelki <span class="price-add">+50 zl</span></label>
+    <label><input type="checkbox" id="ivar-rail"> Drazek (wieszak) <span class="price-add">+8 zl</span></label>
+    <label><input type="checkbox" id="ivar-container"> Pojemnik z kolkami <span class="price-add">+170 zl</span></label>
+  </div>
+  <div class="total-bar">
+    <span>IVAR:</span>
+    <span class="total-price" id="ivar-price-display">480 zl</span>
+  </div>
+  <a class="ikea-link" id="ivar-ikea-link" href="https://www.ikea.com/pl/pl/p/ivar-regal-sosna-s39407070/" target="_blank">Zobacz na IKEA.pl</a>
+</div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const scene = new THREE.Scene();
+let isEvening = true;
+const eveningBg = new THREE.Color(0x0a1520);
+const dayBg = new THREE.Color(0x87CEEB);
+scene.background = eveningBg;
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(3.5, 3.0, 5.5);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(devicePixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.7;
+document.body.appendChild(renderer.domElement);
+
+const ctrl = new OrbitControls(camera, renderer.domElement);
+ctrl.enableDamping = true; ctrl.dampingFactor = 0.05;
+ctrl.target.set(2.3, 0.8, 0.5);
+
+const ambient = new THREE.AmbientLight(0x1a2a1a, 0.35);
+scene.add(ambient);
+const sun = new THREE.DirectionalLight(0xffd0a0, 0.25);
+sun.position.set(5, 4, 3); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 0.1; sun.shadow.camera.far = 30;
+sun.shadow.camera.left = -8; sun.shadow.camera.right = 8;
+sun.shadow.camera.top = 8; sun.shadow.camera.bottom = -8;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0x204020, 0.15);
+fill.position.set(-3, 4, -2); scene.add(fill);
+const hemi = new THREE.HemisphereLight(0x0a1520, 0x1a2a10, 0.25);
+scene.add(hemi);
+
+const wallMat = new THREE.MeshStandardMaterial({ color: 0xd4c8b0, roughness: 0.9 });
+const ceilMat = new THREE.MeshStandardMaterial({ color: 0xe8e0d0, roughness: 0.85 });
+const railMat = new THREE.MeshStandardMaterial({ color: 0x4a3228, roughness: 0.4, metalness: 0.8 });
+const panelMat = new THREE.MeshStandardMaterial({ color: 0xc17a40, roughness: 0.6, metalness: 0.3 });
+const pcvMat = new THREE.MeshStandardMaterial({ color: 0xf0f0f0, roughness: 0.3, metalness: 0.1 });
+const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x88bbdd, roughness: 0.05, transparent: true, opacity: 0.3, transmission: 0.6 });
+const netMat = new THREE.MeshStandardMaterial({ color: 0xc8c864, roughness: 0.6, metalness: 0.2, transparent: true, opacity: 0.15, side: THREE.DoubleSide, wireframe: true });
+
+const L = 4.65, W_wall = 1.07, W_rail = 0.99, H_rail = 0.80, H_wall = 2.60, H_slab = 0.17;
+const RECESS_START = 1.69, RECESS_WIDTH = 2.26, RECESS_DEPTH = 0.30;
+const RECESS_END = RECESS_START + RECESS_WIDTH, WALL_RIGHT = L - RECESS_END, WT = 0.20;
+
+// ===================== WOOD DECK TILES FLOOR =====================
+function createWoodFloor() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512; canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+  const tileSize = 512 / 4;
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      const x = col * tileSize, y = row * tileSize;
+      const horizontal = (row + col) % 2 === 0;
+      const slats = 6;
+      for (let s = 0; s < slats; s++) {
+        const hue = 25 + Math.random() * 10;
+        const light = 55 + Math.random() * 15;
+        ctx.fillStyle = `hsl(${hue}, 50%, ${light}%)`;
+        if (horizontal) ctx.fillRect(x+1, y+s*(tileSize/slats)+1, tileSize-2, tileSize/slats-2);
+        else ctx.fillRect(x+s*(tileSize/slats)+1, y+1, tileSize/slats-2, tileSize-2);
+      }
+      ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, tileSize, tileSize);
+    }
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(L/1.2, W_wall/1.2);
+  return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.05 });
+}
+
+const woodFloorMat = createWoodFloor();
+const floorShape = new THREE.Shape();
+floorShape.moveTo(0,0); floorShape.lineTo(L,0); floorShape.lineTo(L,W_rail); floorShape.lineTo(0,W_wall); floorShape.closePath();
+const woodFloor = new THREE.Mesh(new THREE.ExtrudeGeometry(floorShape,{depth:0.025,bevelEnabled:false}), woodFloorMat);
+woodFloor.rotation.x = -Math.PI/2; woodFloor.position.y = H_slab+0.025; woodFloor.receiveShadow = true; scene.add(woodFloor);
+const slabMat = new THREE.MeshStandardMaterial({ color: 0x6d6d6d, roughness: 0.95 });
+const slab = new THREE.Mesh(new THREE.ExtrudeGeometry(floorShape,{depth:H_slab,bevelEnabled:false}), slabMat);
+slab.rotation.x = -Math.PI/2; slab.receiveShadow = true; scene.add(slab);
+const FLOOR_Y = H_slab + 0.025;
+
+// ===================== WALLS =====================
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(RECESS_START,H_wall,WT), wallMat).translateX(RECESS_START/2).translateY(H_wall/2).translateZ(-WT/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(WALL_RIGHT,H_wall,WT), wallMat).translateX(RECESS_END+WALL_RIGHT/2).translateY(H_wall/2).translateZ(-WT/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(RECESS_WIDTH,H_wall,WT), wallMat).translateX(RECESS_START+RECESS_WIDTH/2).translateY(H_wall/2).translateZ(-RECESS_DEPTH-WT/2));
+const rsGeo = new THREE.BoxGeometry(WT,H_wall,RECESS_DEPTH);
+scene.add(new THREE.Mesh(rsGeo, wallMat).translateX(RECESS_START-WT/2).translateY(H_wall/2).translateZ(-RECESS_DEPTH/2));
+scene.add(new THREE.Mesh(rsGeo.clone(), wallMat).translateX(RECESS_END+WT/2).translateY(H_wall/2).translateZ(-RECESS_DEPTH/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(RECESS_WIDTH,0.1,RECESS_DEPTH), ceilMat).translateX(RECESS_START+RECESS_WIDTH/2).translateY(H_wall-0.05).translateZ(-RECESS_DEPTH/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(WT,H_wall,W_wall), wallMat).translateX(-WT/2).translateY(H_wall/2).translateZ(W_wall/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(WT,H_wall,W_wall*0.3), wallMat).translateX(L+WT/2).translateY(H_wall/2).translateZ(W_wall*0.15));
+const cs = new THREE.Shape();
+cs.moveTo(0,0); cs.lineTo(L,0); cs.lineTo(L,W_rail); cs.lineTo(0,W_wall); cs.closePath();
+const ceil = new THREE.Mesh(new THREE.ExtrudeGeometry(cs,{depth:0.15,bevelEnabled:false}), ceilMat);
+ceil.rotation.x=-Math.PI/2; ceil.position.y=H_wall; ceil.receiveShadow=true; scene.add(ceil);
+
+// ===================== DOOR & WINDOW =====================
+const RZ = -RECESS_DEPTH;
+function mkDoor(x,z,w,h) {
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(w,h,0.08), pcvMat).translateX(x).translateY(h/2).translateZ(z));
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(w-0.08,h*0.55-0.06,0.02), glassMat).translateX(x).translateY(h-h*0.55/2-0.03).translateZ(z));
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(w-0.08,h*0.40-0.06,0.02), glassMat).translateX(x).translateY(h*0.40/2+0.03).translateZ(z));
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(w,0.05,0.06), pcvMat).translateX(x).translateY(h*0.42).translateZ(z));
+  const il = new THREE.PointLight(0xffe8c0, 0.4, 3);
+  il.position.set(x, h*0.6, z-0.3); scene.add(il);
+}
+mkDoor(RECESS_START+0.45, RZ, 0.90, 2.10);
+function mkDblWin(x,z,tw,h,sy) {
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(tw,h,0.08), pcvMat).translateX(x).translateY(sy+h/2).translateZ(z));
+  const pw=(tw-0.12)/2;
+  for (let i=0;i<2;i++) {
+    const off=i===0?-(pw+0.02)/2:(pw+0.02)/2;
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(pw,h-0.08,0.02), glassMat).translateX(x+off).translateY(sy+h/2).translateZ(z));
+  }
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.04,h,0.06), pcvMat).translateX(x).translateY(sy+h/2).translateZ(z));
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(tw+0.08,0.04,0.15), pcvMat).translateX(x).translateY(sy).translateZ(z+0.06));
+  if(sy>0.1) scene.add(new THREE.Mesh(new THREE.BoxGeometry(tw,sy,0.08), wallMat).translateX(x).translateY(sy/2).translateZ(z));
+}
+mkDblWin(RECESS_START+0.90+0.65+0.06, RZ, 1.30, 1.40, 0.80);
+
+// ===================== RAILING =====================
+function lerpW(t) { return W_wall + (W_rail-W_wall)*t; }
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,H_rail,W_wall),new THREE.Vector3(L,H_rail,W_rail)),20,0.02,8,false), railMat));
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,0.05,W_wall),new THREE.Vector3(L,0.05,W_rail)),20,0.015,8,false), railMat));
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,H_rail*0.55,W_wall),new THREE.Vector3(L,H_rail*0.55,W_rail)),20,0.015,8,false), railMat));
+for (let i=0;i<=24;i++) {
+  const t=i/24, x=t*L, z=lerpW(t);
+  const p=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,H_rail,8), railMat);
+  p.position.set(x,H_rail/2,z); p.castShadow=true; scene.add(p);
+}
+for (let i=0;i<24;i+=2) {
+  const t1=i/24,t2=(i+2)/24; if(t2>1)break;
+  const x1=t1*L,x2=t2*L,z1=lerpW(t1),z2=lerpW(t2);
+  const pan=new THREE.Mesh(new THREE.BoxGeometry(x2-x1-0.02,H_rail*0.5,0.01), panelMat);
+  pan.position.set((x1+x2)/2,H_rail*0.3,(z1+z2)/2);
+  pan.rotation.y=-Math.atan2(z2-z1,x2-x1); scene.add(pan);
+}
+const netH=H_wall-H_rail;
+scene.add(new THREE.Mesh(new THREE.PlaneGeometry(L,netH,40,20), netMat).translateX(L/2).translateY(H_rail+netH/2).translateZ((W_wall+W_rail)/2));
+
+// ===================== GIRLANDA SOLARNA LED (Lumiled 2700K) =====================
+const stringLightBulbs = [], stringLightPLs = [];
+{
+  const cblMat = new THREE.MeshStandardMaterial({color:0x222222,roughness:0.8});
+  const blbMat = new THREE.MeshStandardMaterial({color:0xffeedd,emissive:0xffaa44,emissiveIntensity:3.0,roughness:0.2,transparent:true,opacity:0.9});
+  const pts = [];
+  for (let i=0;i<=40;i++) {
+    const t=i/40, x=t*L;
+    const z = 0.10 + t*0.35 + Math.sin(t*Math.PI)*0.20;
+    const sag = Math.sin(t*Math.PI)*0.12;
+    pts.push(new THREE.Vector3(x, H_wall-0.30-sag, z));
+  }
+  const crv = new THREE.CatmullRomCurve3(pts);
+  scene.add(new THREE.Mesh(new THREE.TubeGeometry(crv,60,0.004,4,false), cblMat));
+  for (let i=0;i<15;i++) {
+    const t=(i+0.5)/15, pos=crv.getPoint(t);
+    const b = new THREE.Mesh(new THREE.SphereGeometry(0.025,8,6), blbMat.clone());
+    b.position.copy(pos); b.position.y-=0.03; scene.add(b); stringLightBulbs.push(b);
+    scene.add(new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.015,0.02,6), cblMat).translateX(pos.x).translateY(pos.y-0.005).translateZ(pos.z));
+    if (i%3===0) {
+      const pl = new THREE.PointLight(0xffaa44, 0.25, 1.5);
+      pl.position.copy(pos); pl.position.y-=0.05; scene.add(pl); stringLightPLs.push(pl);
+    }
+  }
+}
+
+// ===================== IVAR CONFIGURATOR =====================
+const IVAR_DEPTH = 0.50;
+const IVAR_WIDTH = 0.89;
+let ivarGroup = null;
+let ivarClickZoneMesh = null;
+let ivarLabelSprite = null;
+
+const ivarBasePrice = { 1.24: 330, 1.79: 480, 2.26: 580 };
+const ivarIkeaLinks = {
+  1.24: 'https://www.ikea.com/pl/pl/cat/wszystkie-elementy-ivar-11705/',
+  1.79: 'https://www.ikea.com/pl/pl/p/ivar-regal-sosna-s39407070/',
+  2.26: 'https://www.ikea.com/pl/pl/cat/wszystkie-elementy-ivar-11705/'
+};
+const ivarAddons = { drawer: 130, doorsWood: 235, doorsFelt: 230, doorsMesh: 400, doorsMeshGreen: 400, hooks: 10, bottleShelf: 50, rail: 8, container: 170 };
+// Keter(248)+KADAX(80)+girlanda(90)+2xlatarenka(140)+poduszka(60)+3xmakrama(75)+2xKADAX doniczka(40)+rosliny(220)+podest(650)
+const OTHER_COSTS = 248 + 80 + 90 + 140 + 60 + 75 + 40 + 220 + 650;
+
+function getIVARConfig() {
+  return {
+    height: parseFloat(document.querySelector('input[name="ivar-height"]:checked').value),
+    depth: IVAR_DEPTH,
+    drawer: document.getElementById('ivar-drawer').checked,
+    drawerPos: parseInt(document.getElementById('ivar-drawer-pos').value),
+    doors: document.querySelector('input[name="ivar-doors"]:checked').value,
+    doorsPos: parseInt(document.getElementById('ivar-doors-pos').value),
+    hooks: document.getElementById('ivar-hooks').checked,
+    bottleShelf: document.getElementById('ivar-bottle').checked,
+    rail: document.getElementById('ivar-rail').checked,
+    container: document.getElementById('ivar-container').checked,
+  };
+}
+
+function updateSectionSelectors() {
+  const h = parseFloat(document.querySelector('input[name="ivar-height"]:checked').value);
+  const nShelves = h <= 1.30 ? 4 : h <= 1.85 ? 5 : 6;
+  const nSections = nShelves - 1;
+  const drawerSel = document.getElementById('ivar-drawer-pos');
+  const doorsSel = document.getElementById('ivar-doors-pos');
+  const prevDrawer = drawerSel.value;
+  drawerSel.innerHTML = '';
+  for (let i = 0; i < nSections; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = (i + 1) + (i === 0 ? ' (dol)' : i === nSections - 1 ? ' (gora)' : '');
+    drawerSel.appendChild(opt);
+  }
+  drawerSel.value = Math.min(parseInt(prevDrawer) || 0, nSections - 1);
+  const prevDoors = doorsSel.value;
+  doorsSel.innerHTML = '';
+  const maxDoorPos = Math.max(0, nSections - 2);
+  for (let i = 0; i <= maxDoorPos; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = (i + 1) + (i === 0 ? ' (dol)' : '');
+    doorsSel.appendChild(opt);
+  }
+  doorsSel.value = Math.min(parseInt(prevDoors) || 0, maxDoorPos);
+}
+
+function calcIVARPrice(cfg) {
+  let p = ivarBasePrice[cfg.height] || 480;
+  if (cfg.drawer) p += ivarAddons.drawer;
+  if (cfg.doors === 'wood') p += ivarAddons.doorsWood;
+  if (cfg.doors === 'felt') p += ivarAddons.doorsFelt;
+  if (cfg.doors === 'mesh') p += ivarAddons.doorsMesh;
+  if (cfg.doors === 'meshgreen') p += ivarAddons.doorsMeshGreen;
+  if (cfg.hooks) p += ivarAddons.hooks;
+  if (cfg.bottleShelf) p += ivarAddons.bottleShelf;
+  if (cfg.rail) p += ivarAddons.rail;
+  if (cfg.container) p += ivarAddons.container;
+  return p;
+}
+
+function buildIVAR(cfg) {
+  // Clean up old
+  if (ivarGroup) { scene.remove(ivarGroup); ivarGroup.traverse(c => { if (c.geometry) c.geometry.dispose(); if (c.material) { if (Array.isArray(c.material)) c.material.forEach(m=>m.dispose()); else c.material.dispose(); } }); }
+  if (ivarClickZoneMesh) { scene.remove(ivarClickZoneMesh); const idx = clickZones.indexOf(ivarClickZoneMesh); if (idx >= 0) clickZones.splice(idx, 1); }
+  if (ivarLabelSprite) scene.remove(ivarLabelSprite);
+
+  const g = new THREE.Group();
+  const pineMat = new THREE.MeshStandardMaterial({ color: 0xdeb887, roughness: 0.7, metalness: 0.05 });
+  const pineDoorMat = new THREE.MeshStandardMaterial({ color: 0xd4ad7a, roughness: 0.65, metalness: 0.05 });
+  const metalMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.3, metalness: 0.8 });
+  const braceMat = new THREE.MeshStandardMaterial({ color: 0xc0a070, roughness: 0.6 });
+  const sideT = 0.03, shelfT = 0.02;
+  const iW = IVAR_WIDTH, iD = cfg.depth, iH = cfg.height;
+  const shelfW = iW - 2 * sideT;
+
+  let nShelves = iH <= 1.30 ? 4 : iH <= 1.85 ? 5 : 6;
+  const secH = (iH - shelfT) / (nShelves - 1);
+
+  // --- Side panels ---
+  for (const s of [0, iW - sideT]) {
+    const side = new THREE.Mesh(new THREE.BoxGeometry(iD, iH, sideT), pineMat);
+    side.position.set(iD/2, iH/2, s + sideT/2);
+    side.castShadow = true; g.add(side);
+  }
+
+  // --- Shelves ---
+  for (let i = 0; i < nShelves; i++) {
+    const sy = i * secH;
+    if (cfg.bottleShelf && i === 2) {
+      const bMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.3, metalness: 0.6 });
+      const base = new THREE.Mesh(new THREE.BoxGeometry(iD - 0.02, shelfT, shelfW), bMat);
+      base.position.set(iD/2, sy + shelfT/2, iW/2); g.add(base);
+      for (let d = 0; d < 7; d++) {
+        const dz = sideT + 0.06 + d * (shelfW - 0.12) / 6;
+        const div = new THREE.Mesh(new THREE.BoxGeometry(iD - 0.04, 0.06, 0.003), bMat);
+        div.position.set(iD/2, sy + shelfT + 0.03, dz); g.add(div);
+      }
+      const front = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.06, shelfW), bMat);
+      front.position.set(iD - 0.01, sy + shelfT + 0.03, iW/2); g.add(front);
+      continue;
+    }
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(iD, shelfT, shelfW), pineMat);
+    shelf.position.set(iD/2, sy + shelfT/2, iW/2);
+    shelf.castShadow = true; g.add(shelf);
+  }
+
+  // --- Cross brace ---
+  const braceLen = Math.sqrt(iH*iH + (iW-0.06)*(iW-0.06));
+  for (const d of [1, -1]) {
+    const brace = new THREE.Mesh(new THREE.BoxGeometry(0.02, braceLen, 0.02), braceMat);
+    brace.position.set(0.01, iH/2, iW/2);
+    brace.rotation.x = d * Math.atan2(iH, iW - 0.06);
+    g.add(brace);
+  }
+
+  // --- Drawer (position based on cfg.drawerPos) ---
+  if (cfg.drawer) {
+    const dH = 0.17;
+    const drawerBaseY = cfg.drawerPos * secH + shelfT + 0.005;
+    const dY = drawerBaseY + dH/2;
+    const front = new THREE.Mesh(new THREE.BoxGeometry(0.018, dH, shelfW + 0.002), pineDoorMat);
+    front.position.set(iD + 0.009, dY, iW/2); g.add(front);
+    const boxMat = new THREE.MeshStandardMaterial({ color: 0xc89b65, roughness: 0.8 });
+    const box = new THREE.Mesh(new THREE.BoxGeometry(iD - 0.05, dH - 0.02, shelfW - 0.02), boxMat);
+    box.position.set(iD/2 - 0.01, dY, iW/2); g.add(box);
+    const handle = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.012, 0.10), metalMat);
+    handle.position.set(iD + 0.024, dY, iW/2); g.add(handle);
+  }
+
+  // --- Wooden doors (position based on cfg.doorsPos) ---
+  if (cfg.doors === 'wood') {
+    const doorH = 0.83;
+    const doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const halfW = (shelfW - 0.008) / 2;
+    for (let di = 0; di < 2; di++) {
+      const dz = sideT + halfW/2 + di * (halfW + 0.008);
+      const door = new THREE.Mesh(new THREE.BoxGeometry(0.018, doorH - 0.01, halfW), pineDoorMat);
+      door.position.set(iD + 0.009, doorStartY + doorH/2, dz); door.castShadow = true; g.add(door);
+      const inset = new THREE.Mesh(new THREE.BoxGeometry(0.003, doorH * 0.6, halfW * 0.7),
+        new THREE.MeshStandardMaterial({ color: 0xc9a066, roughness: 0.7 }));
+      inset.position.set(iD + 0.020, doorStartY + doorH/2, dz); g.add(inset);
+      const hzOff = di === 0 ? halfW * 0.35 : -halfW * 0.35;
+      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.04, 8), metalMat);
+      handle.rotation.z = Math.PI/2;
+      handle.position.set(iD + 0.026, doorStartY + doorH/2, dz + hzOff); g.add(handle);
+    }
+  }
+
+  // --- Felt doors (position based on cfg.doorsPos) ---
+  if (cfg.doors === 'felt') {
+    const doorH = 0.83;
+    const doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const feltMat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.95, metalness: 0 });
+    const halfW = (shelfW - 0.008) / 2;
+    for (let di = 0; di < 2; di++) {
+      const dz = sideT + halfW/2 + di * (halfW + 0.008);
+      const door = new THREE.Mesh(new THREE.BoxGeometry(0.018, doorH - 0.01, halfW), feltMat);
+      door.position.set(iD + 0.009, doorStartY + doorH/2, dz); door.castShadow = true; g.add(door);
+      const tabMat = new THREE.MeshStandardMaterial({ color: 0x8b5e3c, roughness: 0.7 });
+      const hzOff = di === 0 ? halfW * 0.35 : -halfW * 0.35;
+      const tab = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.06, 0.025), tabMat);
+      tab.position.set(iD + 0.022, doorStartY + doorH/2, dz + hzOff); g.add(tab);
+    }
+  }
+
+  // --- Mesh doors (position based on cfg.doorsPos) ---
+  if (cfg.doors === 'mesh') {
+    const doorH = 0.83;
+    const doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const meshMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3, metalness: 0.85 });
+    const fT = 0.022;
+    const bars = [
+      [0.012, fT, shelfW, iD+0.008, doorStartY + fT/2, iW/2],
+      [0.012, fT, shelfW, iD+0.008, doorStartY + doorH - fT/2, iW/2],
+      [0.012, doorH, fT, iD+0.008, doorStartY + doorH/2, sideT + fT/2],
+      [0.012, doorH, fT, iD+0.008, doorStartY + doorH/2, iW - sideT - fT/2],
+      [0.012, doorH, 0.012, iD+0.008, doorStartY + doorH/2, iW/2],
+    ];
+    bars.forEach(([w,h,d,x,y,z]) => {
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w,h,d), meshMat).translateX(x).translateY(y).translateZ(z));
+    });
+    const gridSp = 0.032;
+    for (let gy = fT + gridSp; gy < doorH - fT; gy += gridSp) {
+      const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.001, 0.001, shelfW - 2*fT, 4), meshMat);
+      wire.rotation.x = Math.PI/2; wire.position.set(iD + 0.008, doorStartY + gy, iW/2); g.add(wire);
+    }
+    for (let gz = sideT + fT + gridSp; gz < iW - sideT - fT; gz += gridSp) {
+      if (Math.abs(gz - iW/2) < 0.008) continue;
+      const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.001, 0.001, doorH - 2*fT, 4), meshMat);
+      wire.position.set(iD + 0.008, doorStartY + doorH/2, gz); g.add(wire);
+    }
+    for (const side of [-1, 1])
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.010, 0.010, 0.05), meshMat).translateX(iD + 0.020).translateY(doorStartY + doorH/2).translateZ(iW/2 + side * 0.04));
+  }
+
+  // --- Mesh doors sage green (position based on cfg.doorsPos) ---
+  if (cfg.doors === 'meshgreen') {
+    const doorH = 0.83;
+    const doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const mgMat = new THREE.MeshStandardMaterial({ color: 0x8aaa7a, roughness: 0.3, metalness: 0.85 });
+    const fT = 0.022;
+    [[0.012,fT,shelfW,iD+0.008,doorStartY+fT/2,iW/2],[0.012,fT,shelfW,iD+0.008,doorStartY+doorH-fT/2,iW/2],
+     [0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,sideT+fT/2],[0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,iW-sideT-fT/2],
+     [0.012,doorH,0.012,iD+0.008,doorStartY+doorH/2,iW/2]].forEach(([w,h,d,x,y,z])=>{
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mgMat).translateX(x).translateY(y).translateZ(z));
+    });
+    const gridSp=0.032;
+    for(let gy=fT+gridSp;gy<doorH-fT;gy+=gridSp){const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,shelfW-2*fT,4),mgMat);w.rotation.x=Math.PI/2;w.position.set(iD+0.008,doorStartY+gy,iW/2);g.add(w);}
+    for(let gz=sideT+fT+gridSp;gz<iW-sideT-fT;gz+=gridSp){if(Math.abs(gz-iW/2)<0.008)continue;const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,doorH-2*fT,4),mgMat);w.position.set(iD+0.008,doorStartY+doorH/2,gz);g.add(w);}
+    for(const side of [-1,1])g.add(new THREE.Mesh(new THREE.BoxGeometry(0.010,0.010,0.05),mgMat).translateX(iD+0.020).translateY(doorStartY+doorH/2).translateZ(iW/2+side*0.04));
+  }
+
+  // --- Container on wheels ---
+  if (cfg.container) {
+    const cW = 0.78, cD = cfg.depth - 0.02, cH = 0.37, cY = shelfT + 0.005;
+    const containerMat = new THREE.MeshStandardMaterial({ color: 0xdeb887, roughness: 0.7, metalness: 0.05 });
+    const cBox = new THREE.Mesh(new THREE.BoxGeometry(cD, cH - 0.04, cW), containerMat);
+    cBox.position.set(iD/2, cY + (cH - 0.04)/2 + 0.04, iW/2); cBox.castShadow = true; g.add(cBox);
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(cD - 0.04, 0.02, cW - 0.04), new THREE.MeshStandardMaterial({color:0xc49b60,roughness:0.8})).translateX(iD/2).translateY(cY + cH - 0.02).translateZ(iW/2));
+    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.4, metalness: 0.5 });
+    for (const [wx, wz] of [[-cD/2+0.05,-cW/2+0.05],[-cD/2+0.05,cW/2-0.05],[cD/2-0.05,-cW/2+0.05],[cD/2-0.05,cW/2-0.05]]) {
+      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.015, 8), wheelMat);
+      wheel.rotation.x = Math.PI/2; wheel.position.set(iD/2 + wx, cY + 0.018, iW/2 + wz); g.add(wheel);
+    }
+  }
+
+  // --- Hooks ---
+  if (cfg.hooks) {
+    const hookMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.3, metalness: 0.7 });
+    for (let hi = 0; hi < 3; hi++) {
+      const hy = 0.5 + hi * 0.40;
+      if (hy > iH - 0.15) break;
+      const hv = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.05, 0.012), hookMat);
+      hv.position.set(iD/2, hy, iW + 0.007); g.add(hv);
+      const hh = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.012, 0.05), hookMat);
+      hh.position.set(iD/2, hy - 0.02, iW + 0.032); g.add(hh);
+      const tip = new THREE.Mesh(new THREE.SphereGeometry(0.008, 6, 4), hookMat);
+      tip.position.set(iD/2, hy - 0.02, iW + 0.055); g.add(tip);
+    }
+  }
+
+  // --- Rail ---
+  if (cfg.rail) {
+    const railY = secH * 2 + 0.20;
+    if (railY < iH - 0.1) {
+      const railMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, shelfW, 8), metalMat);
+      railMesh.rotation.x = Math.PI/2;
+      railMesh.position.set(iD * 0.7, railY, iW/2); g.add(railMesh);
+      for (const sz of [sideT + 0.01, iW - sideT - 0.01]) {
+        const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 0.015), metalMat);
+        bracket.position.set(iD * 0.7, railY, sz); g.add(bracket);
+      }
+    }
+  }
+
+  // =================== PLANTS ON SHELVES (Urban Jungle!) ===================
+  const plantLeaf = new THREE.MeshStandardMaterial({color:0x3a7a3a,roughness:0.8,side:THREE.DoubleSide});
+  const plantDark = new THREE.MeshStandardMaterial({color:0x1a5a1a,roughness:0.85,side:THREE.DoubleSide});
+  const potTerra = new THREE.MeshStandardMaterial({color:0xc17a50,roughness:0.8});
+  const potWhite = new THREE.MeshStandardMaterial({color:0xe8e0d0,roughness:0.7});
+  const soilM = new THREE.MeshStandardMaterial({color:0x4a3520,roughness:1});
+
+  // Shelf 1: herbs in terracotta pots (only if not bottle shelf)
+  if (nShelves > 1 && !(cfg.bottleShelf && 1 === 2)) {
+    const shelfY1 = 1 * secH + shelfT;
+    for (let j = 0; j < 3; j++) {
+      const pg = new THREE.Group();
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.06, 8), potTerra);
+      pot.position.y = 0.03; pg.add(pot);
+      const soil = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.01, 8), soilM);
+      soil.position.y = 0.065; pg.add(soil);
+      for (let k = 0; k < 8; k++) {
+        const lf = new THREE.Mesh(new THREE.PlaneGeometry(0.03, 0.04), k%2===0 ? plantLeaf : plantDark);
+        const a = k/8 * Math.PI * 2;
+        lf.position.set(Math.cos(a)*0.025, 0.09+Math.random()*0.04, Math.sin(a)*0.025);
+        lf.rotation.set(-0.3+Math.random()*0.3, a, 0); pg.add(lf);
+      }
+      pg.position.set(0.12+j*0.14, shelfY1, 0.20+j*0.22);
+      g.add(pg);
+    }
+  }
+
+  // Shelf 2: trailing pothos (only if not bottle shelf on that index)
+  if (nShelves > 2 && !(cfg.bottleShelf && 2 === 2)) {
+    const shelfY2 = 2 * secH + shelfT;
+    const pg = new THREE.Group();
+    const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.04, 0.08, 8), potWhite);
+    pot.position.y = 0.04; pg.add(pot);
+    for (let k = 0; k < 15; k++) {
+      const lf = new THREE.Mesh(new THREE.PlaneGeometry(0.035, 0.045), k%3===0 ? plantDark : plantLeaf);
+      const trail = k * 0.04;
+      lf.position.set(0.20+Math.sin(k*0.8)*0.05, -trail*0.5+0.06, Math.cos(k*0.8)*0.05);
+      lf.rotation.set(Math.random()*0.5, Math.random()*Math.PI, Math.random()*0.3); pg.add(lf);
+    }
+    pg.position.set(0.25, shelfY2, 0.45);
+    g.add(pg);
+  }
+
+  // Shelf 3: succulents (only if shelf exists)
+  if (nShelves > 3) {
+    const shelfY3 = 3 * secH + shelfT;
+    for (let j = 0; j < 4; j++) {
+      const sg = new THREE.Group();
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.022, 0.03, 6), j%2===0 ? potTerra : potWhite);
+      pot.position.y = 0.015; sg.add(pot);
+      const succ = new THREE.Mesh(new THREE.SphereGeometry(0.02, 6, 4),
+        new THREE.MeshStandardMaterial({color: j%2===0 ? 0x5a8a5a : 0x7aaa6a, roughness:0.8}));
+      succ.position.y = 0.04; succ.scale.y = 0.7; sg.add(succ);
+      sg.position.set(0.12+j*0.08, shelfY3, 0.15+j*0.18);
+      g.add(sg);
+    }
+  }
+
+  // Top shelf: lantern
+  {
+    const topShelfY = (nShelves - 1) * secH + shelfT;
+    const bambooMat = new THREE.MeshStandardMaterial({ color: 0xc4a35a, roughness: 0.7 });
+    const lanternGlowMat = new THREE.MeshStandardMaterial({
+      color: 0xffeedd, emissive: 0xffaa44, emissiveIntensity: 2.5, transparent: true, opacity: 0.7
+    });
+    const lBase = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.07, 0.02, 8), bambooMat);
+    lBase.position.set(iD/2, topShelfY + 0.01, 0.44); g.add(lBase);
+    const lBody = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.06, 0.15, 8), bambooMat);
+    lBody.position.set(iD/2, topShelfY + 0.095, 0.44); g.add(lBody);
+    const lGlow = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 6), lanternGlowMat);
+    lGlow.position.set(iD/2, topShelfY + 0.10, 0.44); g.add(lGlow);
+    const lTop = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.04, 8), bambooMat);
+    lTop.position.set(iD/2, topShelfY + 0.19, 0.44); g.add(lTop);
+    const handleCurve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(iD/2 - 0.04, topShelfY + 0.17, 0.44),
+      new THREE.Vector3(iD/2, topShelfY + 0.25, 0.44),
+      new THREE.Vector3(iD/2 + 0.04, topShelfY + 0.17, 0.44)
+    );
+    const lHandle = new THREE.Mesh(new THREE.TubeGeometry(handleCurve, 8, 0.005, 4, false), bambooMat);
+    g.add(lHandle);
+    const lLight = new THREE.PointLight(0xffaa44, 0.35, 1.2);
+    lLight.position.set(iD/2, topShelfY + 0.10, 0.44); g.add(lLight);
+  }
+
+  // Position
+  g.position.set(0.01, FLOOR_Y, 0.01);
+  scene.add(g);
+  ivarGroup = g;
+
+  // Label
+  const hCm = Math.round(cfg.height * 100), dCm = Math.round(cfg.depth * 100);
+  ivarLabelSprite = label(`IVAR ${dCm}cm + rosliny`, 0.26, FLOOR_Y + cfg.height + 0.15, 0.50);
+
+  // Click zone
+  const price = calcIVARPrice(cfg);
+  const ikeaUrl = ivarIkeaLinks[cfg.height] || ivarIkeaLinks[1.79];
+  ivarClickZoneMesh = addClickZone(iD/2 + 0.01, FLOOR_Y + cfg.height/2, iW/2 + 0.01, iD + 0.08, cfg.height, iW, {
+    name: `IKEA IVAR 89x${dCm}x${hCm} cm`,
+    links: [
+      { store: 'IKEA', price: price + ' zl', url: ikeaUrl },
+      { store: 'Allegro', price: '~400-600 zl', url: `https://allegro.pl/listing?string=ikea%20ivar%2089x${dCm}x${hCm}` }
+    ]
+  });
+
+  // Update UI
+  document.getElementById('ivar-price-display').textContent = price + ' zl';
+  document.getElementById('ivar-info-line').innerHTML =
+    `IKEA IVAR 89x${dCm}x${hCm} cm <span class="price">${price} zl</span>`;
+  document.getElementById('total-display').textContent = `SUMA: ~${OTHER_COSTS + price} zl`;
+  document.getElementById('ivar-ikea-link').href = ikeaUrl;
+}
+
+// ===================== LATARENKA SOLARNA BAMBOO (floor) =====================
+{
+  const g = new THREE.Group();
+  const bm = new THREE.MeshStandardMaterial({color:0xc4a35a,roughness:0.7});
+  const gm = new THREE.MeshStandardMaterial({color:0xffeedd,emissive:0xffaa44,emissiveIntensity:2.5,transparent:true,opacity:0.7});
+  g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.07,0.02,8), bm).translateY(0.01));
+  g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.055,0.06,0.15,8), bm).translateY(0.095));
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(0.04,8,6), gm).translateY(0.10));
+  g.add(new THREE.Mesh(new THREE.ConeGeometry(0.05,0.04,8), bm).translateY(0.19));
+  const hc = new THREE.QuadraticBezierCurve3(new THREE.Vector3(-0.04,0.17,0),new THREE.Vector3(0,0.25,0),new THREE.Vector3(0.04,0.17,0));
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(hc,8,0.005,4,false), bm));
+  const ll = new THREE.PointLight(0xffaa44, 0.35, 1.2);
+  ll.position.y=0.10; g.add(ll);
+  g.position.set(2.70, FLOOR_Y, 0.15);
+  scene.add(g);
+}
+
+// ===================== SKRZYNIA KETER COMFY =====================
+{
+  const kg = new THREE.Group();
+  const km = new THREE.MeshStandardMaterial({color:0x5d4037,roughness:0.7,metalness:0.1});
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.17,0.575,0.45), km);
+  body.position.set(0,0.2875,0); body.castShadow=true; kg.add(body);
+  const lineMat = new THREE.MeshStandardMaterial({color:0x4a3228,roughness:0.8});
+  for (let i=0;i<5;i++) {
+    const line = new THREE.Mesh(new THREE.BoxGeometry(1.17,0.005,0.46), lineMat);
+    line.position.set(0, 0.08+i*0.12, 0); kg.add(line);
+  }
+  const lid = new THREE.Mesh(new THREE.BoxGeometry(1.17,0.04,0.45), km);
+  lid.position.set(0,0.595,0); kg.add(lid);
+  const cushMat = new THREE.MeshStandardMaterial({color:0x8b7355,roughness:0.9});
+  const cushion = new THREE.Mesh(new THREE.BoxGeometry(1.10,0.08,0.40), cushMat);
+  cushion.position.set(0,0.655,0); cushion.castShadow=true; kg.add(cushion);
+  const backCush1 = new THREE.Mesh(new THREE.BoxGeometry(0.35,0.35,0.08), cushMat);
+  backCush1.position.set(-0.30,0.85,-0.20); backCush1.rotation.x=0.15; kg.add(backCush1);
+  const backCush2 = new THREE.Mesh(new THREE.BoxGeometry(0.35,0.35,0.08),
+    new THREE.MeshStandardMaterial({color:0x6b8e6b,roughness:0.9}));
+  backCush2.position.set(0.15,0.85,-0.20); backCush2.rotation.x=0.15; kg.add(backCush2);
+  const backCush3 = new THREE.Mesh(new THREE.BoxGeometry(0.30,0.30,0.06),
+    new THREE.MeshStandardMaterial({color:0xc4a35a,roughness:0.9}));
+  backCush3.position.set(0.50,0.82,-0.20); backCush3.rotation.x=0.15; kg.add(backCush3);
+  kg.position.set(2.20, FLOOR_Y, 0.25);
+  scene.add(kg);
+}
+
+// ===================== STOLIK KADAX WISZACY =====================
+{
+  const sg = new THREE.Group();
+  const fm = new THREE.MeshStandardMaterial({color:0x78909c,roughness:0.3,metalness:0.6});
+  const tm = new THREE.MeshStandardMaterial({color:0xe0dcd0,roughness:0.5,metalness:0.1});
+  const top = new THREE.Mesh(new THREE.BoxGeometry(0.60,0.02,0.40), tm);
+  top.position.y = H_rail-0.05; top.castShadow=true; sg.add(top);
+  for (const sx of [-0.25,0.25]) {
+    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.02,0.20,0.02), fm);
+    arm.position.set(sx,H_rail-0.15,0); sg.add(arm);
+    const hook = new THREE.Mesh(new THREE.BoxGeometry(0.02,0.15,0.02), fm);
+    hook.position.set(sx,H_rail+0.025,-0.12); sg.add(hook);
+    const hBar = new THREE.Mesh(new THREE.BoxGeometry(0.02,0.02,0.14), fm);
+    hBar.position.set(sx,H_rail-0.05,-0.05); sg.add(hBar);
+  }
+  const tPos = 0.75;
+  sg.position.set(tPos*L, 0, lerpW(tPos));
+  scene.add(sg);
+}
+
+// ===================== MAKRAMY WISZACE (3x) =====================
+function createMacrame(x,y,z,plantType) {
+  const g = new THREE.Group();
+  const ropeMat = new THREE.MeshStandardMaterial({color:0xe8dcc8,roughness:0.9});
+  const potMat = new THREE.MeshStandardMaterial({color: plantType==='fern'?0xd4a574:0xc17a50, roughness:0.8});
+  const pMat = new THREE.MeshStandardMaterial({color: plantType==='fern'?0x2e7d32:0x4a8a4a, roughness:0.8, side:THREE.DoubleSide});
+  for (let i=0;i<4;i++) {
+    const a=(i/4)*Math.PI*2, rx=Math.cos(a)*0.05, rz=Math.sin(a)*0.05;
+    const pts=[new THREE.Vector3(0,0,0),new THREE.Vector3(rx*0.5,-0.08,rz*0.5),new THREE.Vector3(rx,-0.18,rz),new THREE.Vector3(rx*0.7,-0.25,rz*0.7)];
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),8,0.004,4,false), ropeMat));
+  }
+  g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.05,0.10,8), potMat).translateY(-0.27));
+  const leafCount = plantType==='fern' ? 20 : 12;
+  for (let i=0;i<leafCount;i++) {
+    const lf = new THREE.Mesh(new THREE.PlaneGeometry(plantType==='fern'?0.06:0.04, plantType==='fern'?0.08:0.06), pMat);
+    const a=Math.random()*Math.PI*2, r=0.06+Math.random()*(plantType==='fern'?0.15:0.08);
+    lf.position.set(Math.cos(a)*r, -0.25-Math.random()*(plantType==='fern'?0.25:0.15), Math.sin(a)*r);
+    lf.rotation.set(Math.random()*0.5-0.25,a,Math.random()*0.3);
+    g.add(lf);
+  }
+  g.position.set(x,y,z);
+  scene.add(g);
+}
+createMacrame(1.20, H_wall-0.05, 0.55, 'fern');
+createMacrame(2.00, H_wall-0.05, 0.65, 'pothos');
+createMacrame(3.50, H_wall-0.05, 0.60, 'fern');
+
+// ===================== DONICZKI WISZACE KADAX =====================
+function createHangingPot(x,y,z) {
+  const g = new THREE.Group();
+  const chainMat = new THREE.MeshStandardMaterial({color:0x666666,roughness:0.4,metalness:0.6});
+  const potMat = new THREE.MeshStandardMaterial({color:0xd4c8b0,roughness:0.7});
+  const pMat = new THREE.MeshStandardMaterial({color:0x3a8a3a,roughness:0.8,side:THREE.DoubleSide});
+  for (let i=0;i<3;i++) {
+    const a=(i/3)*Math.PI*2;
+    const pts=[new THREE.Vector3(0,0,0),new THREE.Vector3(Math.cos(a)*0.08,-0.12,Math.sin(a)*0.08)];
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(pts[0],pts[1]),4,0.003,4), chainMat));
+  }
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(0.10,8,6,0,Math.PI*2,0,Math.PI*0.6), potMat).translateY(-0.18));
+  for (let i=0;i<10;i++) {
+    const lf = new THREE.Mesh(new THREE.PlaneGeometry(0.035,0.05), pMat);
+    const a=Math.random()*Math.PI*2, r=0.08+Math.random()*0.10;
+    lf.position.set(Math.cos(a)*r,-0.18-Math.random()*0.20,Math.sin(a)*r);
+    lf.rotation.set(Math.random()*0.5,a,Math.random()*0.3); g.add(lf);
+  }
+  g.position.set(x,y,z); scene.add(g);
+}
+createHangingPot(0.80, H_wall-0.10, 0.70);
+createHangingPot(3.80, H_wall-0.10, 0.72);
+
+// ===================== LAWENDA =====================
+function createFloorPlanter(x,z,rotY) {
+  const g = new THREE.Group();
+  const potM = new THREE.MeshStandardMaterial({color:0x5a5a5a,roughness:0.8});
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(0.60,0.25,0.25), potM).translateY(0.125));
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(0.56,0.03,0.21), new THREE.MeshStandardMaterial({color:0x4a3520,roughness:1})).translateY(0.24));
+  const lavM = new THREE.MeshStandardMaterial({color:0x7b5eae,roughness:0.9});
+  const lfM = new THREE.MeshStandardMaterial({color:0x6b8e6b,roughness:0.9});
+  for (let i=-2;i<=2;i++) {
+    const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.05,8,6), lfM);
+    leaf.position.set(i*0.12, 0.32, 0); leaf.scale.y=1.8; g.add(leaf);
+    g.add(new THREE.Mesh(new THREE.ConeGeometry(0.025,0.10,6), lavM).translateX(i*0.12).translateY(0.48+Math.random()*0.04));
+  }
+  g.position.set(x,FLOOR_Y,z); g.rotation.y=rotY||0; scene.add(g);
+}
+createFloorPlanter(0.85, 0.15, Math.PI/2);
+createFloorPlanter(4.25, 0.15, 0);
+
+// ===================== HEAVY IVY =====================
+{
+  const ivyLeaf = new THREE.MeshStandardMaterial({color:0x2e7d32,roughness:0.8,side:THREE.DoubleSide});
+  const ivyDark = new THREE.MeshStandardMaterial({color:0x1b5e20,roughness:0.85,side:THREE.DoubleSide});
+  const ivyLight = new THREE.MeshStandardMaterial({color:0x4caf50,roughness:0.8,side:THREE.DoubleSide});
+  const vineM = new THREE.MeshStandardMaterial({color:0x33691e,roughness:0.7});
+  const ig = new THREE.Group();
+
+  for (let i=0;i<120;i++) {
+    const lx=RECESS_END+Math.random()*WALL_RIGHT;
+    const ly=Math.random()*H_wall*0.90+0.2;
+    const lz=-0.02+Math.random()*0.15;
+    const sz=0.04+Math.random()*0.06;
+    const mats=[ivyLeaf,ivyDark,ivyLight];
+    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2), mats[Math.floor(Math.random()*3)]);
+    lf.position.set(lx,ly,lz); lf.rotation.set(Math.random()*0.5,Math.random()*Math.PI*2,Math.random()*0.3);
+    ig.add(lf);
+  }
+  for (let v=0;v<8;v++) {
+    const vx=RECESS_END+0.05+Math.random()*(WALL_RIGHT-0.1);
+    const pts=[];
+    for (let p=0;p<10;p++) pts.push(new THREE.Vector3(vx+(Math.random()-0.5)*0.1,p*0.25+0.1,0.01+Math.random()*0.05));
+    ig.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),15,0.005,4,false), vineM));
+  }
+  for (let i=0;i<80;i++) {
+    const t=0.50+Math.random()*0.50;
+    const lx=t*L, lz=lerpW(t)+(Math.random()-0.5)*0.12;
+    const ly=H_rail+Math.random()*(H_wall-H_rail)*0.75;
+    const sz=0.03+Math.random()*0.05;
+    const mats=[ivyLeaf,ivyDark,ivyLight];
+    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2), mats[Math.floor(Math.random()*3)]);
+    lf.position.set(lx,ly,lz); lf.rotation.set(Math.random()*0.5,Math.random()*Math.PI*2,Math.random()*0.3);
+    ig.add(lf);
+  }
+  for (let v=0;v<8;v++) {
+    const startT=0.55+Math.random()*0.40;
+    const pts=[];
+    for (let p=0;p<8;p++) {
+      const t=startT-p*0.04;
+      pts.push(new THREE.Vector3(t*L,H_rail+(H_wall-H_rail)*(0.75-p*0.08)+(Math.random()-0.5)*0.1,lerpW(Math.max(0,t))+(Math.random()-0.5)*0.05));
+    }
+    ig.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),12,0.004,4,false), vineM));
+  }
+  for (let i=0;i<30;i++) {
+    const lx=Math.random()*RECESS_START*0.8+0.3;
+    const ly=1.0+Math.random()*1.5;
+    const lz=-0.02+Math.random()*0.10;
+    const sz=0.03+Math.random()*0.04;
+    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2), Math.random()>0.5?ivyLeaf:ivyDark);
+    lf.position.set(lx,ly,lz); lf.rotation.set(Math.random()*0.5,Math.random()*Math.PI*2,Math.random()*0.3);
+    ig.add(lf);
+  }
+  scene.add(ig);
+}
+
+// ===================== LABELS =====================
+function label(text,x,y,z,scale) {
+  const c=document.createElement('canvas'); c.width=512; c.height=80;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='rgba(10,25,10,0.75)'; ctx.roundRect(0,0,512,80,10); ctx.fill();
+  ctx.fillStyle='#8fce8f'; ctx.font='bold 28px Segoe UI'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(text,256,40);
+  const tex=new THREE.CanvasTexture(c);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
+  s.position.set(x,y,z); s.scale.set(scale||0.9,0.15,1); scene.add(s);
+  return s;
+}
+label('Keter Comfy', 2.20, 1.15, 0.25);
+label('Stolik KADAX', 0.75*L, 1.0, lerpW(0.75));
+label('Girlanda Lumiled', L/2, H_wall-0.10, 0.40);
+label('Latarenka Bamboo', 2.70, 0.55, 0.15);
+label('Makramy + rosliny', 2.00, H_wall-0.35, 0.65);
+label('Lawenda', 0.85, 0.85, 0.15);
+label('Bluszcz (gesty!)', RECESS_END+WALL_RIGHT/2, 1.8, 0.1);
+
+// Background
+const gnd=new THREE.Mesh(new THREE.PlaneGeometry(40,40), new THREE.MeshStandardMaterial({color:0x0a1a0a,roughness:1}));
+gnd.rotation.x=-Math.PI/2; gnd.position.y=-25; scene.add(gnd);
+for (let i=0;i<8;i++) {
+  const bw=2+Math.random()*3,bh=5+Math.random()*15,bd=2+Math.random()*3;
+  const bm=new THREE.Mesh(new THREE.BoxGeometry(bw,bh,bd),
+    new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(0.1,0.05,0.12+Math.random()*0.08),roughness:0.8}));
+  bm.position.set(-10+Math.random()*30,-25+bh/2,8+Math.random()*15); scene.add(bm);
+  for (let w=0;w<Math.floor(Math.random()*5)+2;w++) {
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(0.3,0.4),
+      new THREE.MeshStandardMaterial({color:0xffeebb,emissive:0xffcc66,emissiveIntensity:1.2}))
+      .translateX(bm.position.x+(Math.random()-0.5)*bw*0.6).translateY(bm.position.y+(Math.random()-0.5)*bh*0.6).translateZ(bm.position.z-bd/2-0.01));
+  }
+}
+
+// ===================== CLICKABLE ZONES =====================
+const clickZones = [];
+function addClickZone(x,y,z,w,h,d,data) {
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
+  m.position.set(x,y,z); m.userData=data; scene.add(m); clickZones.push(m);
+  return m;
+}
+
+// Build initial IVAR
+updateSectionSelectors();
+buildIVAR(getIVARConfig());
+
+addClickZone(2.20, FLOOR_Y+0.35, 0.25, 1.20, 0.70, 0.50, {
+  name: 'Skrzynia Keter Comfy 270L (lawka+schowek)',
+  links: [
+    {store:'Castorama',price:'248 zl',url:'https://www.castorama.pl/skrzynia-keter-comfy-117-x-45-x-57-5-cm-270-l-brazowa/7290106930179_CAPL.prd'},
+    {store:'Allegro',price:'~220-280 zl',url:'https://allegro.pl/listing?string=keter%20comfy%20270l'},
+    {store:'Amazon',price:'~240-300 zl',url:'https://www.amazon.pl/s?k=keter+comfy+270l'}
+  ]
+});
+
+addClickZone(0.75*L, H_rail-0.03, lerpW(0.75), 0.65, 0.25, 0.45, {
+  name: 'Stolik KADAX wiszacy na balustrade 60x40',
+  links: [
+    {store:'Castorama',price:'~80 zl',url:'https://www.castorama.pl/departments/st-balkonowy-kadax-stolik-sk-adany-wisz-cy-metal-bia-y-1szt-/5903699431320_CAPL.prd'},
+    {store:'Allegro',price:'~60-100 zl',url:'https://allegro.pl/listing?string=stolik%20balkonowy%20wiszacy%20na%20balustrade'},
+    {store:'Amazon',price:'~70-120 zl',url:'https://www.amazon.pl/s?k=stolik+balkonowy+wiszacy'}
+  ]
+});
+
+addClickZone(L/2, H_wall-0.35, 0.35, L*0.6, 0.30, 0.50, {
+  name: 'Girlanda solarna Lumiled 15 LED 2700K z pilotem IP65',
+  links: [
+    {store:'Castorama',price:'~90 zl',url:'https://www.castorama.pl/departments/girlanda-solarna-lumiled-ogrodowa-15x-led-ozdobne-ar-wki-10m-ip65-2700k-z-pilotem-1-szt-/5904422794736_CAPL.prd'},
+    {store:'Allegro',price:'~70-100 zl',url:'https://allegro.pl/listing?string=girlanda%20solarna%20LED%2015%20Lumiled'},
+    {store:'Amazon',price:'~80-110 zl',url:'https://www.amazon.pl/s?k=girlanda+solarna+LED+15+IP65'}
+  ]
+});
+
+addClickZone(2.70, FLOOR_Y+0.10, 0.15, 0.20, 0.30, 0.20, {
+  name: '2x Latarenka solarna Bamboo 3000K IP44',
+  links: [
+    {store:'Castorama',price:'~70 zl/szt',url:'https://www.castorama.pl/latarenka-solarna-bamboo-3000-k-ip44/5059340853734_CAPL.prd'},
+    {store:'Allegro',price:'~30-50 zl',url:'https://allegro.pl/listing?string=latarenka%20solarna%20bamboo'}
+  ]
+});
+
+addClickZone(2.00, H_wall-0.20, 0.65, 0.40, 0.40, 0.40, {
+  name: '3x Wieszak makrama GoodHome + doniczki',
+  links: [
+    {store:'Castorama (makrama)',price:'~20 zl/szt',url:'https://www.castorama.pl/wieszak-doniczkowy-goodhome-makrama-bialy/5059340327983_CAPL.prd'},
+    {store:'Castorama (doniczka KADAX)',price:'~20 zl/szt',url:'https://www.castorama.pl/departments/doniczka-wisz-ca-kadax-na-balkon-taras-misa-be-29-5cm-1-szt-/5903699434031_CAPL.prd'},
+    {store:'Allegro',price:'~15-25 zl',url:'https://allegro.pl/listing?string=makrama%20wieszak%20doniczkowy'}
+  ]
+});
+
+addClickZone(L/2, FLOOR_Y-0.01, W_wall/2, L, 0.05, W_wall, {
+  name: 'Podest tarasowy drewniany 30x30 cm (~55 szt)',
+  links: [
+    {store:'Castorama',price:'~50 zl/4szt',url:'https://www.castorama.pl/podest-tarasowy-goodhome-30-x-30-cm-akacja-4-szt-/5059340066035_CAPL.prd'},
+    {store:'Allegro',price:'~126 zl/30szt',url:'https://allegro.pl/listing?string=podest%20tarasowy%20akacja%2030x30'}
+  ]
+});
+
+addClickZone(0.85, FLOOR_Y+0.30, 0.15, 0.65, 0.60, 0.30, {
+  name: 'Lawenda + donica Berberis 60cm + bluszcz Verve',
+  links: [
+    {store:'Castorama (lawenda)',price:'~20 zl/6szt',url:'https://www.castorama.pl/lawenda-doniczka-9-cm-6-pak/5907714354137_CAPL.prd'},
+    {store:'Castorama (donica)',price:'~40 zl',url:'https://www.castorama.pl/donica-balkonowa-berberis-60-cm-antracyt/8590415011224_CAPL.prd'},
+    {store:'Castorama (bluszcz)',price:'~15-25 zl/szt',url:'https://www.castorama.pl/bluszcz-pospolity-verve-2-l/5059340414539_CAPL.prd'},
+    {store:'Castorama (kratka)',price:'~30-50 zl',url:'https://www.castorama.pl/kratka-do-pnaczy-180-x-90-cm/3663602430728_CAPL.prd'}
+  ]
+});
+
+addClickZone(RECESS_END+WALL_RIGHT/2, H_wall/2, 0.05, WALL_RIGHT+0.2, H_wall, 0.30, {
+  name: 'Bluszcz pospolity Verve 2L x5 + kratka',
+  links: [
+    {store:'Castorama (bluszcz)',price:'~15-25 zl/szt',url:'https://www.castorama.pl/bluszcz-pospolity-verve-2-l/5059340414539_CAPL.prd'},
+    {store:'Castorama (kratka)',price:'~30-50 zl',url:'https://www.castorama.pl/kratka-do-pnaczy-180-x-90-cm/3663602430728_CAPL.prd'},
+    {store:'Allegro',price:'~10-20 zl/szt',url:'https://allegro.pl/listing?string=bluszcz%20pospolity%20sadzonka'}
+  ]
+});
+
+// Raycaster
+const raycaster=new THREE.Raycaster(), mouse=new THREE.Vector2();
+let clickStart=new THREE.Vector2();
+renderer.domElement.addEventListener('pointerdown',(e)=>{clickStart.set(e.clientX,e.clientY);});
+renderer.domElement.addEventListener('pointerup',(e)=>{
+  if(Math.sqrt((e.clientX-clickStart.x)**2+(e.clientY-clickStart.y)**2)>5)return;
+  mouse.x=(e.clientX/innerWidth)*2-1; mouse.y=-(e.clientY/innerHeight)*2+1;
+  raycaster.setFromCamera(mouse,camera);
+  const hits=raycaster.intersectObjects(clickZones);
+  if(hits.length>0) {
+    const d=hits[0].object.userData;
+    const p=document.getElementById('popup'), c=document.getElementById('popup-content');
+    let h=`<h3>${d.name}</h3>`;
+    d.links.forEach(l=>{h+=`<a href="${l.url}" target="_blank"><span class="store">${l.store}</span> — <span class="price-tag">${l.price}</span></a>`;});
+    c.innerHTML=h; p.style.display='block';
+    p.style.left=Math.min(e.clientX+10,innerWidth-380)+'px';
+    p.style.top=Math.min(e.clientY+10,innerHeight-200)+'px';
+  } else document.getElementById('popup').style.display='none';
+});
+
+// ===================== CONFIGURATOR EVENTS =====================
+document.querySelectorAll('#ivar-config input').forEach(input => {
+  input.addEventListener('change', () => {
+    if (input.name === 'ivar-height') updateSectionSelectors();
+    buildIVAR(getIVARConfig());
+  });
+});
+document.querySelectorAll('#ivar-config select').forEach(sel => {
+  sel.addEventListener('change', () => buildIVAR(getIVARConfig()));
+});
+
+// Day/Evening toggle
+window.toggleMode = function() {
+  isEvening = !isEvening;
+  const btn = document.getElementById('mode-toggle');
+  if (isEvening) {
+    scene.background = eveningBg;
+    ambient.intensity = 0.35; ambient.color.setHex(0x1a2a1a);
+    sun.intensity = 0.25; sun.color.setHex(0xffd0a0);
+    fill.intensity = 0.15; hemi.intensity = 0.25;
+    renderer.toneMappingExposure = 0.7;
+    stringLightBulbs.forEach(b=>{b.material.emissiveIntensity=3.0;});
+    stringLightPLs.forEach(pl=>{pl.intensity=0.25;});
+    btn.textContent = 'Tryb: Wieczor';
+  } else {
+    scene.background = dayBg;
+    ambient.intensity = 0.6; ambient.color.setHex(0xffffff);
+    sun.intensity = 1.2; sun.color.setHex(0xffffff);
+    fill.intensity = 0.3; hemi.intensity = 0.1;
+    renderer.toneMappingExposure = 1.2;
+    stringLightBulbs.forEach(b=>{b.material.emissiveIntensity=0.1;});
+    stringLightPLs.forEach(pl=>{pl.intensity=0.02;});
+    btn.textContent = 'Tryb: Dzien';
+  }
+};
+
+let time=0;
+function animate() {
+  requestAnimationFrame(animate);
+  ctrl.update();
+  time+=0.016;
+  if(isEvening) stringLightBulbs.forEach((b,i)=>{b.material.emissiveIntensity=2.5+Math.sin(time*1.8+i*1.5)*0.5;});
+  renderer.render(scene,camera);
+}
+animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+</script>
+</body>
+</html>
