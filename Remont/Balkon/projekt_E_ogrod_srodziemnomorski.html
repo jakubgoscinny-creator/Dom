@@ -92,33 +92,38 @@
 <body>
 <div id="info">
   <h2>PROJEKT E - Ogrod Srodziemnomorski</h2>
-  <div class="dim">Pergole z bluszczem, stolik C-shape, lawka bambusowa</div>
+  <div class="dim">Pergola narozna, biurko stojace, fotel, lawka bambusowa</div>
   <h3>Meble i wyposazenie:</h3>
   <div class="prod" id="ivar-info-line">IKEA IVAR 89x50x226 cm (2x szafka+szuflada) <span class="price">1165 zl</span></div>
-  <div class="prod">COSTWAY stolik C-shape 60x40 <span class="price">244 zl</span></div>
+  <div class="prod">COSTWAY biurko regulowane <span class="price">244 zl</span></div>
+  <div class="prod">Fotel ogrodowy wygodny <span class="price">~350 zl</span></div>
   <div class="prod">Lawka bambusowa 90x33x43 <span class="price">~130 zl</span></div>
-  <div class="prod">2x Krzeslo JUMI skladane <span class="price">2x 99 zl</span></div>
   <h3>Pergola i rosliny:</h3>
-  <div class="prod">2x Krata GardenPlus+ 50x154 <span class="price">2x 159 zl</span></div>
-  <div class="prod">4x Bluszcz Verve 2L <span class="price">4x 25 zl</span></div>
-  <div class="prod">8x Lawenda + 2x donica ciezka <span class="price">~216 zl</span></div>
+  <div class="prod">2x Krata GardenPlus+ 50x154 (naroznik) <span class="price">2x 159 zl</span></div>
+  <div class="prod">6x Bluszcz Verve 2L <span class="price">6x 25 zl</span></div>
+  <div class="prod">4x Doniczki metalowe wiszace <span class="price">~80 zl</span></div>
+  <div class="prod">Rynna doniczkowa z bluszczem <span class="price">~60 zl</span></div>
+  <div class="prod">Lawenda + 2x donica okragla ciezka <span class="price">~200 zl</span></div>
+  <div class="prod">System nawadniania kroplowy <span class="price">~80 zl</span></div>
   <h3>Oswietlenie:</h3>
   <div class="prod">Girlanda SuperLED 550cm solarna <span class="price">50 zl</span></div>
+  <div class="prod">Lampki drobne LED 5m <span class="price">~30 zl</span></div>
   <div class="prod">Podest GoodHome akacja 30x30 ~52szt <span class="price">~650 zl</span></div>
-  <h3 style="color:#ffd54f" id="total-display">SUMA: ~3095 zl</h3>
+  <h3 style="color:#ffd54f" id="total-display">SUMA: ~3545 zl</h3>
   <div class="premium">Srodziemnomorski ogrod na 9. pietrze</div>
 </div>
 <div id="legend">
   <h3>Legenda</h3>
   <div><span class="dot" style="background:#c8a86e"></span> Podloga drewniana 30x30</div>
   <div><span class="dot" style="background:#deb887"></span> IVAR 50cm (sosna)</div>
-  <div><span class="dot" style="background:#8b6914"></span> COSTWAY C-stolik</div>
+  <div><span class="dot" style="background:#8b6914"></span> COSTWAY biurko stojace</div>
+  <div><span class="dot" style="background:#8b4513"></span> Fotel ogrodowy</div>
   <div><span class="dot" style="background:#c4a35a"></span> Lawka bambusowa</div>
-  <div><span class="dot" style="background:#444"></span> Krzesla JUMI</div>
-  <div><span class="dot" style="background:#333"></span> Kraty GardenPlus+</div>
-  <div><span class="dot" style="background:#2e7d32"></span> Bluszcz (pergola)</div>
-  <div><span class="dot" style="background:#7b5eae"></span> Lawenda (donice ciezkie)</div>
-  <div><span class="dot" style="background:#ffcc66"></span> Girlanda SuperLED</div>
+  <div><span class="dot" style="background:#333"></span> Kraty narozne (pergola)</div>
+  <div><span class="dot" style="background:#2e7d32"></span> Bluszcz / rosliny</div>
+  <div><span class="dot" style="background:#8a7060"></span> Doniczki metalowe wiszace</div>
+  <div><span class="dot" style="background:#7b5eae"></span> Lawenda (donice okragle)</div>
+  <div><span class="dot" style="background:#ffcc66"></span> Girlanda + lampki LED</div>
 </div>
 <div id="popup"><span class="close" onclick="document.getElementById('popup').style.display='none'">&times;</span><div id="popup-content"></div></div>
 <div id="mode-toggle" onclick="toggleMode()">Tryb: Wieczor</div>
@@ -361,8 +366,8 @@ const ivarIkeaLinks = {
   2.26: 'https://www.ikea.com/addon-app/storageone/ivar/web/latest/pl/pl/?storeId=429#/vpc/322WW54'
 };
 const ivarAddons = { drawer: 130, doorsWood: 430, doorsWood2: 860, doorsFelt: 230, doorsMesh: 400, doorsMeshGreen: 400, hooks: 10, bottleShelf: 50, rail: 8, container: 170 };
-// COSTWAY(244)+lawka(130)+2xJUMI(198)+2xkrata(318)+4xbluszcz(100)+lawenda+donice(216)+girlanda(50)+podest(650)
-const OTHER_COSTS = 244 + 130 + 198 + 318 + 100 + 216 + 50 + 650;
+// COSTWAY(244)+fotel(350)+lawka(130)+2xkrata(318)+6xbluszcz(150)+doniczki_wiszace(80)+rynna(60)+lawenda_donice(200)+nawadnianie(80)+girlanda(50)+lampki(30)+podest(650)
+const OTHER_COSTS = 244 + 350 + 130 + 318 + 150 + 80 + 60 + 200 + 80 + 50 + 30 + 650;
 
 function getIVARConfig() {
   return {
@@ -620,84 +625,92 @@ function buildIVAR(cfg) {
   document.getElementById('ivar-ikea-link').href = ikeaUrl;
 }
 
-// ===================== COSTWAY C-TABLE (60x40cm, adj height) =====================
+// ===================== COSTWAY STANDING DESK (regulowane, do pracy na stojaco) =====================
 {
   const tg = new THREE.Group();
-  const baseMat = new THREE.MeshStandardMaterial({color:0x333333,roughness:0.4,metalness:0.6});
+  const frameMat = new THREE.MeshStandardMaterial({color:0x333333,roughness:0.4,metalness:0.6});
   const topMat = new THREE.MeshStandardMaterial({color:0xdeb887,roughness:0.6,metalness:0.05});
-  // C-shape metal frame
-  const baseW=0.55,baseD=0.35,baseH=0.02;
-  tg.add(new THREE.Mesh(new THREE.BoxGeometry(baseD,baseH,baseW),baseMat).translateY(baseH/2));
-  // Vertical pole
-  const poleH=0.75;
-  tg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,poleH,8),baseMat).translateX(-baseD/2+0.04).translateY(baseH+poleH/2));
-  // Horizontal arm
-  const armD=0.38;
-  tg.add(new THREE.Mesh(new THREE.BoxGeometry(armD,0.02,0.03),baseMat).translateX(-baseD/2+0.04+armD/2).translateY(baseH+poleH));
+  // Base frame (X-shape feet)
+  const baseW=0.55,baseD=0.40;
+  for(const s of [-1,1]){
+    tg.add(new THREE.Mesh(new THREE.BoxGeometry(baseD-0.10,0.02,0.04),frameMat).translateY(0.01).translateZ(s*(baseW/2-0.06)));
+  }
+  // Central column (telescopic)
+  const colH=1.05;
+  tg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.035,colH,8),frameMat).translateY(colH/2));
+  tg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,colH*0.4,8),frameMat).translateY(colH*0.7));
   // Table top (60x40cm)
   const topW=0.60,topD=0.40,topH=0.025;
   const top=new THREE.Mesh(new THREE.BoxGeometry(topD,topH,topW),topMat);
-  top.position.set(0.05,baseH+poleH+topH/2,0);top.castShadow=true;tg.add(top);
-  // Cup holder ring
-  tg.add(new THREE.Mesh(new THREE.TorusGeometry(0.04,0.005,8,12),baseMat).translateX(0.15).translateY(baseH+poleH+0.02).translateZ(0.22).rotateX(Math.PI/2));
-  // Hidden wheels (small)
-  for(const[wx,wz]of[[-0.12,-0.22],[-0.12,0.22],[0.12,-0.22],[0.12,0.22]]){
-    tg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.01,6),baseMat).translateX(wx).translateY(0.006).translateZ(wz).rotateX(Math.PI/2));
+  top.position.set(0,colH+topH/2,0);top.castShadow=true;tg.add(top);
+  // Laptop placeholder
+  const laptopMat=new THREE.MeshStandardMaterial({color:0x555555,roughness:0.3,metalness:0.5});
+  tg.add(new THREE.Mesh(new THREE.BoxGeometry(0.22,0.008,0.30),laptopMat).translateY(colH+topH+0.004));
+  // Screen (open lid)
+  const screenMat=new THREE.MeshStandardMaterial({color:0x222222,roughness:0.2,metalness:0.4});
+  const screen=new THREE.Mesh(new THREE.BoxGeometry(0.005,0.18,0.30),screenMat);
+  screen.position.set(-0.08,colH+topH+0.10,0);screen.rotation.z=0.15;tg.add(screen);
+  // Height adjustment markers
+  for(let i=0;i<3;i++){
+    tg.add(new THREE.Mesh(new THREE.BoxGeometry(0.015,0.003,0.015),frameMat).translateY(0.50+i*0.18));
   }
-  tg.position.set(1.10, FLOOR_Y, 0.40);
+  tg.position.set(4.15, FLOOR_Y, 0.35);
   scene.add(tg);
 }
 
-// ===================== 2x KRATA GardenPlus+ 50x154cm (on wall with ivy) =====================
+// ===================== 2x KRATA GardenPlus+ 50x154cm (L-SHAPED CORNER) =====================
 const krataMat = new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:0.4,metalness:0.7});
-function createKrata(x, z) {
+const ivyLeafM = new THREE.MeshStandardMaterial({color:0x2e7d32,roughness:0.8,side:THREE.DoubleSide});
+const ivyDarkM = new THREE.MeshStandardMaterial({color:0x1b5e20,roughness:0.85,side:THREE.DoubleSide});
+const ivyLightM = new THREE.MeshStandardMaterial({color:0x4caf50,roughness:0.8,side:THREE.DoubleSide});
+const vineM = new THREE.MeshStandardMaterial({color:0x33691e,roughness:0.7});
+const ivyMats=[ivyLeafM,ivyDarkM,ivyLightM];
+
+function createKrataFlat(x, z, rotY) {
+  // Krata flat on wall (vertical bars along krata width, horizontal along height)
   const kg = new THREE.Group();
   const kW=0.50, kH=1.54;
-  // Vertical bars
   for(let i=0;i<=5;i++){
     const bx=i*kW/5;
     kg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,kH,4),krataMat).translateX(bx).translateY(kH/2));
   }
-  // Horizontal bars
   for(let j=0;j<=8;j++){
     const by=j*kH/8;
     const bar=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,kW,4),krataMat);
     bar.rotation.z=Math.PI/2;bar.position.set(kW/2,by,0);kg.add(bar);
   }
-  // Frame
   kg.add(new THREE.Mesh(new THREE.BoxGeometry(kW+0.01,0.006,0.006),krataMat).translateX(kW/2).translateY(0));
   kg.add(new THREE.Mesh(new THREE.BoxGeometry(kW+0.01,0.006,0.006),krataMat).translateX(kW/2).translateY(kH));
-  kg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,kH,4),krataMat).translateX(0).translateY(kH/2));
-  kg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,kH,4),krataMat).translateX(kW).translateY(kH/2));
-
+  kg.rotation.y = rotY || 0;
   kg.position.set(x, FLOOR_Y+0.30, z);
   scene.add(kg);
+  return {x,z,kW,kH,rotY:rotY||0};
+}
 
-  // Ivy climbing the krata
-  const ivyLeaf = new THREE.MeshStandardMaterial({color:0x2e7d32,roughness:0.8,side:THREE.DoubleSide});
-  const ivyDark = new THREE.MeshStandardMaterial({color:0x1b5e20,roughness:0.85,side:THREE.DoubleSide});
-  const ivyLight = new THREE.MeshStandardMaterial({color:0x4caf50,roughness:0.8,side:THREE.DoubleSide});
-  const vineM = new THREE.MeshStandardMaterial({color:0x33691e,roughness:0.7});
-  const mats=[ivyLeaf,ivyDark,ivyLight];
-
-  for(let i=0;i<60;i++){
-    const lx=x+Math.random()*kW;
-    const ly=FLOOR_Y+0.30+Math.random()*kH;
-    const lz=z+(Math.random()-0.5)*0.12;
+function addIvyToArea(cx, cz, spanX, spanZ, count) {
+  for(let i=0;i<count;i++){
+    const lx=cx+(Math.random()-0.5)*spanX;
+    const ly=FLOOR_Y+0.30+Math.random()*1.54;
+    const lz=cz+(Math.random()-0.5)*spanZ;
     const sz=0.03+Math.random()*0.05;
-    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2),mats[Math.floor(Math.random()*3)]);
+    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2),ivyMats[Math.floor(Math.random()*3)]);
     lf.position.set(lx,ly,lz);lf.rotation.set(Math.random()*0.5,Math.random()*Math.PI*2,Math.random()*0.3);
     scene.add(lf);
   }
-  // Vines
-  for(let v=0;v<4;v++){
+  for(let v=0;v<3;v++){
     const vpts=[];
-    for(let p=0;p<8;p++)vpts.push(new THREE.Vector3(x+Math.random()*kW,FLOOR_Y+0.30+p*(kH/7)+(Math.random()-0.5)*0.1,z+(Math.random()-0.5)*0.06));
+    for(let p=0;p<8;p++)vpts.push(new THREE.Vector3(cx+(Math.random()-0.5)*spanX*0.6,FLOOR_Y+0.30+p*(1.54/7)+(Math.random()-0.5)*0.1,cz+(Math.random()-0.5)*spanZ*0.6));
     scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(vpts),12,0.004,4,false),vineM));
   }
 }
-createKrata(3.60, 0.02);
-createKrata(4.10, 0.02);
+
+// Krata 1: back wall corner (x=4.15 to 4.65, z=0.02)
+createKrataFlat(4.15, 0.02, 0);
+addIvyToArea(4.40, 0.02, 0.50, 0.12, 50);
+
+// Krata 2: right side wall (x=4.65, z=0.30 to 0.80) - rotated 90 degrees
+createKrataFlat(4.64, 0.30, Math.PI/2);
+addIvyToArea(4.64, 0.55, 0.12, 0.50, 50);
 
 // ===================== BAMBOO BENCH 90x33x43cm =====================
 {
@@ -717,85 +730,218 @@ createKrata(4.10, 0.02);
   bg.add(new THREE.Mesh(new THREE.BoxGeometry(bD-0.12,0.02,0.015),bambooMat).translateY(bH*0.35));
   bg.add(new THREE.Mesh(new THREE.BoxGeometry(0.015,0.02,bW-0.12),bambooMat).translateY(bH*0.35));
 
-  bg.position.set(3.20, FLOOR_Y, 0.72);
+  // On back wall between IVAR (ends ~x=0.51) and entrance (x=1.69)
+  bg.rotation.y = Math.PI/2; // rotated so length runs along wall (x-axis)
+  bg.position.set(1.05, FLOOR_Y, 0.17);
   scene.add(bg);
 }
 
-// ===================== 2x JUMI FOLDING CHAIRS (50x46x80cm) =====================
-function createJumiChair(x, z, rotY) {
-  const cg = new THREE.Group();
-  const frameMat = new THREE.MeshStandardMaterial({color:0x333333,roughness:0.4,metalness:0.6});
-  const seatMat = new THREE.MeshStandardMaterial({color:0x2a2a2a,roughness:0.7});
-  const cW=0.46, cD=0.50, cH=0.80, seatH=0.44;
-  // Front legs
-  for(const s of [-1,1]){
-    cg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.010,0.010,seatH,6),frameMat).translateX(cD/2-0.05).translateY(seatH/2).translateZ(s*(cW/2-0.05)));
+// ===================== COMFY ARMCHAIR (mega wygodne siedzonko) =====================
+{
+  const ag = new THREE.Group();
+  const fabricMat = new THREE.MeshStandardMaterial({color:0x5a3a2a,roughness:0.9});
+  const cushMat = new THREE.MeshStandardMaterial({color:0x6b4530,roughness:0.85});
+  const frameMat2 = new THREE.MeshStandardMaterial({color:0x333333,roughness:0.4,metalness:0.5});
+  const aW=0.70, aD=0.72, seatH=0.40, backH=0.85;
+  // Frame/legs
+  for(const[lx,lz]of[[-aD/2+0.06,-aW/2+0.06],[-aD/2+0.06,aW/2-0.06],[aD/2-0.06,-aW/2+0.06],[aD/2-0.06,aW/2-0.06]]){
+    ag.add(new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.018,seatH-0.05,8),frameMat2).translateX(lx).translateY((seatH-0.05)/2).translateZ(lz));
   }
-  // Back legs (taller)
+  // Seat cushion (thick, soft look)
+  const seat=new THREE.Mesh(new THREE.BoxGeometry(aD-0.08,0.12,aW-0.08),cushMat);
+  seat.position.set(0,seatH,0);seat.castShadow=true;ag.add(seat);
+  // Back cushion
+  const back=new THREE.Mesh(new THREE.BoxGeometry(0.10,backH-seatH-0.05,aW-0.12),fabricMat);
+  back.position.set(-aD/2+0.08,(seatH+backH)/2,0);ag.add(back);
+  // Armrests (padded)
   for(const s of [-1,1]){
-    cg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.010,0.010,cH,6),frameMat).translateX(-cD/2+0.05).translateY(cH/2).translateZ(s*(cW/2-0.05)));
+    ag.add(new THREE.Mesh(new THREE.BoxGeometry(aD*0.5,0.08,0.08),fabricMat).translateX(0.02).translateY(seatH+0.15).translateZ(s*(aW/2-0.06)));
   }
-  // Seat (textilene)
-  const seat=new THREE.Mesh(new THREE.BoxGeometry(cD-0.12,0.015,cW-0.12),seatMat);
-  seat.position.set(0,seatH,0);seat.castShadow=true;cg.add(seat);
-  // Back rest (textilene)
-  const back=new THREE.Mesh(new THREE.BoxGeometry(0.015,cH-seatH-0.05,cW-0.12),seatMat);
-  back.position.set(-cD/2+0.05,seatH+(cH-seatH)/2,0);cg.add(back);
-  // Cross braces
-  cg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.005,0.005,cW-0.12,4),frameMat).rotateX(Math.PI/2).translateX(0).translateY(0).translateZ(-seatH*0.5));
-  // Armrests
-  for(const s of [-1,1]){
-    cg.add(new THREE.Mesh(new THREE.BoxGeometry(cD*0.5,0.015,0.025),frameMat).translateX(-0.02).translateY(seatH+0.25).translateZ(s*(cW/2-0.03)));
-  }
-  cg.rotation.y = rotY || 0;
-  cg.position.set(x, FLOOR_Y, z);
-  scene.add(cg);
+  // Soft pillow on seat
+  ag.add(new THREE.Mesh(new THREE.SphereGeometry(0.12,8,6),new THREE.MeshStandardMaterial({color:0xc4956a,roughness:0.95})).translateY(seatH+0.14).translateX(0.02));
+  ag.rotation.y = 0.4; // slightly angled
+  ag.position.set(3.40, FLOOR_Y, 0.42);
+  scene.add(ag);
 }
-createJumiChair(2.40, 0.55, 0.3);
-createJumiChair(2.80, 0.62, -0.2);
 
-// ===================== LAVENDER IN HEAVY POTS =====================
-function createHeavyLavenderPot(x, z) {
+// ===================== HANGING METAL POTS on wall near window (x=3.95-4.65) =====================
+{
+  const potMetal = new THREE.MeshStandardMaterial({color:0x8a7060,roughness:0.4,metalness:0.6});
+  const soilMat = new THREE.MeshStandardMaterial({color:0x4a3520,roughness:1});
+  const leafMat1 = new THREE.MeshStandardMaterial({color:0x3e8b3e,roughness:0.8,side:THREE.DoubleSide});
+  const leafMat2 = new THREE.MeshStandardMaterial({color:0x2d6b2d,roughness:0.85,side:THREE.DoubleSide});
+  const bracketMat = new THREE.MeshStandardMaterial({color:0x555555,roughness:0.3,metalness:0.7});
+  const lMats=[leafMat1,leafMat2];
+  const potPositions = [
+    {x:4.05, y:1.60}, {x:4.25, y:1.30}, {x:4.45, y:1.70}, {x:4.60, y:1.45}
+  ];
+  potPositions.forEach(({x,y})=>{
+    // Wall bracket
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.15,0.015,0.015),bracketMat).translateX(x).translateY(y).translateZ(-0.005));
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.015,0.10,0.015),bracketMat).translateX(x).translateY(y-0.05).translateZ(0.06));
+    // Metal pot (small, 15cm diameter)
+    const pot=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.06,0.10,8),potMetal);
+    pot.position.set(x,y-0.05,0.12);scene.add(pot);
+    // Soil
+    scene.add(new THREE.Mesh(new THREE.CylinderGeometry(0.065,0.065,0.015,8),soilMat).translateX(x).translateY(y-0.01).translateZ(0.12));
+    // Green leaves cascading (30cm sticking out)
+    for(let i=0;i<12;i++){
+      const sz=0.04+Math.random()*0.04;
+      const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.3),lMats[Math.floor(Math.random()*2)]);
+      lf.position.set(x+(Math.random()-0.5)*0.10,y-0.05-Math.random()*0.20,0.12+Math.random()*0.20);
+      lf.rotation.set(Math.random()*0.8,Math.random()*Math.PI*2,Math.random()*0.5);
+      scene.add(lf);
+    }
+    // Trailing vines hanging down
+    for(let v=0;v<2;v++){
+      const vpts=[];
+      for(let p=0;p<6;p++){
+        vpts.push(new THREE.Vector3(x+(Math.random()-0.5)*0.08, y-0.05-p*0.08, 0.12+0.05+p*0.04+Math.random()*0.05));
+      }
+      scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(vpts),10,0.003,4,false),
+        new THREE.MeshStandardMaterial({color:0x33691e,roughness:0.7})));
+    }
+  });
+  // Drip irrigation tube (thin along wall)
+  const irrPts=[];
+  for(let i=0;i<=20;i++){
+    const t=i/20;
+    irrPts.push(new THREE.Vector3(3.95+t*0.70, 1.80+Math.sin(t*Math.PI*2)*0.02, 0.01));
+  }
+  scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(irrPts),20,0.005,4,false),
+    new THREE.MeshStandardMaterial({color:0x2a6b2a,roughness:0.6})));
+}
+
+// ===================== IVY ON EAST/RIGHT SIDE WALL (x=4.65, from top to bottom) =====================
+{
+  // Dense ivy covering right side wall from ceiling to floor
+  for(let i=0;i<80;i++){
+    const lz=Math.random()*W_wall*0.35;
+    const ly=FLOOR_Y+Math.random()*H_wall*0.85;
+    const sz=0.03+Math.random()*0.05;
+    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2),ivyMats[Math.floor(Math.random()*3)]);
+    lf.position.set(4.63+(Math.random()-0.5)*0.06,ly,lz);
+    lf.rotation.set(Math.random()*0.5,Math.PI/2+Math.random()*0.5,Math.random()*0.3);
+    scene.add(lf);
+  }
+  // Thick vines running down the wall
+  for(let v=0;v<5;v++){
+    const vpts=[];
+    const startZ=Math.random()*0.25;
+    for(let p=0;p<10;p++){
+      vpts.push(new THREE.Vector3(4.64+(Math.random()-0.5)*0.04, H_wall-0.10-p*(H_wall-0.3)/9+(Math.random()-0.5)*0.08, startZ+Math.random()*0.08));
+    }
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(vpts),16,0.005,4,false),vineM));
+  }
+
+  // Gutter planter (rynna doniczkowa) hanging on right side wall
+  const gutterMat=new THREE.MeshStandardMaterial({color:0x606060,roughness:0.5,metalness:0.4});
+  // Gutter body (long narrow planter)
+  const gW=0.60, gD=0.12, gH=0.10;
+  const gutter=new THREE.Mesh(new THREE.BoxGeometry(0.03,gH,gW),gutterMat);
+  gutter.position.set(4.62,H_wall*0.55,0.35);scene.add(gutter);
+  // Gutter soil
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.025,0.02,gW-0.02),new THREE.MeshStandardMaterial({color:0x4a3520,roughness:1})).translateX(4.62).translateY(H_wall*0.55+0.04).translateZ(0.35));
+  // Hanging chains
+  const chainMat=new THREE.MeshStandardMaterial({color:0x777777,roughness:0.3,metalness:0.7});
+  for(const cz of [0.12, 0.58]){
+    scene.add(new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,0.30,4),chainMat).translateX(4.64).translateY(H_wall*0.55+0.20).translateZ(cz));
+  }
+  // Ivy cascading from gutter
+  for(let i=0;i<25;i++){
+    const lz=0.10+Math.random()*0.50;
+    const ly=H_wall*0.55-Math.random()*0.40;
+    const sz=0.03+Math.random()*0.04;
+    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2),ivyMats[Math.floor(Math.random()*3)]);
+    lf.position.set(4.62+(Math.random()-0.5)*0.06,ly,lz);
+    lf.rotation.set(Math.random()*0.5,Math.PI/2+Math.random()*0.5,Math.random()*0.3);
+    scene.add(lf);
+  }
+}
+
+// ===================== LAVENDER IN ROUND HEAVY POTS (opposite bench, near railing) =====================
+function createRoundLavenderPot(x, z) {
   const pg = new THREE.Group();
-  // Heavy concrete/ceramic pot
   const potMat = new THREE.MeshStandardMaterial({color:0x706050,roughness:0.85});
   const rimMat = new THREE.MeshStandardMaterial({color:0x605040,roughness:0.8});
-  // Large square pot 40x40x35cm
-  pg.add(new THREE.Mesh(new THREE.BoxGeometry(0.40,0.35,0.40),potMat).translateY(0.175));
-  pg.add(new THREE.Mesh(new THREE.BoxGeometry(0.42,0.03,0.42),rimMat).translateY(0.35));
+  // Large round heavy pot (diameter ~35cm, height 30cm)
+  pg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.175,0.15,0.30,12),potMat).translateY(0.15));
+  pg.add(new THREE.Mesh(new THREE.TorusGeometry(0.18,0.015,8,16),rimMat).translateY(0.30).rotateX(Math.PI/2));
   // Soil
-  pg.add(new THREE.Mesh(new THREE.BoxGeometry(0.36,0.02,0.36),new THREE.MeshStandardMaterial({color:0x4a3520,roughness:1})).translateY(0.34));
-  // 4 lavender plants
+  pg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.16,0.02,12),new THREE.MeshStandardMaterial({color:0x4a3520,roughness:1})).translateY(0.29));
+  // Lavender bush (multiple stems with flowers)
   const lavM = new THREE.MeshStandardMaterial({color:0x7b5eae,roughness:0.9});
   const lfM = new THREE.MeshStandardMaterial({color:0x6b8e6b,roughness:0.9});
-  for(let i=-1;i<=1;i++){
-    for(let j=-1;j<=1;j++){
-      if(Math.abs(i)+Math.abs(j)>1) continue;
-      const leaf=new THREE.Mesh(new THREE.SphereGeometry(0.04,6,4),lfM);
-      leaf.position.set(i*0.10,0.42,j*0.10);leaf.scale.y=1.6;pg.add(leaf);
-      pg.add(new THREE.Mesh(new THREE.ConeGeometry(0.018,0.08,6),lavM).translateX(i*0.10).translateY(0.52+Math.random()*0.04).translateZ(j*0.10));
-    }
+  for(let i=0;i<7;i++){
+    const angle=i*Math.PI*2/7;
+    const r=0.06+Math.random()*0.06;
+    const lx=Math.cos(angle)*r, lz=Math.sin(angle)*r;
+    // Leaf cluster
+    const leaf=new THREE.Mesh(new THREE.SphereGeometry(0.035,6,4),lfM);
+    leaf.position.set(lx,0.38,lz);leaf.scale.y=1.8;pg.add(leaf);
+    // Lavender flower spike
+    pg.add(new THREE.Mesh(new THREE.ConeGeometry(0.015,0.08,6),lavM).translateX(lx).translateY(0.48+Math.random()*0.06).translateZ(lz));
   }
+  // Center cluster
+  pg.add(new THREE.Mesh(new THREE.SphereGeometry(0.05,6,4),lfM).translateY(0.40));
+  pg.add(new THREE.Mesh(new THREE.ConeGeometry(0.018,0.10,6),lavM).translateY(0.55));
   pg.position.set(x,FLOOR_Y,z);
   scene.add(pg);
 }
-createHeavyLavenderPot(0.70, 0.80);
-createHeavyLavenderPot(4.10, 0.78);
+// Opposite bench (bench at x≈1.05, z≈0.17), pots near railing
+createRoundLavenderPot(0.80, 0.78);
+createRoundLavenderPot(1.25, 0.80);
 
-// ===================== EXTRA IVY ON WALL =====================
+// ===================== EXTRA IVY spreading from corner pergola =====================
 {
-  const ivyLeaf = new THREE.MeshStandardMaterial({color:0x2e7d32,roughness:0.8,side:THREE.DoubleSide});
-  const ivyDark = new THREE.MeshStandardMaterial({color:0x1b5e20,roughness:0.85,side:THREE.DoubleSide});
-  const mats=[ivyLeaf,ivyDark];
-  // Some ivy spreading beyond kraty onto wall (right side)
-  for(let i=0;i<40;i++){
-    const lx=3.40+Math.random()*1.20;
-    const ly=FLOOR_Y+0.20+Math.random()*2.0;
-    const lz=-0.02+Math.random()*0.08;
+  // Ivy spreading from corner kraty onto adjacent wall areas
+  for(let i=0;i<30;i++){
+    const lx=3.95+Math.random()*0.70;
+    const ly=FLOOR_Y+0.30+Math.random()*1.80;
+    const lz=-0.02+Math.random()*0.06;
     const sz=0.03+Math.random()*0.04;
-    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2),mats[Math.floor(Math.random()*2)]);
+    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2),ivyMats[Math.floor(Math.random()*3)]);
     lf.position.set(lx,ly,lz);lf.rotation.set(Math.random()*0.5,Math.random()*Math.PI*2,Math.random()*0.3);
     scene.add(lf);
+  }
+}
+
+// ===================== FAIRY LIGHTS (drobne swiatelka LED 5m) =====================
+const fairyLightBulbs = [], fairyLightPLs = [];
+{
+  const fblbMat = new THREE.MeshStandardMaterial({color:0xfff5e0,emissive:0xffdd88,emissiveIntensity:2.5,roughness:0.2,transparent:true,opacity:0.85});
+  // Small fairy lights draped along railing and around plants
+  // String 1: along railing top
+  for(let i=0;i<15;i++){
+    const t=i/14;
+    const x=0.3+t*3.8;
+    const z=lerpW(x/L)-0.02;
+    const y=H_rail+0.02+Math.sin(t*Math.PI*3)*0.03;
+    const b=new THREE.Mesh(new THREE.SphereGeometry(0.010,6,4),fblbMat.clone());
+    b.position.set(x,y,z);scene.add(b);fairyLightBulbs.push(b);
+  }
+  // String 2: around the corner pergola area
+  const cornerPts=[];
+  for(let i=0;i<=12;i++){
+    const t=i/12;
+    if(t<0.5){
+      const tt=t*2;
+      cornerPts.push(new THREE.Vector3(4.15+tt*0.50, FLOOR_Y+1.90+Math.sin(tt*Math.PI)*0.05, 0.05));
+    } else {
+      const tt=(t-0.5)*2;
+      cornerPts.push(new THREE.Vector3(4.63, FLOOR_Y+1.90+Math.sin(tt*Math.PI)*0.05, 0.05+tt*0.55));
+    }
+  }
+  const fCrv=new THREE.CatmullRomCurve3(cornerPts);
+  scene.add(new THREE.Mesh(new THREE.TubeGeometry(fCrv,20,0.002,4,false),new THREE.MeshStandardMaterial({color:0x222222,roughness:0.8})));
+  for(let i=0;i<8;i++){
+    const pos=fCrv.getPoint((i+0.5)/8);
+    const b=new THREE.Mesh(new THREE.SphereGeometry(0.010,6,4),fblbMat.clone());
+    b.position.copy(pos);b.position.y-=0.015;scene.add(b);fairyLightBulbs.push(b);
+    if(i%3===0){
+      const pl=new THREE.PointLight(0xffdd88,0.08,0.8);
+      pl.position.copy(pos);scene.add(pl);fairyLightPLs.push(pl);
+    }
   }
 }
 
@@ -811,12 +957,14 @@ function label(text,x,y,z,scale) {
   s.position.set(x,y,z); s.scale.set(scale||0.9,0.15,1); scene.add(s);
   return s;
 }
-label('COSTWAY C-stolik', 1.10, FLOOR_Y+1.0, 0.40);
-label('Lawka bambusowa', 3.20, FLOOR_Y+0.65, 0.72);
-label('Krzesla JUMI', 2.60, FLOOR_Y+1.0, 0.58);
-label('Krata + bluszcz', 3.85, FLOOR_Y+2.2, 0.02);
+label('COSTWAY biurko stojace', 4.15, FLOOR_Y+1.30, 0.35);
+label('Lawka bambusowa', 1.05, FLOOR_Y+0.65, 0.17);
+label('Fotel ogrodowy', 3.40, FLOOR_Y+1.05, 0.42);
+label('Pergola narozna (2x krata)', 4.40, FLOOR_Y+2.2, 0.30);
+label('Doniczki metalowe wiszace', 4.30, FLOOR_Y+1.95, 0.15, 0.7);
+label('Bluszcz + rynna doniczkowa', 4.62, H_wall*0.55+0.25, 0.35, 0.7);
 label('Girlanda SuperLED', L/2, H_wall-0.05, 0.40);
-label('Lawenda (ciezkie donice)', 0.70, FLOOR_Y+0.80, 0.80);
+label('Lawenda (okragle donice)', 1.02, FLOOR_Y+0.80, 0.79);
 
 // Background
 const gnd=new THREE.Mesh(new THREE.PlaneGeometry(40,40), new THREE.MeshStandardMaterial({color:0x1a1510,roughness:1}));
@@ -845,15 +993,15 @@ function addClickZone(x,y,z,w,h,d,data) {
 updateSectionSelectors();
 buildIVAR(getIVARConfig());
 
-addClickZone(1.10, FLOOR_Y+0.45, 0.40, 0.50, 0.90, 0.60, {
-  name: 'COSTWAY Stolik C-shape 60x40 regulowany 65-100cm',
+addClickZone(4.15, FLOOR_Y+0.60, 0.35, 0.50, 1.20, 0.50, {
+  name: 'COSTWAY biurko regulowane do pracy na stojaco',
   links: [
     {store:'Amazon',price:'244 zl',url:'https://www.amazon.pl/dp/B0FDF6C8DM'},
-    {store:'Allegro',price:'~200-300 zl',url:'https://allegro.pl/listing?string=stolik+C+shape+regulowany+laptop'}
+    {store:'Allegro',price:'~200-300 zl',url:'https://allegro.pl/listing?string=biurko+regulowane+stojace+laptop'}
   ]
 });
 
-addClickZone(3.20, FLOOR_Y+0.25, 0.72, 0.95, 0.50, 0.40, {
+addClickZone(1.05, FLOOR_Y+0.25, 0.17, 0.95, 0.50, 0.40, {
   name: 'Lawka bambusowa 90x33x43 cm',
   links: [
     {store:'Amazon',price:'~130 zl',url:'https://www.amazon.pl/%C5%81awka-Bambusowa-Drewniana-Wej%C5%9Bciowej-Przedpokoju/dp/B0CGF62Z8G'},
@@ -861,20 +1009,36 @@ addClickZone(3.20, FLOOR_Y+0.25, 0.72, 0.95, 0.50, 0.40, {
   ]
 });
 
-addClickZone(2.60, FLOOR_Y+0.45, 0.58, 0.80, 0.90, 0.55, {
-  name: '2x Krzeslo JUMI skladane 50x46x80 cm',
+addClickZone(3.40, FLOOR_Y+0.50, 0.42, 0.80, 1.00, 0.80, {
+  name: 'Fotel ogrodowy wygodny (mega siedzonko)',
   links: [
-    {store:'Castorama (2szt)',price:'~198 zl',url:'https://www.castorama.pl/departments/krzes-o-balkonowe-jumi-sk-adane-wygodne-80-cm-czarne-metalowe-2-szt-/5900410282148_CAPL.prd'},
-    {store:'Castorama (1szt)',price:'~99 zl',url:'https://www.castorama.pl/departments/krzes-o-balkonowe-jumi-sk-adane-wygodne-80-cm-czarne-metalowe-1-szt-/5900410282131_CAPL.prd'}
+    {store:'Amazon',price:'~350 zl',url:'https://www.amazon.pl/s?k=fotel+ogrodowy+wygodny+balkon'},
+    {store:'Allegro',price:'~250-400 zl',url:'https://allegro.pl/listing?string=fotel+ogrodowy+wygodny+taras'}
   ]
 });
 
-addClickZone(3.85, FLOOR_Y+1.10, 0.02, 1.20, 1.60, 0.20, {
-  name: '2x Krata scienna GardenPlus+ 50x154 cm + Bluszcz Verve',
+addClickZone(4.40, FLOOR_Y+1.10, 0.30, 0.60, 1.60, 0.60, {
+  name: '2x Krata scienna GardenPlus+ 50x154 cm (naroznik L) + Bluszcz Verve',
   links: [
     {store:'Allegro (krata)',price:'159 zl/szt',url:'https://allegro.pl/produkt/pergola-metal-gardenplus-krata-154-cm-2d941ecf-266f-4f71-ba8f-cb729471149d?offerId=12199596322'},
     {store:'Castorama (bluszcz)',price:'24.98 zl/szt',url:'https://www.castorama.pl/bluszcz-pospolity-verve-2-l/5059340414539_CAPL.prd'},
     {store:'Allegro (bluszcz)',price:'~15-25 zl',url:'https://allegro.pl/listing?string=bluszcz+pospolity+sadzonka'}
+  ]
+});
+
+addClickZone(4.30, FLOOR_Y+1.50, 0.12, 0.70, 0.60, 0.30, {
+  name: 'Doniczki metalowe wiszace (4 szt) + system nawadniania',
+  links: [
+    {store:'Allegro (doniczki)',price:'~20 zl/szt',url:'https://allegro.pl/listing?string=doniczka+metalowa+wisząca+ścienna'},
+    {store:'Amazon (nawadnianie)',price:'~80 zl',url:'https://www.amazon.pl/s?k=system+nawadniania+kroplowy+balkon'}
+  ]
+});
+
+addClickZone(4.62, H_wall*0.55, 0.35, 0.15, 0.50, 0.65, {
+  name: 'Rynna doniczkowa z bluszczem + bluszcz na scianie wschodniej',
+  links: [
+    {store:'Allegro (rynna)',price:'~60 zl',url:'https://allegro.pl/listing?string=rynna+doniczkowa+balkon+wisząca'},
+    {store:'Castorama (bluszcz)',price:'24.98 zl/szt',url:'https://www.castorama.pl/bluszcz-pospolity-verve-2-l/5059340414539_CAPL.prd'}
   ]
 });
 
@@ -886,11 +1050,11 @@ addClickZone(L/2, H_wall-0.30, 0.35, L*0.6, 0.30, 0.50, {
   ]
 });
 
-addClickZone(0.70, FLOOR_Y+0.35, 0.80, 0.50, 0.70, 0.50, {
-  name: 'Lawenda w ciezkiej donicy + 2. donica',
+addClickZone(1.02, FLOOR_Y+0.35, 0.79, 0.70, 0.70, 0.30, {
+  name: 'Lawenda w okraglych ciezkich donicach (2 szt)',
   links: [
     {store:'Castorama (lawenda)',price:'6.98 zl/szt',url:'https://www.castorama.pl/lawenda-doniczka-12-cm-wysokosc-28-cm/5902738996172_CAPL.prd'},
-    {store:'Castorama (donica ciezka)',price:'~80 zl',url:'https://www.castorama.pl/donica-balkonowa-berberis-60-cm-antracyt/8590415011224_CAPL.prd'},
+    {store:'Allegro (donica okragla)',price:'~80-100 zl',url:'https://allegro.pl/listing?string=donica+okragla+ciezka+taras+beton'},
     {store:'Allegro (lawenda)',price:'~5-10 zl',url:'https://allegro.pl/listing?string=lawenda+doniczka'}
   ]
 });
@@ -946,6 +1110,8 @@ window.toggleMode = function() {
     renderer.toneMappingExposure = 0.7;
     stringLightBulbs.forEach(b=>{b.material.emissiveIntensity=3.0;});
     stringLightPLs.forEach(pl=>{pl.intensity=0.20;});
+    fairyLightBulbs.forEach(b=>{b.material.emissiveIntensity=2.5;});
+    fairyLightPLs.forEach(pl=>{pl.intensity=0.08;});
     btn.textContent = 'Tryb: Wieczor';
   } else {
     scene.background = dayBg;
@@ -955,6 +1121,8 @@ window.toggleMode = function() {
     renderer.toneMappingExposure = 1.2;
     stringLightBulbs.forEach(b=>{b.material.emissiveIntensity=0.1;});
     stringLightPLs.forEach(pl=>{pl.intensity=0.02;});
+    fairyLightBulbs.forEach(b=>{b.material.emissiveIntensity=0.1;});
+    fairyLightPLs.forEach(pl=>{pl.intensity=0.01;});
     btn.textContent = 'Tryb: Dzien';
   }
 };
@@ -964,7 +1132,10 @@ function animate() {
   requestAnimationFrame(animate);
   ctrl.update();
   time+=0.016;
-  if(isEvening) stringLightBulbs.forEach((b,i)=>{b.material.emissiveIntensity=2.5+Math.sin(time*1.8+i*1.5)*0.5;});
+  if(isEvening) {
+    stringLightBulbs.forEach((b,i)=>{b.material.emissiveIntensity=2.5+Math.sin(time*1.8+i*1.5)*0.5;});
+    fairyLightBulbs.forEach((b,i)=>{b.material.emissiveIntensity=2.0+Math.sin(time*2.2+i*2.0)*0.5;});
+  }
   renderer.render(scene,camera);
 }
 animate();
