@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Projekt E - Ogrod Srodziemnomorski | Balkon 3D</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; background: #1a1510; font-family: 'Segoe UI', sans-serif; }
+  canvas { display: block; }
+  #info {
+    position: absolute; top: 16px; left: 16px;
+    background: rgba(20,15,10,0.88); color: #fff; padding: 16px 20px;
+    border-radius: 10px; font-size: 13px; line-height: 1.7;
+    backdrop-filter: blur(8px); max-width: 320px;
+    border: 1px solid rgba(212,149,106,0.25);
+  }
+  #info h2 { font-size: 15px; margin-bottom: 6px; color: #d4956a; }
+  #info h3 { font-size: 13px; margin: 8px 0 4px; color: #e8b88a; }
+  #info .dim { color: #bbb; font-size: 11.5px; }
+  #info .prod { color: #fff; font-size: 11.5px; }
+  #info .price { color: #ffd54f; font-size: 11.5px; font-weight: bold; }
+  #info .premium { color: #d4956a; font-size: 10px; font-style: italic; margin-top: 6px; }
+  #controls {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: rgba(20,15,10,0.8); color: #fff; padding: 10px 20px;
+    border-radius: 8px; font-size: 12px; text-align: center;
+    backdrop-filter: blur(8px); border: 1px solid rgba(212,149,106,0.15);
+  }
+  #legend {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(20,15,10,0.88); color: #fff; padding: 14px 18px;
+    border-radius: 10px; font-size: 12px; line-height: 2;
+    backdrop-filter: blur(8px); border: 1px solid rgba(212,149,106,0.2);
+  }
+  #legend h3 { font-size: 13px; margin-bottom: 6px; color: #d4956a; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  #popup {
+    display: none; position: absolute;
+    background: rgba(20,15,10,0.95); color: #fff; padding: 16px 20px;
+    border-radius: 12px; font-size: 13px; line-height: 1.8;
+    backdrop-filter: blur(10px); max-width: 360px; z-index: 100;
+    border: 1px solid rgba(212,149,106,0.25);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  }
+  #popup h3 { color: #d4956a; margin-bottom: 6px; font-size: 14px; }
+  #popup a { color: #e8b88a; text-decoration: none; display: block; padding: 3px 0; }
+  #popup a:hover { color: #f0d0a0; text-decoration: underline; }
+  #popup .close { position: absolute; top: 8px; right: 12px; cursor: pointer; color: #999; font-size: 18px; }
+  #popup .close:hover { color: #fff; }
+  #popup .price-tag { color: #ffd54f; font-weight: bold; }
+  #popup .store { color: #aaa; font-size: 11px; }
+  #mode-toggle {
+    position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%);
+    background: rgba(20,15,10,0.8); color: #d4956a; padding: 8px 18px;
+    border-radius: 20px; font-size: 12px; cursor: pointer; border: 1px solid rgba(212,149,106,0.3);
+    transition: all 0.3s;
+  }
+  #mode-toggle:hover { background: rgba(40,30,20,0.9); color: #f0d0a0; }
+  #ivar-config {
+    position: absolute; right: 16px; top: 280px;
+    background: rgba(20,15,10,0.90); color: #fff; padding: 14px 16px;
+    border-radius: 10px; font-size: 11.5px; line-height: 1.6;
+    backdrop-filter: blur(8px); width: 240px;
+    border: 1px solid rgba(212,149,106,0.3);
+    max-height: calc(100vh - 310px); overflow-y: auto;
+  }
+  #ivar-config h3 { font-size: 13px; margin-bottom: 8px; color: #d4956a; }
+  #ivar-config .cfg-section { margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; }
+  #ivar-config .cfg-section:last-child { border-bottom: none; margin-bottom: 0; }
+  #ivar-config .cfg-label { color: #b08060; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  #ivar-config label { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 2px 0; color: #ddd; }
+  #ivar-config label:hover { color: #fff; }
+  #ivar-config input[type="radio"], #ivar-config input[type="checkbox"] { accent-color: #d4956a; width: 14px; height: 14px; cursor: pointer; }
+  #ivar-config .price-add { color: #ffd54f; font-size: 10px; margin-left: auto; }
+  #ivar-config .total-bar {
+    margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(212,149,106,0.3);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: bold;
+  }
+  #ivar-config .total-bar .total-price { color: #ffd54f; font-size: 15px; }
+  #ivar-config .btn-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+  #ivar-config .btn-row label {
+    background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 5px; font-size: 11px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  #ivar-config .btn-row label:has(input:checked) { background: rgba(212,149,106,0.25); color: #d4956a; }
+  #ivar-config .btn-row input { display: none; }
+  #ivar-config .ikea-link { display: block; text-align: center; margin-top: 6px; color: #e8b88a; text-decoration: none; font-size: 11px; }
+  #ivar-config .ikea-link:hover { color: #f0d0a0; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div id="info">
+  <h2>PROJEKT E - Ogrod Srodziemnomorski</h2>
+  <div class="dim">Pergole z bluszczem, stolik C-shape, lawka bambusowa</div>
+  <h3>Meble i wyposazenie:</h3>
+  <div class="prod" id="ivar-info-line">IKEA IVAR 89x50x226 cm (2x szafka+szuflada) <span class="price">1165 zl</span></div>
+  <div class="prod">COSTWAY stolik C-shape 60x40 <span class="price">244 zl</span></div>
+  <div class="prod">Lawka bambusowa 90x33x43 <span class="price">~130 zl</span></div>
+  <div class="prod">2x Krzeslo JUMI skladane <span class="price">2x 99 zl</span></div>
+  <h3>Pergola i rosliny:</h3>
+  <div class="prod">2x Krata GardenPlus+ 50x154 <span class="price">2x 159 zl</span></div>
+  <div class="prod">4x Bluszcz Verve 2L <span class="price">4x 25 zl</span></div>
+  <div class="prod">8x Lawenda + 2x donica ciezka <span class="price">~216 zl</span></div>
+  <h3>Oswietlenie:</h3>
+  <div class="prod">Girlanda SuperLED 550cm solarna <span class="price">50 zl</span></div>
+  <div class="prod">Podest GoodHome akacja 30x30 ~52szt <span class="price">~650 zl</span></div>
+  <h3 style="color:#ffd54f" id="total-display">SUMA: ~3095 zl</h3>
+  <div class="premium">Srodziemnomorski ogrod na 9. pietrze</div>
+</div>
+<div id="legend">
+  <h3>Legenda</h3>
+  <div><span class="dot" style="background:#c8a86e"></span> Podloga drewniana 30x30</div>
+  <div><span class="dot" style="background:#deb887"></span> IVAR 50cm (sosna)</div>
+  <div><span class="dot" style="background:#8b6914"></span> COSTWAY C-stolik</div>
+  <div><span class="dot" style="background:#c4a35a"></span> Lawka bambusowa</div>
+  <div><span class="dot" style="background:#444"></span> Krzesla JUMI</div>
+  <div><span class="dot" style="background:#333"></span> Kraty GardenPlus+</div>
+  <div><span class="dot" style="background:#2e7d32"></span> Bluszcz (pergola)</div>
+  <div><span class="dot" style="background:#7b5eae"></span> Lawenda (donice ciezkie)</div>
+  <div><span class="dot" style="background:#ffcc66"></span> Girlanda SuperLED</div>
+</div>
+<div id="popup"><span class="close" onclick="document.getElementById('popup').style.display='none'">&times;</span><div id="popup-content"></div></div>
+<div id="mode-toggle" onclick="toggleMode()">Tryb: Wieczor</div>
+<div id="controls">LPM = obrot | Scroll = zoom | PPM = przesuniecie | Kliknij na element = linki zakupowe</div>
+
+<div id="ivar-config">
+  <h3>IVAR Konfigurator</h3>
+  <div class="cfg-section">
+    <div class="cfg-label">Wysokosc</div>
+    <div class="btn-row">
+      <label><input type="radio" name="ivar-height" value="1.24"> 124cm</label>
+      <label><input type="radio" name="ivar-height" value="1.79"> 179cm</label>
+      <label><input type="radio" name="ivar-height" value="2.26" checked> 226cm</label>
+    </div>
+  </div>
+  <div class="cfg-section">
+    <div class="cfg-label">Szuflada</div>
+    <label><input type="checkbox" id="ivar-drawer" checked> Szuflada drewniana <span class="price-add">+130 zl</span></label>
+    <label style="margin-left:20px;font-size:10px;color:#d4956a">Sekcja: <select id="ivar-drawer-pos" style="background:#222;color:#fff;border:1px solid #555;border-radius:3px;padding:1px 4px;font-size:10px;accent-color:#d4956a">
+      <option value="0">1 (dol)</option><option value="1">2</option><option value="2">3</option><option value="3">4</option><option value="4">5</option>
+    </select></label>
+  </div>
+  <div class="cfg-section">
+    <div class="cfg-label">Drzwi / szafka</div>
+    <label><input type="radio" name="ivar-doors" value="none"> Brak</label>
+    <label><input type="radio" name="ivar-doors" value="wood"> 1x Szafka sosna 83cm <span class="price-add">+430 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="wood2" checked> 2x Szafka sosna 166cm <span class="price-add">+860 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="felt"> Filcowe ciemnoszare <span class="price-add">+230 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="mesh"> Siatkowe czarne <span class="price-add">+400 zl</span></label>
+    <label><input type="radio" name="ivar-doors" value="meshgreen"> Siatkowe zielone <span class="price-add">+400 zl</span></label>
+    <label style="margin-top:4px;font-size:10px;color:#d4956a">Sekcja drzwi: <select id="ivar-doors-pos" style="background:#222;color:#fff;border:1px solid #555;border-radius:3px;padding:1px 4px;font-size:10px;accent-color:#d4956a">
+      <option value="0">1 (dol)</option><option value="1">2</option><option value="2">3</option>
+    </select></label>
+  </div>
+  <div class="cfg-section">
+    <div class="cfg-label">Dodatki</div>
+    <label><input type="checkbox" id="ivar-hooks"> Haki 3 szt. <span class="price-add">+10 zl</span></label>
+    <label><input type="checkbox" id="ivar-bottle"> Polka na butelki <span class="price-add">+50 zl</span></label>
+    <label><input type="checkbox" id="ivar-rail"> Drazek (wieszak) <span class="price-add">+8 zl</span></label>
+    <label><input type="checkbox" id="ivar-container"> Pojemnik z kolkami <span class="price-add">+170 zl</span></label>
+  </div>
+  <div class="total-bar">
+    <span>IVAR:</span>
+    <span class="total-price" id="ivar-price-display">1165 zl</span>
+  </div>
+  <a class="ikea-link" id="ivar-ikea-link" href="https://www.ikea.com/addon-app/storageone/ivar/web/latest/pl/pl/?storeId=429#/vpc/322WW54" target="_blank">Twoja konfiguracja IKEA Planner</a>
+</div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const scene = new THREE.Scene();
+let isEvening = true;
+const eveningBg = new THREE.Color(0x1a1510);
+const dayBg = new THREE.Color(0x87CEEB);
+scene.background = eveningBg;
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(3.5, 3.0, 5.5);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(devicePixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.7;
+document.body.appendChild(renderer.domElement);
+
+const ctrl = new OrbitControls(camera, renderer.domElement);
+ctrl.enableDamping = true; ctrl.dampingFactor = 0.05;
+ctrl.target.set(2.3, 0.8, 0.5);
+
+const ambient = new THREE.AmbientLight(0x2a1a10, 0.35);
+scene.add(ambient);
+const sun = new THREE.DirectionalLight(0xffd0a0, 0.3);
+sun.position.set(5, 4, 3); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 0.1; sun.shadow.camera.far = 30;
+sun.shadow.camera.left = -8; sun.shadow.camera.right = 8;
+sun.shadow.camera.top = 8; sun.shadow.camera.bottom = -8;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0x302010, 0.15);
+fill.position.set(-3, 4, -2); scene.add(fill);
+const hemi = new THREE.HemisphereLight(0x1a1510, 0x2a1a10, 0.25);
+scene.add(hemi);
+
+const wallMat = new THREE.MeshStandardMaterial({ color: 0xd4c8b0, roughness: 0.9 });
+const ceilMat = new THREE.MeshStandardMaterial({ color: 0xe8e0d0, roughness: 0.85 });
+const railMat = new THREE.MeshStandardMaterial({ color: 0x4a3228, roughness: 0.4, metalness: 0.8 });
+const panelMat = new THREE.MeshStandardMaterial({ color: 0xc17a40, roughness: 0.6, metalness: 0.3 });
+const pcvMat = new THREE.MeshStandardMaterial({ color: 0xf0f0f0, roughness: 0.3, metalness: 0.1 });
+const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x88bbdd, roughness: 0.05, transparent: true, opacity: 0.3, transmission: 0.6 });
+const netMat = new THREE.MeshStandardMaterial({ color: 0xc8c864, roughness: 0.6, metalness: 0.2, transparent: true, opacity: 0.15, side: THREE.DoubleSide, wireframe: true });
+
+const L = 4.65, W_wall = 1.07, W_rail = 0.99, H_rail = 0.80, H_wall = 2.60, H_slab = 0.17;
+const RECESS_START = 1.69, RECESS_WIDTH = 2.26, RECESS_DEPTH = 0.30;
+const RECESS_END = RECESS_START + RECESS_WIDTH, WALL_RIGHT = L - RECESS_END, WT = 0.20;
+
+// ===================== WOOD DECK TILES FLOOR =====================
+function createWoodFloor() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512; canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+  const tileSize = 512 / 4;
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      const x = col * tileSize, y = row * tileSize;
+      const horizontal = (row + col) % 2 === 0;
+      const slats = 6;
+      for (let s = 0; s < slats; s++) {
+        const hue = 25 + Math.random() * 10;
+        const light = 55 + Math.random() * 15;
+        ctx.fillStyle = `hsl(${hue}, 50%, ${light}%)`;
+        if (horizontal) ctx.fillRect(x+1, y+s*(tileSize/slats)+1, tileSize-2, tileSize/slats-2);
+        else ctx.fillRect(x+s*(tileSize/slats)+1, y+1, tileSize/slats-2, tileSize-2);
+      }
+      ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, tileSize, tileSize);
+    }
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(L/1.2, W_wall/1.2);
+  return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.05 });
+}
+
+const woodFloorMat = createWoodFloor();
+const floorShape = new THREE.Shape();
+floorShape.moveTo(0,0); floorShape.lineTo(L,0); floorShape.lineTo(L,W_rail); floorShape.lineTo(0,W_wall); floorShape.closePath();
+const woodFloor = new THREE.Mesh(new THREE.ExtrudeGeometry(floorShape,{depth:0.025,bevelEnabled:false}), woodFloorMat);
+woodFloor.rotation.x = -Math.PI/2; woodFloor.position.y = H_slab+0.025; woodFloor.receiveShadow = true; scene.add(woodFloor);
+const slabMat = new THREE.MeshStandardMaterial({ color: 0x6d6d6d, roughness: 0.95 });
+const slab = new THREE.Mesh(new THREE.ExtrudeGeometry(floorShape,{depth:H_slab,bevelEnabled:false}), slabMat);
+slab.rotation.x = -Math.PI/2; slab.receiveShadow = true; scene.add(slab);
+const FLOOR_Y = H_slab + 0.025;
+
+// ===================== WALLS =====================
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(RECESS_START,H_wall,WT), wallMat).translateX(RECESS_START/2).translateY(H_wall/2).translateZ(-WT/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(WALL_RIGHT,H_wall,WT), wallMat).translateX(RECESS_END+WALL_RIGHT/2).translateY(H_wall/2).translateZ(-WT/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(RECESS_WIDTH,H_wall,WT), wallMat).translateX(RECESS_START+RECESS_WIDTH/2).translateY(H_wall/2).translateZ(-RECESS_DEPTH-WT/2));
+const rsGeo = new THREE.BoxGeometry(WT,H_wall,RECESS_DEPTH);
+scene.add(new THREE.Mesh(rsGeo, wallMat).translateX(RECESS_START-WT/2).translateY(H_wall/2).translateZ(-RECESS_DEPTH/2));
+scene.add(new THREE.Mesh(rsGeo.clone(), wallMat).translateX(RECESS_END+WT/2).translateY(H_wall/2).translateZ(-RECESS_DEPTH/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(RECESS_WIDTH,0.1,RECESS_DEPTH), ceilMat).translateX(RECESS_START+RECESS_WIDTH/2).translateY(H_wall-0.05).translateZ(-RECESS_DEPTH/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(WT,H_wall,W_wall), wallMat).translateX(-WT/2).translateY(H_wall/2).translateZ(W_wall/2));
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(WT,H_wall,W_wall*0.3), wallMat).translateX(L+WT/2).translateY(H_wall/2).translateZ(W_wall*0.15));
+const cs = new THREE.Shape();
+cs.moveTo(0,0); cs.lineTo(L,0); cs.lineTo(L,W_rail); cs.lineTo(0,W_wall); cs.closePath();
+const ceil = new THREE.Mesh(new THREE.ExtrudeGeometry(cs,{depth:0.15,bevelEnabled:false}), ceilMat);
+ceil.rotation.x=-Math.PI/2; ceil.position.y=H_wall; ceil.receiveShadow=true; scene.add(ceil);
+
+// ===================== DOOR & WINDOW =====================
+const RZ = -RECESS_DEPTH;
+function mkDoor(x,z,w,h) {
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(w,h,0.08), pcvMat).translateX(x).translateY(h/2).translateZ(z));
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(w-0.08,h*0.55-0.06,0.02), glassMat).translateX(x).translateY(h-h*0.55/2-0.03).translateZ(z));
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(w-0.08,h*0.40-0.06,0.02), glassMat).translateX(x).translateY(h*0.40/2+0.03).translateZ(z));
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(w,0.05,0.06), pcvMat).translateX(x).translateY(h*0.42).translateZ(z));
+  const il = new THREE.PointLight(0xffe8c0, 0.4, 3);
+  il.position.set(x, h*0.6, z-0.3); scene.add(il);
+}
+mkDoor(RECESS_START+0.45, RZ, 0.90, 2.10);
+function mkDblWin(x,z,tw,h,sy) {
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(tw,h,0.08), pcvMat).translateX(x).translateY(sy+h/2).translateZ(z));
+  const pw=(tw-0.12)/2;
+  for (let i=0;i<2;i++) {
+    const off=i===0?-(pw+0.02)/2:(pw+0.02)/2;
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(pw,h-0.08,0.02), glassMat).translateX(x+off).translateY(sy+h/2).translateZ(z));
+  }
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.04,h,0.06), pcvMat).translateX(x).translateY(sy+h/2).translateZ(z));
+  scene.add(new THREE.Mesh(new THREE.BoxGeometry(tw+0.08,0.04,0.15), pcvMat).translateX(x).translateY(sy).translateZ(z+0.06));
+  if(sy>0.1) scene.add(new THREE.Mesh(new THREE.BoxGeometry(tw,sy,0.08), wallMat).translateX(x).translateY(sy/2).translateZ(z));
+}
+mkDblWin(RECESS_START+0.90+0.65+0.06, RZ, 1.30, 1.40, 0.80);
+
+// ===================== RAILING =====================
+function lerpW(t) { return W_wall + (W_rail-W_wall)*t; }
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,H_rail,W_wall),new THREE.Vector3(L,H_rail,W_rail)),20,0.02,8,false), railMat));
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,0.05,W_wall),new THREE.Vector3(L,0.05,W_rail)),20,0.015,8,false), railMat));
+scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0,H_rail*0.55,W_wall),new THREE.Vector3(L,H_rail*0.55,W_rail)),20,0.015,8,false), railMat));
+for (let i=0;i<=24;i++) {
+  const t=i/24, x=t*L, z=lerpW(t);
+  const p=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,H_rail,8), railMat);
+  p.position.set(x,H_rail/2,z); p.castShadow=true; scene.add(p);
+}
+for (let i=0;i<24;i+=2) {
+  const t1=i/24,t2=(i+2)/24; if(t2>1)break;
+  const x1=t1*L,x2=t2*L,z1=lerpW(t1),z2=lerpW(t2);
+  const pan=new THREE.Mesh(new THREE.BoxGeometry(x2-x1-0.02,H_rail*0.5,0.01), panelMat);
+  pan.position.set((x1+x2)/2,H_rail*0.3,(z1+z2)/2);
+  pan.rotation.y=-Math.atan2(z2-z1,x2-x1); scene.add(pan);
+}
+const netH=H_wall-H_rail;
+scene.add(new THREE.Mesh(new THREE.PlaneGeometry(L,netH,40,20), netMat).translateX(L/2).translateY(H_rail+netH/2).translateZ((W_wall+W_rail)/2));
+
+// ===================== GIRLANDA SuperLED 550cm SOLARNA (20 LED) =====================
+const stringLightBulbs = [], stringLightPLs = [];
+{
+  const cblMat = new THREE.MeshStandardMaterial({color:0x222222,roughness:0.8});
+  const blbMat = new THREE.MeshStandardMaterial({color:0xffeedd,emissive:0xffaa44,emissiveIntensity:3.0,roughness:0.2,transparent:true,opacity:0.9});
+  const pts = [];
+  for (let i=0;i<=50;i++) {
+    const t=i/50, x=t*L;
+    const z = 0.08 + t*0.30 + Math.sin(t*Math.PI)*0.25;
+    const sag = Math.sin(t*Math.PI)*0.15;
+    pts.push(new THREE.Vector3(x, H_wall-0.25-sag, z));
+  }
+  const crv = new THREE.CatmullRomCurve3(pts);
+  scene.add(new THREE.Mesh(new THREE.TubeGeometry(crv,60,0.004,4,false), cblMat));
+  for (let i=0;i<20;i++) {
+    const t=(i+0.5)/20, pos=crv.getPoint(t);
+    const b = new THREE.Mesh(new THREE.SphereGeometry(0.022,8,6), blbMat.clone());
+    b.position.copy(pos); b.position.y-=0.025; scene.add(b); stringLightBulbs.push(b);
+    scene.add(new THREE.Mesh(new THREE.CylinderGeometry(0.010,0.013,0.018,6), cblMat).translateX(pos.x).translateY(pos.y-0.005).translateZ(pos.z));
+    if (i%4===0) {
+      const pl = new THREE.PointLight(0xffaa44, 0.20, 1.2);
+      pl.position.copy(pos); pl.position.y-=0.04; scene.add(pl); stringLightPLs.push(pl);
+    }
+  }
+}
+
+// ===================== IVAR CONFIGURATOR =====================
+const IVAR_DEPTH = 0.50;
+const IVAR_WIDTH = 0.89;
+let ivarGroup = null;
+let ivarClickZoneMesh = null;
+let ivarLabelSprite = null;
+
+const ivarBasePrice = { 1.24: 330, 1.79: 480, 2.26: 280 };
+const ivarIkeaLinks = {
+  1.24: 'https://www.ikea.com/pl/pl/cat/wszystkie-elementy-ivar-11705/',
+  1.79: 'https://www.ikea.com/pl/pl/p/ivar-regal-sosna-s39407070/',
+  2.26: 'https://www.ikea.com/addon-app/storageone/ivar/web/latest/pl/pl/?storeId=429#/vpc/322WW54'
+};
+const ivarAddons = { drawer: 130, doorsWood: 430, doorsWood2: 860, doorsFelt: 230, doorsMesh: 400, doorsMeshGreen: 400, hooks: 10, bottleShelf: 50, rail: 8, container: 170 };
+// COSTWAY(244)+lawka(130)+2xJUMI(198)+2xkrata(318)+4xbluszcz(100)+lawenda+donice(216)+girlanda(50)+podest(650)
+const OTHER_COSTS = 244 + 130 + 198 + 318 + 100 + 216 + 50 + 650;
+
+function getIVARConfig() {
+  return {
+    height: parseFloat(document.querySelector('input[name="ivar-height"]:checked').value),
+    depth: IVAR_DEPTH,
+    drawer: document.getElementById('ivar-drawer').checked,
+    drawerPos: parseInt(document.getElementById('ivar-drawer-pos').value),
+    doors: document.querySelector('input[name="ivar-doors"]:checked').value,
+    doorsPos: parseInt(document.getElementById('ivar-doors-pos').value),
+    hooks: document.getElementById('ivar-hooks').checked,
+    bottleShelf: document.getElementById('ivar-bottle').checked,
+    rail: document.getElementById('ivar-rail').checked,
+    container: document.getElementById('ivar-container').checked,
+  };
+}
+
+function updateSectionSelectors() {
+  const h = parseFloat(document.querySelector('input[name="ivar-height"]:checked').value);
+  const nShelves = h <= 1.30 ? 4 : h <= 1.85 ? 5 : 6;
+  const nSections = nShelves - 1;
+  const drawerSel = document.getElementById('ivar-drawer-pos');
+  const doorsSel = document.getElementById('ivar-doors-pos');
+  const prevDrawer = drawerSel.value;
+  drawerSel.innerHTML = '';
+  for (let i = 0; i < nSections; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = (i + 1) + (i === 0 ? ' (dol)' : i === nSections - 1 ? ' (gora)' : '');
+    drawerSel.appendChild(opt);
+  }
+  drawerSel.value = Math.min(parseInt(prevDrawer) || 0, nSections - 1);
+  const prevDoors = doorsSel.value;
+  doorsSel.innerHTML = '';
+  const doors = document.querySelector('input[name="ivar-doors"]:checked').value;
+  const doorSections = doors === 'wood2' ? 4 : 2;
+  const maxDoorPos = Math.max(0, nSections - doorSections);
+  for (let i = 0; i <= maxDoorPos; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = (i + 1) + (i === 0 ? ' (dol)' : '');
+    doorsSel.appendChild(opt);
+  }
+  doorsSel.value = Math.min(parseInt(prevDoors) || 0, maxDoorPos);
+}
+
+function calcIVARPrice(cfg) {
+  let p = ivarBasePrice[cfg.height] || 480;
+  if (cfg.drawer) p += ivarAddons.drawer;
+  if (cfg.doors === 'wood') p += ivarAddons.doorsWood;
+  if (cfg.doors === 'wood2') p += ivarAddons.doorsWood2;
+  if (cfg.doors === 'felt') p += ivarAddons.doorsFelt;
+  if (cfg.doors === 'mesh') p += ivarAddons.doorsMesh;
+  if (cfg.doors === 'meshgreen') p += ivarAddons.doorsMeshGreen;
+  if (cfg.hooks) p += ivarAddons.hooks;
+  if (cfg.bottleShelf) p += ivarAddons.bottleShelf;
+  if (cfg.rail) p += ivarAddons.rail;
+  if (cfg.container) p += ivarAddons.container;
+  return p;
+}
+
+function buildIVAR(cfg) {
+  if (ivarGroup) { scene.remove(ivarGroup); ivarGroup.traverse(c => { if (c.geometry) c.geometry.dispose(); if (c.material) { if (Array.isArray(c.material)) c.material.forEach(m=>m.dispose()); else c.material.dispose(); } }); }
+  if (ivarClickZoneMesh) { scene.remove(ivarClickZoneMesh); const idx = clickZones.indexOf(ivarClickZoneMesh); if (idx >= 0) clickZones.splice(idx, 1); }
+  if (ivarLabelSprite) scene.remove(ivarLabelSprite);
+
+  const g = new THREE.Group();
+  const pineMat = new THREE.MeshStandardMaterial({ color: 0xdeb887, roughness: 0.7, metalness: 0.05 });
+  const pineDoorMat = new THREE.MeshStandardMaterial({ color: 0xd4ad7a, roughness: 0.65, metalness: 0.05 });
+  const metalMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.3, metalness: 0.8 });
+  const braceMat = new THREE.MeshStandardMaterial({ color: 0xc0a070, roughness: 0.6 });
+  const sideT = 0.03, shelfT = 0.02;
+  const iW = IVAR_WIDTH, iD = cfg.depth, iH = cfg.height;
+  const shelfW = iW - 2 * sideT;
+
+  let nShelves = iH <= 1.30 ? 4 : iH <= 1.85 ? 5 : 6;
+  const secH = (iH - shelfT) / (nShelves - 1);
+
+  // Side panels
+  for (const s of [0, iW - sideT]) {
+    const side = new THREE.Mesh(new THREE.BoxGeometry(iD, iH, sideT), pineMat);
+    side.position.set(iD/2, iH/2, s + sideT/2);
+    side.castShadow = true; g.add(side);
+  }
+
+  // Shelves
+  for (let i = 0; i < nShelves; i++) {
+    const sy = i * secH;
+    if (cfg.bottleShelf && i === 2) {
+      const bMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.3, metalness: 0.6 });
+      const base = new THREE.Mesh(new THREE.BoxGeometry(iD - 0.02, shelfT, shelfW), bMat);
+      base.position.set(iD/2, sy + shelfT/2, iW/2); g.add(base);
+      for (let d = 0; d < 7; d++) {
+        const dz = sideT + 0.06 + d * (shelfW - 0.12) / 6;
+        const div = new THREE.Mesh(new THREE.BoxGeometry(iD - 0.04, 0.06, 0.003), bMat);
+        div.position.set(iD/2, sy + shelfT + 0.03, dz); g.add(div);
+      }
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.06, shelfW), bMat).translateX(iD - 0.01).translateY(sy + shelfT + 0.03).translateZ(iW/2));
+      continue;
+    }
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(iD, shelfT, shelfW), pineMat);
+    shelf.position.set(iD/2, sy + shelfT/2, iW/2);
+    shelf.castShadow = true; g.add(shelf);
+  }
+
+  // Cross brace
+  const braceLen = Math.sqrt(iH*iH + (iW-0.06)*(iW-0.06));
+  for (const d of [1, -1]) {
+    const brace = new THREE.Mesh(new THREE.BoxGeometry(0.02, braceLen, 0.02), braceMat);
+    brace.position.set(0.01, iH/2, iW/2);
+    brace.rotation.x = d * Math.atan2(iH, iW - 0.06);
+    g.add(brace);
+  }
+
+  // Drawer
+  if (cfg.drawer) {
+    const dH = 0.17;
+    const drawerBaseY = cfg.drawerPos * secH + shelfT + 0.005;
+    const dY = drawerBaseY + dH/2;
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.018, dH, shelfW + 0.002), pineDoorMat).translateX(iD + 0.009).translateY(dY).translateZ(iW/2));
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(iD - 0.05, dH - 0.02, shelfW - 0.02), new THREE.MeshStandardMaterial({color:0xc89b65,roughness:0.8})).translateX(iD/2 - 0.01).translateY(dY).translateZ(iW/2));
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.012, 0.10), metalMat).translateX(iD + 0.024).translateY(dY).translateZ(iW/2));
+  }
+
+  // Helper: render one set of wooden doors at given Y
+  function renderWoodDoors(startY) {
+    const doorH = 0.83;
+    const halfW = (shelfW - 0.008) / 2;
+    for (let di = 0; di < 2; di++) {
+      const dz = sideT + halfW/2 + di * (halfW + 0.008);
+      const door = new THREE.Mesh(new THREE.BoxGeometry(0.018, doorH - 0.01, halfW), pineDoorMat);
+      door.position.set(iD + 0.009, startY + doorH/2, dz); door.castShadow = true; g.add(door);
+      const inset = new THREE.Mesh(new THREE.BoxGeometry(0.003, doorH * 0.6, halfW * 0.7),
+        new THREE.MeshStandardMaterial({ color: 0xc9a066, roughness: 0.7 }));
+      inset.position.set(iD + 0.020, startY + doorH/2, dz); g.add(inset);
+      const hzOff = di === 0 ? halfW * 0.35 : -halfW * 0.35;
+      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.04, 8), metalMat);
+      handle.rotation.z = Math.PI/2;
+      handle.position.set(iD + 0.026, startY + doorH/2, dz + hzOff); g.add(handle);
+    }
+  }
+
+  // 1x Szafka sosna (wood doors)
+  if (cfg.doors === 'wood') {
+    const doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    renderWoodDoors(doorStartY);
+  }
+
+  // 2x Szafka sosna (double stacked cabinets)
+  if (cfg.doors === 'wood2') {
+    const doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    renderWoodDoors(doorStartY);
+    renderWoodDoors(doorStartY + 2 * secH);
+  }
+
+  // Felt doors
+  if (cfg.doors === 'felt') {
+    const doorH = 0.83, doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const feltMat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.95 });
+    const halfW = (shelfW - 0.008) / 2;
+    for (let di = 0; di < 2; di++) {
+      const dz = sideT + halfW/2 + di * (halfW + 0.008);
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.018, doorH - 0.01, halfW), feltMat).translateX(iD + 0.009).translateY(doorStartY + doorH/2).translateZ(dz));
+      const hzOff = di === 0 ? halfW * 0.35 : -halfW * 0.35;
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.06, 0.025), new THREE.MeshStandardMaterial({color:0x8b5e3c,roughness:0.7})).translateX(iD + 0.022).translateY(doorStartY + doorH/2).translateZ(dz + hzOff));
+    }
+  }
+
+  // Mesh doors (black)
+  if (cfg.doors === 'mesh') {
+    const doorH = 0.83, doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const meshMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3, metalness: 0.85 });
+    const fT = 0.022;
+    [[0.012,fT,shelfW,iD+0.008,doorStartY+fT/2,iW/2],[0.012,fT,shelfW,iD+0.008,doorStartY+doorH-fT/2,iW/2],
+     [0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,sideT+fT/2],[0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,iW-sideT-fT/2],
+     [0.012,doorH,0.012,iD+0.008,doorStartY+doorH/2,iW/2]].forEach(([w,h,d,x,y,z])=>{
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w,h,d),meshMat).translateX(x).translateY(y).translateZ(z));
+    });
+    const gridSp=0.032;
+    for(let gy=fT+gridSp;gy<doorH-fT;gy+=gridSp){const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,shelfW-2*fT,4),meshMat);w.rotation.x=Math.PI/2;w.position.set(iD+0.008,doorStartY+gy,iW/2);g.add(w);}
+    for(let gz=sideT+fT+gridSp;gz<iW-sideT-fT;gz+=gridSp){if(Math.abs(gz-iW/2)<0.008)continue;const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,doorH-2*fT,4),meshMat);w.position.set(iD+0.008,doorStartY+doorH/2,gz);g.add(w);}
+    for(const side of [-1,1])g.add(new THREE.Mesh(new THREE.BoxGeometry(0.010,0.010,0.05),meshMat).translateX(iD+0.020).translateY(doorStartY+doorH/2).translateZ(iW/2+side*0.04));
+  }
+
+  // Mesh doors sage green
+  if (cfg.doors === 'meshgreen') {
+    const doorH = 0.83, doorStartY = cfg.doorsPos * secH + shelfT + 0.005;
+    const mgMat = new THREE.MeshStandardMaterial({ color: 0x8aaa7a, roughness: 0.3, metalness: 0.85 });
+    const fT = 0.022;
+    [[0.012,fT,shelfW,iD+0.008,doorStartY+fT/2,iW/2],[0.012,fT,shelfW,iD+0.008,doorStartY+doorH-fT/2,iW/2],
+     [0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,sideT+fT/2],[0.012,doorH,fT,iD+0.008,doorStartY+doorH/2,iW-sideT-fT/2],
+     [0.012,doorH,0.012,iD+0.008,doorStartY+doorH/2,iW/2]].forEach(([w,h,d,x,y,z])=>{
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mgMat).translateX(x).translateY(y).translateZ(z));
+    });
+    const gridSp=0.032;
+    for(let gy=fT+gridSp;gy<doorH-fT;gy+=gridSp){const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,shelfW-2*fT,4),mgMat);w.rotation.x=Math.PI/2;w.position.set(iD+0.008,doorStartY+gy,iW/2);g.add(w);}
+    for(let gz=sideT+fT+gridSp;gz<iW-sideT-fT;gz+=gridSp){if(Math.abs(gz-iW/2)<0.008)continue;const w=new THREE.Mesh(new THREE.CylinderGeometry(0.001,0.001,doorH-2*fT,4),mgMat);w.position.set(iD+0.008,doorStartY+doorH/2,gz);g.add(w);}
+    for(const side of [-1,1])g.add(new THREE.Mesh(new THREE.BoxGeometry(0.010,0.010,0.05),mgMat).translateX(iD+0.020).translateY(doorStartY+doorH/2).translateZ(iW/2+side*0.04));
+  }
+
+  // Container on wheels
+  if (cfg.container) {
+    const cW=0.78,cD=cfg.depth-0.02,cH=0.37,cY=shelfT+0.005;
+    const containerMat=new THREE.MeshStandardMaterial({color:0xdeb887,roughness:0.7,metalness:0.05});
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(cD,cH-0.04,cW),containerMat).translateX(iD/2).translateY(cY+(cH-0.04)/2+0.04).translateZ(iW/2));
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(cD-0.04,0.02,cW-0.04),new THREE.MeshStandardMaterial({color:0xc49b60,roughness:0.8})).translateX(iD/2).translateY(cY+cH-0.02).translateZ(iW/2));
+    const wheelMat=new THREE.MeshStandardMaterial({color:0x333333,roughness:0.4,metalness:0.5});
+    for(const[wx,wz]of[[-cD/2+0.05,-cW/2+0.05],[-cD/2+0.05,cW/2-0.05],[cD/2-0.05,-cW/2+0.05],[cD/2-0.05,cW/2-0.05]]){
+      const wheel=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.018,0.015,8),wheelMat);
+      wheel.rotation.x=Math.PI/2;wheel.position.set(iD/2+wx,cY+0.018,iW/2+wz);g.add(wheel);
+    }
+  }
+
+  // Hooks
+  if (cfg.hooks) {
+    const hookMat=new THREE.MeshStandardMaterial({color:0x555555,roughness:0.3,metalness:0.7});
+    for(let hi=0;hi<3;hi++){
+      const hy=0.5+hi*0.40; if(hy>iH-0.15)break;
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.015,0.05,0.012),hookMat).translateX(iD/2).translateY(hy).translateZ(iW+0.007));
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.015,0.012,0.05),hookMat).translateX(iD/2).translateY(hy-0.02).translateZ(iW+0.032));
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(0.008,6,4),hookMat).translateX(iD/2).translateY(hy-0.02).translateZ(iW+0.055));
+    }
+  }
+
+  // Rail
+  if (cfg.rail) {
+    const railY=secH*2+0.20;
+    if(railY<iH-0.1){
+      const railMesh=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,shelfW,8),metalMat);
+      railMesh.rotation.x=Math.PI/2;railMesh.position.set(iD*0.7,railY,iW/2);g.add(railMesh);
+      for(const sz of[sideT+0.01,iW-sideT-0.01])g.add(new THREE.Mesh(new THREE.BoxGeometry(0.02,0.02,0.015),metalMat).translateX(iD*0.7).translateY(railY).translateZ(sz));
+    }
+  }
+
+  g.position.set(0.01, FLOOR_Y, 0.01);
+  scene.add(g);
+  ivarGroup = g;
+
+  const hCm = Math.round(cfg.height * 100), dCm = Math.round(cfg.depth * 100);
+  ivarLabelSprite = label(`IVAR ${dCm}cm konfiguracja`, 0.26, FLOOR_Y + cfg.height + 0.15, 0.50);
+
+  const price = calcIVARPrice(cfg);
+  const ikeaUrl = ivarIkeaLinks[cfg.height] || ivarIkeaLinks[2.26];
+  ivarClickZoneMesh = addClickZone(iD/2 + 0.01, FLOOR_Y + cfg.height/2, iW/2 + 0.01, iD + 0.08, cfg.height, iW, {
+    name: `IKEA IVAR 89x${dCm}x${hCm} cm`,
+    links: [
+      { store: 'IKEA Planner', price: price + ' zl', url: ikeaUrl },
+      { store: 'Allegro', price: '~400-600 zl', url: `https://allegro.pl/listing?string=ikea%20ivar%2089x${dCm}x${hCm}` }
+    ]
+  });
+
+  document.getElementById('ivar-price-display').textContent = price + ' zl';
+  document.getElementById('ivar-info-line').innerHTML =
+    `IKEA IVAR 89x${dCm}x${hCm} cm <span class="price">${price} zl</span>`;
+  document.getElementById('total-display').textContent = `SUMA: ~${OTHER_COSTS + price} zl`;
+  document.getElementById('ivar-ikea-link').href = ikeaUrl;
+}
+
+// ===================== COSTWAY C-TABLE (60x40cm, adj height) =====================
+{
+  const tg = new THREE.Group();
+  const baseMat = new THREE.MeshStandardMaterial({color:0x333333,roughness:0.4,metalness:0.6});
+  const topMat = new THREE.MeshStandardMaterial({color:0xdeb887,roughness:0.6,metalness:0.05});
+  // C-shape metal frame
+  const baseW=0.55,baseD=0.35,baseH=0.02;
+  tg.add(new THREE.Mesh(new THREE.BoxGeometry(baseD,baseH,baseW),baseMat).translateY(baseH/2));
+  // Vertical pole
+  const poleH=0.75;
+  tg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,poleH,8),baseMat).translateX(-baseD/2+0.04).translateY(baseH+poleH/2));
+  // Horizontal arm
+  const armD=0.38;
+  tg.add(new THREE.Mesh(new THREE.BoxGeometry(armD,0.02,0.03),baseMat).translateX(-baseD/2+0.04+armD/2).translateY(baseH+poleH));
+  // Table top (60x40cm)
+  const topW=0.60,topD=0.40,topH=0.025;
+  const top=new THREE.Mesh(new THREE.BoxGeometry(topD,topH,topW),topMat);
+  top.position.set(0.05,baseH+poleH+topH/2,0);top.castShadow=true;tg.add(top);
+  // Cup holder ring
+  tg.add(new THREE.Mesh(new THREE.TorusGeometry(0.04,0.005,8,12),baseMat).translateX(0.15).translateY(baseH+poleH+0.02).translateZ(0.22).rotateX(Math.PI/2));
+  // Hidden wheels (small)
+  for(const[wx,wz]of[[-0.12,-0.22],[-0.12,0.22],[0.12,-0.22],[0.12,0.22]]){
+    tg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.01,6),baseMat).translateX(wx).translateY(0.006).translateZ(wz).rotateX(Math.PI/2));
+  }
+  tg.position.set(1.10, FLOOR_Y, 0.40);
+  scene.add(tg);
+}
+
+// ===================== 2x KRATA GardenPlus+ 50x154cm (on wall with ivy) =====================
+const krataMat = new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:0.4,metalness:0.7});
+function createKrata(x, z) {
+  const kg = new THREE.Group();
+  const kW=0.50, kH=1.54;
+  // Vertical bars
+  for(let i=0;i<=5;i++){
+    const bx=i*kW/5;
+    kg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,kH,4),krataMat).translateX(bx).translateY(kH/2));
+  }
+  // Horizontal bars
+  for(let j=0;j<=8;j++){
+    const by=j*kH/8;
+    const bar=new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,kW,4),krataMat);
+    bar.rotation.z=Math.PI/2;bar.position.set(kW/2,by,0);kg.add(bar);
+  }
+  // Frame
+  kg.add(new THREE.Mesh(new THREE.BoxGeometry(kW+0.01,0.006,0.006),krataMat).translateX(kW/2).translateY(0));
+  kg.add(new THREE.Mesh(new THREE.BoxGeometry(kW+0.01,0.006,0.006),krataMat).translateX(kW/2).translateY(kH));
+  kg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,kH,4),krataMat).translateX(0).translateY(kH/2));
+  kg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.003,0.003,kH,4),krataMat).translateX(kW).translateY(kH/2));
+
+  kg.position.set(x, FLOOR_Y+0.30, z);
+  scene.add(kg);
+
+  // Ivy climbing the krata
+  const ivyLeaf = new THREE.MeshStandardMaterial({color:0x2e7d32,roughness:0.8,side:THREE.DoubleSide});
+  const ivyDark = new THREE.MeshStandardMaterial({color:0x1b5e20,roughness:0.85,side:THREE.DoubleSide});
+  const ivyLight = new THREE.MeshStandardMaterial({color:0x4caf50,roughness:0.8,side:THREE.DoubleSide});
+  const vineM = new THREE.MeshStandardMaterial({color:0x33691e,roughness:0.7});
+  const mats=[ivyLeaf,ivyDark,ivyLight];
+
+  for(let i=0;i<60;i++){
+    const lx=x+Math.random()*kW;
+    const ly=FLOOR_Y+0.30+Math.random()*kH;
+    const lz=z+(Math.random()-0.5)*0.12;
+    const sz=0.03+Math.random()*0.05;
+    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2),mats[Math.floor(Math.random()*3)]);
+    lf.position.set(lx,ly,lz);lf.rotation.set(Math.random()*0.5,Math.random()*Math.PI*2,Math.random()*0.3);
+    scene.add(lf);
+  }
+  // Vines
+  for(let v=0;v<4;v++){
+    const vpts=[];
+    for(let p=0;p<8;p++)vpts.push(new THREE.Vector3(x+Math.random()*kW,FLOOR_Y+0.30+p*(kH/7)+(Math.random()-0.5)*0.1,z+(Math.random()-0.5)*0.06));
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(vpts),12,0.004,4,false),vineM));
+  }
+}
+createKrata(3.60, 0.02);
+createKrata(4.10, 0.02);
+
+// ===================== BAMBOO BENCH 90x33x43cm =====================
+{
+  const bg = new THREE.Group();
+  const bambooMat = new THREE.MeshStandardMaterial({color:0xc4a35a,roughness:0.6,metalness:0.05});
+  const bW=0.90, bD=0.33, bH=0.43;
+  // Seat (slats)
+  for(let i=0;i<5;i++){
+    const slat=new THREE.Mesh(new THREE.BoxGeometry(bD-0.02,0.015,bW/5-0.005),bambooMat);
+    slat.position.set(0,bH,(-bW/2)+(i+0.5)*(bW/5));slat.castShadow=true;bg.add(slat);
+  }
+  // Legs (4 bamboo cylinders)
+  for(const[lx,lz]of[[-bD/2+0.04,-bW/2+0.04],[-bD/2+0.04,bW/2-0.04],[bD/2-0.04,-bW/2+0.04],[bD/2-0.04,bW/2-0.04]]){
+    bg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.020,bH,8),bambooMat).translateX(lx).translateY(bH/2).translateZ(lz));
+  }
+  // Cross support
+  bg.add(new THREE.Mesh(new THREE.BoxGeometry(bD-0.12,0.02,0.015),bambooMat).translateY(bH*0.35));
+  bg.add(new THREE.Mesh(new THREE.BoxGeometry(0.015,0.02,bW-0.12),bambooMat).translateY(bH*0.35));
+
+  bg.position.set(3.20, FLOOR_Y, 0.72);
+  scene.add(bg);
+}
+
+// ===================== 2x JUMI FOLDING CHAIRS (50x46x80cm) =====================
+function createJumiChair(x, z, rotY) {
+  const cg = new THREE.Group();
+  const frameMat = new THREE.MeshStandardMaterial({color:0x333333,roughness:0.4,metalness:0.6});
+  const seatMat = new THREE.MeshStandardMaterial({color:0x2a2a2a,roughness:0.7});
+  const cW=0.46, cD=0.50, cH=0.80, seatH=0.44;
+  // Front legs
+  for(const s of [-1,1]){
+    cg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.010,0.010,seatH,6),frameMat).translateX(cD/2-0.05).translateY(seatH/2).translateZ(s*(cW/2-0.05)));
+  }
+  // Back legs (taller)
+  for(const s of [-1,1]){
+    cg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.010,0.010,cH,6),frameMat).translateX(-cD/2+0.05).translateY(cH/2).translateZ(s*(cW/2-0.05)));
+  }
+  // Seat (textilene)
+  const seat=new THREE.Mesh(new THREE.BoxGeometry(cD-0.12,0.015,cW-0.12),seatMat);
+  seat.position.set(0,seatH,0);seat.castShadow=true;cg.add(seat);
+  // Back rest (textilene)
+  const back=new THREE.Mesh(new THREE.BoxGeometry(0.015,cH-seatH-0.05,cW-0.12),seatMat);
+  back.position.set(-cD/2+0.05,seatH+(cH-seatH)/2,0);cg.add(back);
+  // Cross braces
+  cg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.005,0.005,cW-0.12,4),frameMat).rotateX(Math.PI/2).translateX(0).translateY(0).translateZ(-seatH*0.5));
+  // Armrests
+  for(const s of [-1,1]){
+    cg.add(new THREE.Mesh(new THREE.BoxGeometry(cD*0.5,0.015,0.025),frameMat).translateX(-0.02).translateY(seatH+0.25).translateZ(s*(cW/2-0.03)));
+  }
+  cg.rotation.y = rotY || 0;
+  cg.position.set(x, FLOOR_Y, z);
+  scene.add(cg);
+}
+createJumiChair(2.40, 0.55, 0.3);
+createJumiChair(2.80, 0.62, -0.2);
+
+// ===================== LAVENDER IN HEAVY POTS =====================
+function createHeavyLavenderPot(x, z) {
+  const pg = new THREE.Group();
+  // Heavy concrete/ceramic pot
+  const potMat = new THREE.MeshStandardMaterial({color:0x706050,roughness:0.85});
+  const rimMat = new THREE.MeshStandardMaterial({color:0x605040,roughness:0.8});
+  // Large square pot 40x40x35cm
+  pg.add(new THREE.Mesh(new THREE.BoxGeometry(0.40,0.35,0.40),potMat).translateY(0.175));
+  pg.add(new THREE.Mesh(new THREE.BoxGeometry(0.42,0.03,0.42),rimMat).translateY(0.35));
+  // Soil
+  pg.add(new THREE.Mesh(new THREE.BoxGeometry(0.36,0.02,0.36),new THREE.MeshStandardMaterial({color:0x4a3520,roughness:1})).translateY(0.34));
+  // 4 lavender plants
+  const lavM = new THREE.MeshStandardMaterial({color:0x7b5eae,roughness:0.9});
+  const lfM = new THREE.MeshStandardMaterial({color:0x6b8e6b,roughness:0.9});
+  for(let i=-1;i<=1;i++){
+    for(let j=-1;j<=1;j++){
+      if(Math.abs(i)+Math.abs(j)>1) continue;
+      const leaf=new THREE.Mesh(new THREE.SphereGeometry(0.04,6,4),lfM);
+      leaf.position.set(i*0.10,0.42,j*0.10);leaf.scale.y=1.6;pg.add(leaf);
+      pg.add(new THREE.Mesh(new THREE.ConeGeometry(0.018,0.08,6),lavM).translateX(i*0.10).translateY(0.52+Math.random()*0.04).translateZ(j*0.10));
+    }
+  }
+  pg.position.set(x,FLOOR_Y,z);
+  scene.add(pg);
+}
+createHeavyLavenderPot(0.70, 0.80);
+createHeavyLavenderPot(4.10, 0.78);
+
+// ===================== EXTRA IVY ON WALL =====================
+{
+  const ivyLeaf = new THREE.MeshStandardMaterial({color:0x2e7d32,roughness:0.8,side:THREE.DoubleSide});
+  const ivyDark = new THREE.MeshStandardMaterial({color:0x1b5e20,roughness:0.85,side:THREE.DoubleSide});
+  const mats=[ivyLeaf,ivyDark];
+  // Some ivy spreading beyond kraty onto wall (right side)
+  for(let i=0;i<40;i++){
+    const lx=3.40+Math.random()*1.20;
+    const ly=FLOOR_Y+0.20+Math.random()*2.0;
+    const lz=-0.02+Math.random()*0.08;
+    const sz=0.03+Math.random()*0.04;
+    const lf=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*1.2),mats[Math.floor(Math.random()*2)]);
+    lf.position.set(lx,ly,lz);lf.rotation.set(Math.random()*0.5,Math.random()*Math.PI*2,Math.random()*0.3);
+    scene.add(lf);
+  }
+}
+
+// ===================== LABELS =====================
+function label(text,x,y,z,scale) {
+  const c=document.createElement('canvas'); c.width=512; c.height=80;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='rgba(20,15,10,0.75)'; ctx.roundRect(0,0,512,80,10); ctx.fill();
+  ctx.fillStyle='#d4956a'; ctx.font='bold 28px Segoe UI'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(text,256,40);
+  const tex=new THREE.CanvasTexture(c);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
+  s.position.set(x,y,z); s.scale.set(scale||0.9,0.15,1); scene.add(s);
+  return s;
+}
+label('COSTWAY C-stolik', 1.10, FLOOR_Y+1.0, 0.40);
+label('Lawka bambusowa', 3.20, FLOOR_Y+0.65, 0.72);
+label('Krzesla JUMI', 2.60, FLOOR_Y+1.0, 0.58);
+label('Krata + bluszcz', 3.85, FLOOR_Y+2.2, 0.02);
+label('Girlanda SuperLED', L/2, H_wall-0.05, 0.40);
+label('Lawenda (ciezkie donice)', 0.70, FLOOR_Y+0.80, 0.80);
+
+// Background
+const gnd=new THREE.Mesh(new THREE.PlaneGeometry(40,40), new THREE.MeshStandardMaterial({color:0x1a1510,roughness:1}));
+gnd.rotation.x=-Math.PI/2; gnd.position.y=-25; scene.add(gnd);
+for(let i=0;i<8;i++){
+  const bw=2+Math.random()*3,bh=5+Math.random()*15,bd=2+Math.random()*3;
+  const bm=new THREE.Mesh(new THREE.BoxGeometry(bw,bh,bd),
+    new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(0.08,0.05,0.12+Math.random()*0.08),roughness:0.8}));
+  bm.position.set(-10+Math.random()*30,-25+bh/2,8+Math.random()*15); scene.add(bm);
+  for(let w=0;w<Math.floor(Math.random()*5)+2;w++){
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(0.3,0.4),
+      new THREE.MeshStandardMaterial({color:0xffeebb,emissive:0xffcc66,emissiveIntensity:1.2}))
+      .translateX(bm.position.x+(Math.random()-0.5)*bw*0.6).translateY(bm.position.y+(Math.random()-0.5)*bh*0.6).translateZ(bm.position.z-bd/2-0.01));
+  }
+}
+
+// ===================== CLICKABLE ZONES =====================
+const clickZones = [];
+function addClickZone(x,y,z,w,h,d,data) {
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
+  m.position.set(x,y,z); m.userData=data; scene.add(m); clickZones.push(m);
+  return m;
+}
+
+// Build initial IVAR
+updateSectionSelectors();
+buildIVAR(getIVARConfig());
+
+addClickZone(1.10, FLOOR_Y+0.45, 0.40, 0.50, 0.90, 0.60, {
+  name: 'COSTWAY Stolik C-shape 60x40 regulowany 65-100cm',
+  links: [
+    {store:'Amazon',price:'244 zl',url:'https://www.amazon.pl/dp/B0FDF6C8DM'},
+    {store:'Allegro',price:'~200-300 zl',url:'https://allegro.pl/listing?string=stolik+C+shape+regulowany+laptop'}
+  ]
+});
+
+addClickZone(3.20, FLOOR_Y+0.25, 0.72, 0.95, 0.50, 0.40, {
+  name: 'Lawka bambusowa 90x33x43 cm',
+  links: [
+    {store:'Amazon',price:'~130 zl',url:'https://www.amazon.pl/%C5%81awka-Bambusowa-Drewniana-Wej%C5%9Bciowej-Przedpokoju/dp/B0CGF62Z8G'},
+    {store:'Allegro',price:'~100-150 zl',url:'https://allegro.pl/listing?string=lawka+bambusowa+90cm'}
+  ]
+});
+
+addClickZone(2.60, FLOOR_Y+0.45, 0.58, 0.80, 0.90, 0.55, {
+  name: '2x Krzeslo JUMI skladane 50x46x80 cm',
+  links: [
+    {store:'Castorama (2szt)',price:'~198 zl',url:'https://www.castorama.pl/departments/krzes-o-balkonowe-jumi-sk-adane-wygodne-80-cm-czarne-metalowe-2-szt-/5900410282148_CAPL.prd'},
+    {store:'Castorama (1szt)',price:'~99 zl',url:'https://www.castorama.pl/departments/krzes-o-balkonowe-jumi-sk-adane-wygodne-80-cm-czarne-metalowe-1-szt-/5900410282131_CAPL.prd'}
+  ]
+});
+
+addClickZone(3.85, FLOOR_Y+1.10, 0.02, 1.20, 1.60, 0.20, {
+  name: '2x Krata scienna GardenPlus+ 50x154 cm + Bluszcz Verve',
+  links: [
+    {store:'Allegro (krata)',price:'159 zl/szt',url:'https://allegro.pl/produkt/pergola-metal-gardenplus-krata-154-cm-2d941ecf-266f-4f71-ba8f-cb729471149d?offerId=12199596322'},
+    {store:'Castorama (bluszcz)',price:'24.98 zl/szt',url:'https://www.castorama.pl/bluszcz-pospolity-verve-2-l/5059340414539_CAPL.prd'},
+    {store:'Allegro (bluszcz)',price:'~15-25 zl',url:'https://allegro.pl/listing?string=bluszcz+pospolity+sadzonka'}
+  ]
+});
+
+addClickZone(L/2, H_wall-0.30, 0.35, L*0.6, 0.30, 0.50, {
+  name: 'Girlanda SuperLED 550cm solarna 20 LED',
+  links: [
+    {store:'Allegro',price:'49.99 zl',url:'https://allegro.pl/produkt/girlanda-superled-550-cm-solarne-4bc34180-dac3-4ace-86f1-29793435edc9?offerId=18422891180'},
+    {store:'Castorama (alt)',price:'~60-90 zl',url:'https://www.castorama.pl/departments/girlanda-solarna-lumiled-ogrodowa-15x-led-ozdobne-ar-wki-10m-ip65-2700k-z-pilotem-1-szt-/5904422794736_CAPL.prd'}
+  ]
+});
+
+addClickZone(0.70, FLOOR_Y+0.35, 0.80, 0.50, 0.70, 0.50, {
+  name: 'Lawenda w ciezkiej donicy + 2. donica',
+  links: [
+    {store:'Castorama (lawenda)',price:'6.98 zl/szt',url:'https://www.castorama.pl/lawenda-doniczka-12-cm-wysokosc-28-cm/5902738996172_CAPL.prd'},
+    {store:'Castorama (donica ciezka)',price:'~80 zl',url:'https://www.castorama.pl/donica-balkonowa-berberis-60-cm-antracyt/8590415011224_CAPL.prd'},
+    {store:'Allegro (lawenda)',price:'~5-10 zl',url:'https://allegro.pl/listing?string=lawenda+doniczka'}
+  ]
+});
+
+addClickZone(L/2, FLOOR_Y-0.01, W_wall/2, L, 0.05, W_wall, {
+  name: 'Podest tarasowy drewniany 30x30 cm (~52 szt)',
+  links: [
+    {store:'Castorama',price:'~50 zl/4szt',url:'https://www.castorama.pl/podest-tarasowy-goodhome-30-x-30-cm-akacja-4-szt-/5059340066035_CAPL.prd'},
+    {store:'Allegro',price:'~126 zl/30szt',url:'https://allegro.pl/listing?string=podest%20tarasowy%20akacja%2030x30'}
+  ]
+});
+
+// Raycaster
+const raycaster=new THREE.Raycaster(), mouse=new THREE.Vector2();
+let clickStart=new THREE.Vector2();
+renderer.domElement.addEventListener('pointerdown',(e)=>{clickStart.set(e.clientX,e.clientY);});
+renderer.domElement.addEventListener('pointerup',(e)=>{
+  if(Math.sqrt((e.clientX-clickStart.x)**2+(e.clientY-clickStart.y)**2)>5)return;
+  mouse.x=(e.clientX/innerWidth)*2-1; mouse.y=-(e.clientY/innerHeight)*2+1;
+  raycaster.setFromCamera(mouse,camera);
+  const hits=raycaster.intersectObjects(clickZones);
+  if(hits.length>0) {
+    const d=hits[0].object.userData;
+    const p=document.getElementById('popup'), c=document.getElementById('popup-content');
+    let h=`<h3>${d.name}</h3>`;
+    d.links.forEach(l=>{h+=`<a href="${l.url}" target="_blank"><span class="store">${l.store}</span> — <span class="price-tag">${l.price}</span></a>`;});
+    c.innerHTML=h; p.style.display='block';
+    p.style.left=Math.min(e.clientX+10,innerWidth-380)+'px';
+    p.style.top=Math.min(e.clientY+10,innerHeight-200)+'px';
+  } else document.getElementById('popup').style.display='none';
+});
+
+// ===================== CONFIGURATOR EVENTS =====================
+document.querySelectorAll('#ivar-config input').forEach(input => {
+  input.addEventListener('change', () => {
+    if (input.name === 'ivar-height' || input.name === 'ivar-doors') updateSectionSelectors();
+    buildIVAR(getIVARConfig());
+  });
+});
+document.querySelectorAll('#ivar-config select').forEach(sel => {
+  sel.addEventListener('change', () => buildIVAR(getIVARConfig()));
+});
+
+// Day/Evening toggle
+window.toggleMode = function() {
+  isEvening = !isEvening;
+  const btn = document.getElementById('mode-toggle');
+  if (isEvening) {
+    scene.background = eveningBg;
+    ambient.intensity = 0.35; ambient.color.setHex(0x2a1a10);
+    sun.intensity = 0.3; sun.color.setHex(0xffd0a0);
+    fill.intensity = 0.15; hemi.intensity = 0.25;
+    renderer.toneMappingExposure = 0.7;
+    stringLightBulbs.forEach(b=>{b.material.emissiveIntensity=3.0;});
+    stringLightPLs.forEach(pl=>{pl.intensity=0.20;});
+    btn.textContent = 'Tryb: Wieczor';
+  } else {
+    scene.background = dayBg;
+    ambient.intensity = 0.6; ambient.color.setHex(0xffffff);
+    sun.intensity = 1.2; sun.color.setHex(0xffffff);
+    fill.intensity = 0.3; hemi.intensity = 0.1;
+    renderer.toneMappingExposure = 1.2;
+    stringLightBulbs.forEach(b=>{b.material.emissiveIntensity=0.1;});
+    stringLightPLs.forEach(pl=>{pl.intensity=0.02;});
+    btn.textContent = 'Tryb: Dzien';
+  }
+};
+
+let time=0;
+function animate() {
+  requestAnimationFrame(animate);
+  ctrl.update();
+  time+=0.016;
+  if(isEvening) stringLightBulbs.forEach((b,i)=>{b.material.emissiveIntensity=2.5+Math.sin(time*1.8+i*1.5)*0.5;});
+  renderer.render(scene,camera);
+}
+animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+</script>
+</body>
+</html>
