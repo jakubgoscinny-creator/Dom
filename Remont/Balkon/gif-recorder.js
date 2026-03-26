@@ -168,13 +168,25 @@
     const cam = window.camera;
     const startPos = cam.position.clone();
 
-    // Orbit params
-    const FRAMES = 72;
+    // Force day mode before recording — detect via DOM text
+    if (typeof window.toggleMode === 'function') {
+      var modeEl = document.getElementById('mode-toggle') || document.getElementById('mode');
+      var modeText = modeEl ? modeEl.textContent.toLowerCase() : '';
+      // If currently in evening/night mode, toggle to day
+      if (modeText.includes('wieczor') || modeText.includes('wieczór')
+        || modeText.includes('night') || modeText.includes('noc')) {
+        window.toggleMode();
+      }
+    }
+
+    // Orbit params: 180° boomerang (forward + reversed = smooth loop)
+    const HALF_FRAMES = 48; // 48 frames for 180° sweep
     const dx = startPos.x - TARGET.x;
     const dz = startPos.z - TARGET.z;
     const radius = Math.sqrt(dx * dx + dz * dz);
     const startAngle = Math.atan2(dz, dx);
     const camY = startPos.y;
+    const TOTAL_FRAMES = HALF_FRAMES * 2; // forward + reverse = boomerang
 
     if (orbitCtrl) orbitCtrl.enabled = false;
 
@@ -195,12 +207,13 @@
     let frame = 0;
 
     function captureFrame() {
-      if (frame >= FRAMES) {
+      if (frame >= HALF_FRAMES) {
         finishRecording();
         return;
       }
 
-      const angle = startAngle + (frame / FRAMES) * Math.PI * 2;
+      // 180° sweep only (boomerang reverse added in finishRecording)
+      const angle = startAngle + (frame / HALF_FRAMES) * Math.PI;
       cam.position.set(
         TARGET.x + radius * Math.cos(angle),
         camY,
@@ -218,8 +231,8 @@
       frameDataURLs.push(threeCanvas.toDataURL('image/png'));
 
       frame++;
-      fill.style.width = Math.round((frame / FRAMES) * 100) + '%';
-      statusEl.textContent = 'Klatka ' + frame + '/' + FRAMES;
+      fill.style.width = Math.round((frame / HALF_FRAMES) * 100) + '%';
+      statusEl.textContent = 'Klatka ' + frame + '/' + HALF_FRAMES;
 
       // Use setTimeout to yield to browser for rendering
       setTimeout(captureFrame, 30);
@@ -250,7 +263,13 @@
 
       // Build GIF using inline encoder
       statusEl.textContent = 'Składanie GIF... (może potrwać)';
-      buildGIF(frameDataURLs, 80, function (gifBlob) {
+      // Boomerang: add reversed frames (skip first and last to avoid stutter)
+      var boomerangFrames = frameDataURLs.slice();
+      for (var ri = frameDataURLs.length - 2; ri >= 1; ri--) {
+        boomerangFrames.push(frameDataURLs[ri]);
+      }
+      // Slower: 120ms per frame (was 80ms)
+      buildGIF(boomerangFrames, 120, function (gifBlob) {
         downloadBlob(gifBlob, PROJECT + '_preview.gif');
         console.log('[Recorder] GIF: ' + (gifBlob.size / 1024 / 1024).toFixed(1) + ' MB');
 
