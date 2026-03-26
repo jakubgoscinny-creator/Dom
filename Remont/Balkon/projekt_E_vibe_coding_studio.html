@@ -73,6 +73,8 @@ renderer.domElement.addEventListener("pointerup",e=>{if(Math.hypot(e.clientX-cli
 window.toggleMode=function(){night=!night;scene.background=night?nightBg:dayBg;ambient.intensity=night?.42:.62;ambient.color.setHex(night?0x1e3f5f:0xffffff);sun.intensity=night?.24:1.08;fill.intensity=night?.16:.28;hemi.intensity=night?.36:.16;renderer.toneMappingExposure=night?.86:1.16;document.getElementById("mode").textContent=night?"Tryb: Night Focus":"Tryb: Day Flow"};
 let t=0;function animate(){requestAnimationFrame(animate);controls.update();t+=.016;glows.forEach(g=>{const v=g.b+Math.sin(t*g.s+g.p)*g.b*.16;if(g.m&&g.m.material&&"emissiveIntensity" in g.m.material)g.m.material.emissiveIntensity=night?v:Math.max(.08,g.b*.18);if(g.l)g.l.intensity=night?v:Math.max(.02,g.b*.18)});renderer.render(scene,camera)}animate();
 addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+window.renderer=renderer;window.camera=camera;window.scene=scene;window.controls=controls;
 </script>
+<script src="gif-recorder.js" data-project="projekt_E_vibe" data-target-x="2.3" data-target-y="0.85" data-target-z="0.45"></script>
 </body>
 </html>
