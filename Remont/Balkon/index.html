@@ -5,122 +5,471 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Projekty Balkonu 3D</title>
 <style>
+  :root {
+    --lavender: #9b7ec8;
+    --lavender-light: #c4a8e8;
+    --lavender-pale: #e8d8f8;
+    --lavender-deep: #6b4e8a;
+    --ivy: #4a8c5c;
+    --ivy-light: #6db87a;
+    --ivy-dark: #2e5e3a;
+    --bg-top: #1e1430;
+    --bg-mid: #1a1028;
+    --bg-bot: #120e20;
+    --text: #f0eaf8;
+    --muted: #b8a8cc;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     min-height: 100vh;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    font-family: 'Segoe UI', sans-serif;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px;
+    font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(155,126,200,0.18), transparent 50%),
+      radial-gradient(ellipse at 80% 15%, rgba(74,140,92,0.12), transparent 40%),
+      radial-gradient(ellipse at 50% 100%, rgba(107,78,138,0.15), transparent 50%),
+      linear-gradient(170deg, var(--bg-top) 0%, var(--bg-mid) 50%, var(--bg-bot) 100%);
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* ---- decorative ivy vines on edges ---- */
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    width: 120px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.25;
+  }
+  body::before {
+    top: 0; left: 0; height: 100%;
+    background:
+      radial-gradient(ellipse at 0% 20%, rgba(74,140,92,0.5) 0%, transparent 70%),
+      radial-gradient(ellipse at 0% 60%, rgba(46,94,58,0.4) 0%, transparent 60%),
+      radial-gradient(ellipse at 0% 90%, rgba(109,184,122,0.3) 0%, transparent 50%);
+  }
+  body::after {
+    top: 0; right: 0; height: 100%;
+    background:
+      radial-gradient(ellipse at 100% 30%, rgba(74,140,92,0.4) 0%, transparent 70%),
+      radial-gradient(ellipse at 100% 70%, rgba(46,94,58,0.35) 0%, transparent 55%);
+  }
+
+  .shell {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+  }
+
+  /* ---- hero ---- */
+  .hero {
+    text-align: center;
+    margin-bottom: 48px;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: rgba(155,126,200,0.15);
+    border: 1px solid rgba(155,126,200,0.25);
+    color: var(--lavender-light);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
   }
   h1 {
-    font-size: 32px;
-    margin-bottom: 8px;
-    background: linear-gradient(90deg, #81c784, #4fc3f7);
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1.1;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, var(--lavender-light), var(--ivy-light), var(--lavender));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   .subtitle {
-    color: #aaa;
-    font-size: 14px;
-    margin-bottom: 40px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 640px;
+    margin: 0 auto 24px;
   }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat strong {
+    display: block;
+    font-size: 28px;
+    color: var(--lavender-light);
+  }
+  .stat span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ---- section divider with ivy ---- */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 8px 0 28px;
+  }
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(74,140,92,0.4), rgba(155,126,200,0.3), transparent);
+  }
+  .divider-leaf {
+    font-size: 20px;
+    filter: drop-shadow(0 0 6px rgba(74,140,92,0.5));
+  }
+
+  /* ---- grid ---- */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    max-width: 1200px;
-    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 22px;
+    margin-bottom: 28px;
   }
+
+  /* ---- card ---- */
   .card {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px;
-    padding: 28px;
-    transition: all 0.3s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px;
+    border-radius: 20px;
     text-decoration: none;
-    color: #fff;
-    display: block;
-    backdrop-filter: blur(8px);
+    color: var(--text);
+    border: 1px solid rgba(155,126,200,0.15);
+    background:
+      linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)),
+      rgba(26,16,40,0.85);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
+    overflow: hidden;
+    min-height: 260px;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow), transparent 70%);
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 250ms;
   }
   .card:hover {
-    transform: translateY(-4px);
-    background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.25);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    transform: translateY(-5px);
+    border-color: rgba(155,126,200,0.35);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
   }
-  .card h2 { font-size: 20px; margin-bottom: 8px; }
-  .card .desc { color: #bbb; font-size: 13px; line-height: 1.6; margin-bottom: 12px; }
-  .card .tag {
+  .card:hover::before { opacity: 0.5; }
+
+  .card-badge {
     display: inline-block;
-    padding: 3px 10px;
-    border-radius: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 12px;
+  }
+  .card h2 {
+    font-size: 22px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+  .card .desc {
+    color: #c8bed8;
+    font-size: 13px;
+    line-height: 1.65;
+    margin-bottom: 16px;
+    flex-grow: 1;
+  }
+  .card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
     font-size: 11px;
     font-weight: 600;
-    margin-right: 6px;
+    background: rgba(155,126,200,0.12);
+    color: var(--lavender-pale);
+    border: 1px solid rgba(155,126,200,0.15);
   }
-  .card-a { border-top: 3px solid #81c784; }
-  .card-a h2 { color: #81c784; }
-  .card-a .tag { background: rgba(129,199,132,0.2); color: #81c784; }
-  .card-b { border-top: 3px solid #ef9a9a; }
-  .card-b h2 { color: #ef9a9a; }
-  .card-b .tag { background: rgba(239,154,154,0.2); color: #ef9a9a; }
-  .card-c { border-top: 3px solid #f0c060; }
-  .card-c h2 { color: #f0c060; }
-  .card-c .tag { background: rgba(240,192,96,0.2); color: #f0c060; }
-  .card-d { border-top: 3px solid #8fce8f; }
-  .card-d h2 { color: #8fce8f; }
-  .card-d .tag { background: rgba(143,206,143,0.2); color: #8fce8f; }
-  .card-e { border-top: 3px solid #d4956a; }
-  .card-e h2 { color: #d4956a; }
-  .card-e .tag { background: rgba(212,149,106,0.2); color: #d4956a; }
-  .footer {
-    margin-top: 40px;
-    color: #666;
+  .card .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid rgba(155,126,200,0.12);
+    font-size: 13px;
+  }
+  .price-row .price {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .price-row .hint {
+    color: var(--muted);
     font-size: 12px;
+  }
+
+  /* ---- per-card accents ---- */
+  .card-a { --accent: #7ec89b; --glow: rgba(126,200,155,0.4); }
+  .card-b { --accent: #e89a9a; --glow: rgba(232,154,154,0.4); }
+  .card-c { --accent: #e8c06a; --glow: rgba(232,192,106,0.4); }
+  .card-d { --accent: #6db87a; --glow: rgba(109,184,122,0.4); }
+  .card-e1 { --accent: #d4956a; --glow: rgba(212,149,106,0.4); }
+  .card-e2 { --accent: #57d5ff; --glow: rgba(87,213,255,0.4); }
+  .card-f { --accent: #e88aaf; --glow: rgba(232,138,175,0.4); }
+
+  /* ---- featured card (full width) ---- */
+  .featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24px;
+    min-height: 220px;
+  }
+  .featured .desc { margin-bottom: 12px; }
+
+  /* ---- footer ---- */
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 18px;
+    border-radius: 16px;
+    background: rgba(155,126,200,0.06);
+    border: 1px solid rgba(155,126,200,0.1);
+  }
+
+  /* ---- lavender decorative dots ---- */
+  .lav-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .lav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--lavender);
+    opacity: 0.4;
+  }
+  .lav-dot:nth-child(2) { opacity: 0.6; width: 8px; height: 8px; }
+  .lav-dot:nth-child(3) { opacity: 0.8; width: 10px; height: 10px; }
+  .lav-dot:nth-child(4) { opacity: 0.6; width: 8px; height: 8px; }
+  .lav-dot:nth-child(5) { opacity: 0.4; }
+
+  @media (max-width: 768px) {
+    .featured { grid-template-columns: 1fr; }
+    .hero-stats { gap: 20px; }
+    .grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
-  <h1>Projekty Balkonu 3D</h1>
-  <p class="subtitle">Balkon 465 x 99-107 cm, 9. pietro | Interaktywne wizualizacje 3D z konfiguratorem IVAR</p>
+<div class="shell">
 
-  <div class="grid">
-    <a class="card card-a" href="projekt_A_ivar30.html">
-      <h2>Projekt A - IVAR 30cm</h2>
-      <p class="desc">IVAR plecami do lewej sciany, stolik polokragly, krzesla skladane, lawenda w donicach</p>
-      <span class="tag">30cm glebokosci</span>
-      <span class="tag">od ~1486 zl</span>
-    </a>
-    <a class="card card-b" href="projekt_B_ivar50.html">
-      <h2>Projekt B - IVAR 50cm</h2>
-      <p class="desc">IVAR 50cm z wieksza przestrzenia, stolik skladany, krzesla, bluszcz</p>
-      <span class="tag">50cm glebokosci</span>
-      <span class="tag">od ~1618 zl</span>
-    </a>
-    <a class="card card-c" href="projekt_C_premium_hygge.html">
-      <h2>Projekt C - Premium Hygge</h2>
-      <p class="desc">Ciepla atmosfera, lampiony, poduszki, swiatla LED, tryb dzienny/wieczorny</p>
-      <span class="tag">Hygge</span>
-      <span class="tag">od ~1998 zl</span>
-    </a>
-    <a class="card card-d" href="projekt_D_premium_jungle.html">
-      <h2>Projekt D - Premium Jungle</h2>
-      <p class="desc">Zielona dzungla, ziola na polkach, rosliny zwisajace, tryb dzienny/wieczorny</p>
-      <span class="tag">Jungle</span>
-      <span class="tag">od ~2083 zl</span>
-    </a>
-    <a class="card card-e" href="projekt_E_ogrod_srodziemnomorski.html">
-      <h2>Projekt E - Ogrod Srodziemnomorski</h2>
-      <p class="desc">Pergola narozna, biurko stojace, fotel, lawka bambusowa, doniczki wiszace, bluszcz, girlanda + lampki</p>
-      <span class="tag">Srodziemnomorski</span>
-      <span class="tag">od ~3507 zl</span>
-    </a>
+  <header class="hero">
+    <div class="hero-badge">Balkon 465 x 99-107 cm &middot; 9. pietro &middot; Bydgoszcz</div>
+    <h1>7 projektow balkonu w 3D</h1>
+    <p class="subtitle">
+      Interaktywne wizualizacje Three.js z konfiguratorem IVAR, trybem dzien/wieczor
+      i klikalnymi elementami prowadzacymi do sklepow.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><strong>7</strong><span>projektow 3D</span></div>
+      <div class="stat"><strong>IVAR</strong><span>konfigurator</span></div>
+      <div class="stat"><strong>3D</strong><span>obrot / zoom</span></div>
+    </div>
+  </header>
+
+  <div class="lav-dots">
+    <span class="lav-dot"></span><span class="lav-dot"></span><span class="lav-dot"></span><span class="lav-dot"></span><span class="lav-dot"></span>
   </div>
 
-  <p class="footer">Kliknij na projekt aby otworzyc interaktywna wizualizacje 3D | Obsluga: LPM=obrot, Scroll=zoom, PPM=przesuniecie</p>
+  <div class="divider">
+    <span class="divider-line"></span>
+    <span class="divider-leaf">&#127807;</span>
+    <span class="divider-line"></span>
+  </div>
+
+  <section class="grid">
+
+    <!-- A -->
+    <a class="card card-a" href="projekt_A_ivar30.html">
+      <div>
+        <span class="card-badge">Projekt A &middot; Kompakt</span>
+        <h2>IVAR 30 cm</h2>
+        <p class="desc">Waski regal IVAR, stolik polokragly, krzesla skladane, lawenda w donicach. Najprostszy i najtanszy start.</p>
+        <div class="tags">
+          <span class="tag">30cm glebokosci</span>
+          <span class="tag">konfigurator IVAR</span>
+        </div>
+      </div>
+      <div class="price-row">
+        <span class="hint">Prostota i zapas przejscia</span>
+        <span class="price">od ~1486 zl</span>
+      </div>
+    </a>
+
+    <!-- B -->
+    <a class="card card-b" href="projekt_B_ivar50.html">
+      <div>
+        <span class="card-badge">Projekt B &middot; Storage+</span>
+        <h2>IVAR 50 cm</h2>
+        <p class="desc">IVAR 50cm z wieksza przestrzenia na przechowywanie, stolik skladany, krzesla, bluszcz na kracie.</p>
+        <div class="tags">
+          <span class="tag">50cm glebokosci</span>
+          <span class="tag">konfigurator IVAR</span>
+        </div>
+      </div>
+      <div class="price-row">
+        <span class="hint">Praktyczny balans</span>
+        <span class="price">od ~1618 zl</span>
+      </div>
+    </a>
+
+    <!-- C -->
+    <a class="card card-c" href="projekt_C_premium_hygge.html">
+      <div>
+        <span class="card-badge">Projekt C &middot; Mood</span>
+        <h2>Premium Hygge</h2>
+        <p class="desc">Ciepla atmosfera, lampiony, poduszki, swiatla LED. Balkon jako przytulny mikro-salon. Tryb dzien/wieczor.</p>
+        <div class="tags">
+          <span class="tag">hygge</span>
+          <span class="tag">dzien / wieczor</span>
+          <span class="tag">konfigurator IVAR</span>
+        </div>
+      </div>
+      <div class="price-row">
+        <span class="hint">Klimat i relaks</span>
+        <span class="price">od ~1998 zl</span>
+      </div>
+    </a>
+
+    <!-- D -->
+    <a class="card card-d" href="projekt_D_premium_jungle.html">
+      <div>
+        <span class="card-badge">Projekt D &middot; Green</span>
+        <h2>Premium Jungle</h2>
+        <p class="desc">Miejska dzungla: ziola na polkach, rosliny zwisajace, gesta zielona scenografia. Tryb dzien/wieczor.</p>
+        <div class="tags">
+          <span class="tag">urban jungle</span>
+          <span class="tag">dzien / wieczor</span>
+          <span class="tag">konfigurator IVAR</span>
+        </div>
+      </div>
+      <div class="price-row">
+        <span class="hint">Oaza zamiast tarasu</span>
+        <span class="price">od ~2083 zl</span>
+      </div>
+    </a>
+
+    <!-- E - Ogrod Srodziemnomorski (featured) -->
+    <a class="card card-e1 featured" href="projekt_E_ogrod_srodziemnomorski.html">
+      <div>
+        <span class="card-badge">Projekt E &middot; Srodziemnomorski</span>
+        <h2>Ogrod Srodziemnomorski</h2>
+        <p class="desc">Pergola narozna L-ksztaltna, biurko stojace do pracy, fotel ogrodowy, lawka bambusowa, doniczki metalowe wiszace z nawadnianiem, bluszcz na scianie wschodniej, rynna doniczkowa, lawenda w ciezkich okraglych donicach, girlanda solarna + lampki LED.</p>
+        <div class="tags">
+          <span class="tag">biurko stojace</span>
+          <span class="tag">pergola narozna</span>
+          <span class="tag">bluszcz + lawenda</span>
+          <span class="tag">dzien / wieczor</span>
+          <span class="tag">konfigurator IVAR</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:space-between;">
+        <div class="tags" style="justify-content:flex-end;">
+          <span class="tag" style="background:rgba(212,149,106,0.2);color:#d4956a;border-color:rgba(212,149,106,0.3);">AKTUALNY PROJEKT</span>
+        </div>
+        <div class="price-row">
+          <span class="hint">Praca + wieczorny relaks z lawenda</span>
+          <span class="price">od ~3612 zl</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- E - Vibe Coding Studio -->
+    <a class="card card-e2" href="projekt_E_vibe_coding_studio.html">
+      <div>
+        <span class="card-badge">Projekt E alt &middot; Vibe Coding</span>
+        <h2>Vibe Coding Studio</h2>
+        <p class="desc">Wieczorny balkon pod laptop: kompaktowy blat, neonowy LED glow, coffee corner, organizacja kabli i miejski ambient.</p>
+        <div class="tags">
+          <span class="tag">work + chill</span>
+          <span class="tag">nocny klimat</span>
+          <span class="tag">RGB akcenty</span>
+        </div>
+      </div>
+      <div class="price-row">
+        <span class="hint">Flow, laptop i rytual pracy</span>
+        <span class="price">koncept 3D</span>
+      </div>
+    </a>
+
+    <!-- F -->
+    <a class="card card-f" href="projekt_F_sunrise_art_lab.html">
+      <div>
+        <span class="card-badge">Projekt F &middot; Creative</span>
+        <h2>Sunrise Art Lab</h2>
+        <p class="desc">Jasny balkon do porannej kawy, szkicowania i lekkiej ekspozycji. Wiecej koloru, wiecej swiatla, artystyczny vibe.</p>
+        <div class="tags">
+          <span class="tag">morning ritual</span>
+          <span class="tag">artystyczny vibe</span>
+          <span class="tag">lekki premium</span>
+        </div>
+      </div>
+      <div class="price-row">
+        <span class="hint">Energia i inspiracja co rano</span>
+        <span class="price">koncept 3D</span>
+      </div>
+    </a>
+
+  </section>
+
+  <div class="divider">
+    <span class="divider-line"></span>
+    <span class="divider-leaf">&#127811;</span>
+    <span class="divider-line"></span>
+  </div>
+
+  <div class="footer">
+    Kliknij na projekt aby otworzyc interaktywna wizualizacje 3D &middot;
+    Obsluga: LPM = obrot, Scroll = zoom, PPM = przesuniecie, Klik = linki zakupowe<br>
+    Balkon 9. pietro, Bydgoszcz &middot; Wizualizacje Three.js z konfiguratorem IVAR
+  </div>
+
+</div>
 </body>
 </html>
