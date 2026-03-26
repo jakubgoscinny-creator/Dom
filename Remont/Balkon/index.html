@@ -259,6 +259,44 @@
   }
   .featured .desc { margin-bottom: 12px; }
 
+  /* ---- SDG banner ---- */
+  .sdg-banner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 24px;
+    border-radius: 18px;
+    background:
+      linear-gradient(135deg, rgba(74,140,92,0.12), rgba(155,126,200,0.08));
+    border: 1px solid rgba(74,140,92,0.2);
+    margin-bottom: 22px;
+    text-decoration: none;
+    color: var(--text);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .sdg-banner:hover {
+    transform: translateY(-3px);
+    border-color: rgba(74,140,92,0.4);
+  }
+  .sdg-dots {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .sdg-dot {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .sdg-banner-text h3 { font-size: 15px; color: var(--ivy-light); margin-bottom: 4px; }
+  .sdg-banner-text p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .sdg-arrow { font-size: 20px; color: var(--ivy-light); margin-left: auto; flex-shrink: 0; }
+
   /* ---- footer ---- */
   .footer {
     text-align: center;
@@ -457,6 +495,22 @@
     </a>
 
   </section>
+
+  <a class="sdg-banner" href="sdg_impact.html">
+    <div class="sdg-dots">
+      <span class="sdg-dot" style="background:#3F7E44">13</span>
+      <span class="sdg-dot" style="background:#56C02B">15</span>
+      <span class="sdg-dot" style="background:#FD9D24">11</span>
+      <span class="sdg-dot" style="background:#4C9F38">3</span>
+      <span class="sdg-dot" style="background:#26BDE2">6</span>
+      <span class="sdg-dot" style="background:#BF8B2E">12</span>
+    </div>
+    <div class="sdg-banner-text">
+      <h3>Wplyw na Cele Zrownowazonego Rozwoju ONZ</h3>
+      <p>~30 roslin, 8.2 kg CO&#8322;/rok, 300 wizyt zapylaczy, 600 L wody zaoszcz. &mdash; jeden balkon, realny wplyw</p>
+    </div>
+    <span class="sdg-arrow">&rarr;</span>
+  </a>
 
   <div class="divider">
     <span class="divider-line"></span>
