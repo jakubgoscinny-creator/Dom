@@ -2,7 +2,14 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#9b7ec8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Balkon 3D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="7 interaktywnych wizualizacji 3D balkonu z konfiguratorem IVAR">
+<link rel="manifest" href="manifest.json">
 <title>Projekty Balkonu 3D</title>
 <style>
   :root {
@@ -18,11 +25,15 @@
     --bg-bot: #120e20;
     --text: #f0eaf8;
     --muted: #b8a8cc;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
     min-height: 100vh;
-    font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+    min-height: 100dvh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Trebuchet MS', sans-serif;
     color: var(--text);
     background:
       radial-gradient(ellipse at 20% 0%, rgba(155,126,200,0.18), transparent 50%),
@@ -31,23 +42,23 @@
       linear-gradient(170deg, var(--bg-top) 0%, var(--bg-mid) 50%, var(--bg-bot) 100%);
     padding: 0;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* ---- decorative ivy vines on edges ---- */
+  /* ---- decorative ivy vines ---- */
   body::before, body::after {
     content: '';
     position: fixed;
-    width: 120px;
+    width: 60px;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.25;
+    opacity: 0.2;
   }
   body::before {
     top: 0; left: 0; height: 100%;
     background:
       radial-gradient(ellipse at 0% 20%, rgba(74,140,92,0.5) 0%, transparent 70%),
-      radial-gradient(ellipse at 0% 60%, rgba(46,94,58,0.4) 0%, transparent 60%),
-      radial-gradient(ellipse at 0% 90%, rgba(109,184,122,0.3) 0%, transparent 50%);
+      radial-gradient(ellipse at 0% 60%, rgba(46,94,58,0.4) 0%, transparent 60%);
   }
   body::after {
     top: 0; right: 0; height: 100%;
@@ -61,31 +72,31 @@
     z-index: 1;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 40px 24px 60px;
+    padding: calc(20px + var(--safe-top)) 16px calc(20px + var(--safe-bottom));
   }
 
   /* ---- hero ---- */
   .hero {
     text-align: center;
-    margin-bottom: 48px;
+    margin-bottom: 28px;
     position: relative;
   }
   .hero-badge {
     display: inline-block;
-    padding: 6px 16px;
+    padding: 8px 16px;
     border-radius: 999px;
     background: rgba(155,126,200,0.15);
     border: 1px solid rgba(155,126,200,0.25);
     color: var(--lavender-light);
-    font-size: 12px;
-    letter-spacing: 0.12em;
+    font-size: 11px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
   h1 {
-    font-size: clamp(30px, 5vw, 52px);
+    font-size: clamp(28px, 7vw, 52px);
     line-height: 1.1;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     background: linear-gradient(135deg, var(--lavender-light), var(--ivy-light), var(--lavender));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -93,36 +104,35 @@
   }
   .subtitle {
     color: var(--muted);
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.6;
     max-width: 640px;
-    margin: 0 auto 24px;
+    margin: 0 auto 20px;
+    padding: 0 8px;
   }
   .hero-stats {
     display: flex;
     justify-content: center;
-    gap: 32px;
+    gap: 24px;
     flex-wrap: wrap;
   }
-  .stat {
-    text-align: center;
-  }
+  .stat { text-align: center; }
   .stat strong {
     display: block;
-    font-size: 28px;
+    font-size: 26px;
     color: var(--lavender-light);
   }
   .stat span {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--muted);
   }
 
-  /* ---- section divider with ivy ---- */
+  /* ---- divider ---- */
   .divider {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin: 8px 0 28px;
+    gap: 12px;
+    margin: 8px 0 20px;
   }
   .divider-line {
     flex: 1;
@@ -130,16 +140,34 @@
     background: linear-gradient(90deg, transparent, rgba(74,140,92,0.4), rgba(155,126,200,0.3), transparent);
   }
   .divider-leaf {
-    font-size: 20px;
+    font-size: 18px;
     filter: drop-shadow(0 0 6px rgba(74,140,92,0.5));
   }
 
-  /* ---- grid ---- */
+  /* ---- lavender dots ---- */
+  .lav-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .lav-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--lavender);
+    opacity: 0.4;
+  }
+  .lav-dot:nth-child(2) { opacity: 0.6; width: 7px; height: 7px; }
+  .lav-dot:nth-child(3) { opacity: 0.8; width: 9px; height: 9px; }
+  .lav-dot:nth-child(4) { opacity: 0.6; width: 7px; height: 7px; }
+  .lav-dot:nth-child(5) { opacity: 0.4; }
+
+  /* ---- grid (mobile-first: single column) ---- */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 22px;
-    margin-bottom: 28px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
   }
 
   /* ---- card ---- */
@@ -147,76 +175,120 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 24px;
-    border-radius: 20px;
     text-decoration: none;
     color: var(--text);
+    border-radius: 16px;
     border: 1px solid rgba(155,126,200,0.15);
     background:
       linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)),
       rgba(26,16,40,0.85);
     backdrop-filter: blur(12px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-    transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     overflow: hidden;
-    min-height: 260px;
+    transition: transform 200ms ease, border-color 200ms ease;
+    /* min touch target */
+    min-height: 48px;
+    -webkit-tap-highlight-color: rgba(155,126,200,0.15);
+  }
+  .card:active {
+    transform: scale(0.98);
+    border-color: rgba(155,126,200,0.35);
   }
   .card::before {
     content: '';
     position: absolute;
     top: -40px; right: -40px;
-    width: 160px; height: 160px;
+    width: 120px; height: 120px;
     border-radius: 50%;
     background: radial-gradient(circle, var(--glow), transparent 70%);
-    opacity: 0.3;
+    opacity: 0.25;
     pointer-events: none;
-    transition: opacity 250ms;
   }
-  .card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(155,126,200,0.35);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-  }
-  .card:hover::before { opacity: 0.5; }
 
+  /* ---- card GIF thumbnail ---- */
+  .card-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: rgba(0,0,0,0.3);
+    position: relative;
+  }
+  .card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .card-thumb .thumb-badge {
+    position: absolute;
+    top: 10px; left: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .card-thumb .thumb-3d {
+    position: absolute;
+    bottom: 10px; right: 10px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--lavender), var(--ivy));
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .card-body {
+    padding: 14px 16px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
   .card-badge {
     display: inline-block;
     padding: 4px 10px;
     border-radius: 999px;
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.08);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    align-self: flex-start;
   }
   .card h2 {
-    font-size: 22px;
+    font-size: 20px;
     line-height: 1.15;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--accent);
   }
   .card .desc {
     color: #c8bed8;
     font-size: 13px;
-    line-height: 1.65;
-    margin-bottom: 16px;
+    line-height: 1.55;
+    margin-bottom: 12px;
     flex-grow: 1;
   }
   .card .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 14px;
+    gap: 5px;
+    margin-bottom: 12px;
   }
   .tag {
     display: inline-block;
-    padding: 4px 10px;
+    padding: 4px 9px;
     border-radius: 999px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     background: rgba(155,126,200,0.12);
     color: var(--lavender-pale);
@@ -226,18 +298,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 12px;
+    padding-top: 10px;
     border-top: 1px solid rgba(155,126,200,0.12);
-    font-size: 13px;
+    font-size: 12px;
   }
   .price-row .price {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--accent);
   }
   .price-row .hint {
     color: var(--muted);
-    font-size: 12px;
+    font-size: 11px;
   }
 
   /* ---- per-card accents ---- */
@@ -249,88 +321,109 @@
   .card-e2 { --accent: #57d5ff; --glow: rgba(87,213,255,0.4); }
   .card-f { --accent: #e88aaf; --glow: rgba(232,138,175,0.4); }
 
-  /* ---- featured card (full width) ---- */
-  .featured {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 24px;
-    min-height: 220px;
+  /* ---- featured card ---- */
+  .featured .card-thumb .thumb-badge {
+    background: rgba(212,149,106,0.85);
   }
-  .featured .desc { margin-bottom: 12px; }
 
   /* ---- SDG banner ---- */
   .sdg-banner {
     display: flex;
     align-items: center;
-    gap: 18px;
-    padding: 20px 24px;
-    border-radius: 18px;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 14px;
     background:
       linear-gradient(135deg, rgba(74,140,92,0.12), rgba(155,126,200,0.08));
     border: 1px solid rgba(74,140,92,0.2);
-    margin-bottom: 22px;
+    margin-bottom: 16px;
     text-decoration: none;
     color: var(--text);
-    transition: transform 0.2s, border-color 0.2s;
+    transition: transform 0.15s;
+    -webkit-tap-highlight-color: rgba(74,140,92,0.15);
+    min-height: 48px;
   }
-  .sdg-banner:hover {
-    transform: translateY(-3px);
-    border-color: rgba(74,140,92,0.4);
-  }
+  .sdg-banner:active { transform: scale(0.98); }
   .sdg-dots {
     display: flex;
-    gap: 4px;
+    gap: 3px;
     flex-shrink: 0;
+    flex-wrap: wrap;
+    max-width: 70px;
   }
   .sdg-dot {
-    width: 28px; height: 28px;
-    border-radius: 6px;
+    width: 22px; height: 22px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
   }
-  .sdg-banner-text h3 { font-size: 15px; color: var(--ivy-light); margin-bottom: 4px; }
-  .sdg-banner-text p { font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .sdg-arrow { font-size: 20px; color: var(--ivy-light); margin-left: auto; flex-shrink: 0; }
+  .sdg-banner-text { flex: 1; min-width: 0; }
+  .sdg-banner-text h3 { font-size: 13px; color: var(--ivy-light); margin-bottom: 3px; }
+  .sdg-banner-text p { font-size: 11px; color: var(--muted); line-height: 1.45; }
+  .sdg-arrow { font-size: 18px; color: var(--ivy-light); flex-shrink: 0; }
 
   /* ---- footer ---- */
   .footer {
     text-align: center;
     color: var(--muted);
-    font-size: 12px;
-    line-height: 1.7;
-    padding: 18px;
-    border-radius: 16px;
+    font-size: 11px;
+    line-height: 1.6;
+    padding: 14px;
+    border-radius: 14px;
     background: rgba(155,126,200,0.06);
     border: 1px solid rgba(155,126,200,0.1);
   }
+  .footer .desktop-hint { display: none; }
 
-  /* ---- lavender decorative dots ---- */
-  .lav-dots {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 28px;
+  /* ============ TABLET (600px+) ============ */
+  @media (min-width: 600px) {
+    .shell { padding: 32px 20px 40px; }
+    .hero { margin-bottom: 36px; }
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .featured { grid-column: 1 / -1; }
+    .featured .card-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .sdg-dots { max-width: none; }
+    .sdg-dot { width: 26px; height: 26px; font-size: 11px; }
+    body::before, body::after { width: 90px; opacity: 0.22; }
   }
-  .lav-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--lavender);
-    opacity: 0.4;
-  }
-  .lav-dot:nth-child(2) { opacity: 0.6; width: 8px; height: 8px; }
-  .lav-dot:nth-child(3) { opacity: 0.8; width: 10px; height: 10px; }
-  .lav-dot:nth-child(4) { opacity: 0.6; width: 8px; height: 8px; }
-  .lav-dot:nth-child(5) { opacity: 0.4; }
 
-  @media (max-width: 768px) {
-    .featured { grid-template-columns: 1fr; }
-    .hero-stats { gap: 20px; }
-    .grid { grid-template-columns: 1fr; }
+  /* ============ DESKTOP (960px+) ============ */
+  @media (min-width: 960px) {
+    .shell { padding: 40px 24px 60px; }
+    .hero { margin-bottom: 48px; }
+    .hero-stats { gap: 32px; }
+    .stat strong { font-size: 28px; }
+    .grid {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 22px;
+    }
+    .card {
+      transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(155,126,200,0.35);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+    .card:hover::before { opacity: 0.5; }
+    .card h2 { font-size: 22px; }
+    .sdg-banner { padding: 20px 24px; gap: 18px; }
+    .sdg-dot { width: 28px; height: 28px; font-size: 11px; }
+    .sdg-banner-text h3 { font-size: 15px; }
+    .sdg-banner-text p { font-size: 12px; }
+    .footer .desktop-hint { display: inline; }
+    .footer .mobile-hint { display: none; }
+    body::before, body::after { width: 120px; opacity: 0.25; }
   }
 </style>
 </head>
@@ -338,7 +431,7 @@
 <div class="shell">
 
   <header class="hero">
-    <div class="hero-badge">Balkon 465 x 99-107 cm &middot; 9. pietro &middot; Bydgoszcz</div>
+    <div class="hero-badge">465 x 99-107 cm &middot; 9. pietro &middot; Bydgoszcz</div>
     <h1>7 projektow balkonu w 3D</h1>
     <p class="subtitle">
       Interaktywne wizualizacje Three.js z konfiguratorem IVAR, trybem dzien/wieczor
@@ -363,9 +456,37 @@
 
   <section class="grid">
 
+    <!-- E - Ogrod Srodziemnomorski (featured, first on mobile) -->
+    <a class="card card-e1 featured" href="projekt_E_ogrod_srodziemnomorski.html">
+      <div class="card-thumb">
+        <img src="img/projekt_E_ogrod_preview.gif" alt="Ogrod Srodziemnomorski 3D" loading="eager">
+        <span class="thumb-badge">AKTUALNY PROJEKT</span>
+        <span class="thumb-3d">3D</span>
+      </div>
+      <div class="card-body">
+        <span class="card-badge">Projekt E &middot; Srodziemnomorski</span>
+        <h2>Ogrod Srodziemnomorski</h2>
+        <p class="desc">Pergola narozna, biurko stojace, fotel ogrodowy, lawka bambusowa, doniczki wiszace z nawadnianiem, bluszcz, lawenda, girlanda solarna + lampki LED.</p>
+        <div class="tags">
+          <span class="tag">biurko stojace</span>
+          <span class="tag">pergola narozna</span>
+          <span class="tag">bluszcz + lawenda</span>
+          <span class="tag">konfigurator IVAR</span>
+        </div>
+        <div class="price-row">
+          <span class="hint">Praca + relaks z lawenda</span>
+          <span class="price">od ~3612 zl</span>
+        </div>
+      </div>
+    </a>
+
     <!-- A -->
     <a class="card card-a" href="projekt_A_ivar30.html">
-      <div>
+      <div class="card-thumb">
+        <img src="img/projekt_A_preview.gif" alt="IVAR 30cm 3D" loading="lazy">
+        <span class="thumb-3d">3D</span>
+      </div>
+      <div class="card-body">
         <span class="card-badge">Projekt A &middot; Kompakt</span>
         <h2>IVAR 30 cm</h2>
         <p class="desc">Waski regal IVAR, stolik polokragly, krzesla skladane, lawenda w donicach. Najprostszy i najtanszy start.</p>
@@ -373,16 +494,20 @@
           <span class="tag">30cm glebokosci</span>
           <span class="tag">konfigurator IVAR</span>
         </div>
-      </div>
-      <div class="price-row">
-        <span class="hint">Prostota i zapas przejscia</span>
-        <span class="price">od ~1486 zl</span>
+        <div class="price-row">
+          <span class="hint">Prostota i zapas przejscia</span>
+          <span class="price">od ~1486 zl</span>
+        </div>
       </div>
     </a>
 
     <!-- B -->
     <a class="card card-b" href="projekt_B_ivar50.html">
-      <div>
+      <div class="card-thumb">
+        <img src="img/projekt_B_preview.gif" alt="IVAR 50cm 3D" loading="lazy">
+        <span class="thumb-3d">3D</span>
+      </div>
+      <div class="card-body">
         <span class="card-badge">Projekt B &middot; Storage+</span>
         <h2>IVAR 50 cm</h2>
         <p class="desc">IVAR 50cm z wieksza przestrzenia na przechowywanie, stolik skladany, krzesla, bluszcz na kracie.</p>
@@ -390,16 +515,20 @@
           <span class="tag">50cm glebokosci</span>
           <span class="tag">konfigurator IVAR</span>
         </div>
-      </div>
-      <div class="price-row">
-        <span class="hint">Praktyczny balans</span>
-        <span class="price">od ~1618 zl</span>
+        <div class="price-row">
+          <span class="hint">Praktyczny balans</span>
+          <span class="price">od ~1618 zl</span>
+        </div>
       </div>
     </a>
 
     <!-- C -->
     <a class="card card-c" href="projekt_C_premium_hygge.html">
-      <div>
+      <div class="card-thumb">
+        <img src="img/projekt_C_preview.gif" alt="Premium Hygge 3D" loading="lazy">
+        <span class="thumb-3d">3D</span>
+      </div>
+      <div class="card-body">
         <span class="card-badge">Projekt C &middot; Mood</span>
         <h2>Premium Hygge</h2>
         <p class="desc">Ciepla atmosfera, lampiony, poduszki, swiatla LED. Balkon jako przytulny mikro-salon. Tryb dzien/wieczor.</p>
@@ -408,16 +537,20 @@
           <span class="tag">dzien / wieczor</span>
           <span class="tag">konfigurator IVAR</span>
         </div>
-      </div>
-      <div class="price-row">
-        <span class="hint">Klimat i relaks</span>
-        <span class="price">od ~1998 zl</span>
+        <div class="price-row">
+          <span class="hint">Klimat i relaks</span>
+          <span class="price">od ~1998 zl</span>
+        </div>
       </div>
     </a>
 
     <!-- D -->
     <a class="card card-d" href="projekt_D_premium_jungle.html">
-      <div>
+      <div class="card-thumb">
+        <img src="img/projekt_D_preview.gif" alt="Premium Jungle 3D" loading="lazy">
+        <span class="thumb-3d">3D</span>
+      </div>
+      <div class="card-body">
         <span class="card-badge">Projekt D &middot; Green</span>
         <h2>Premium Jungle</h2>
         <p class="desc">Miejska dzungla: ziola na polkach, rosliny zwisajace, gesta zielona scenografia. Tryb dzien/wieczor.</p>
@@ -426,41 +559,20 @@
           <span class="tag">dzien / wieczor</span>
           <span class="tag">konfigurator IVAR</span>
         </div>
-      </div>
-      <div class="price-row">
-        <span class="hint">Oaza zamiast tarasu</span>
-        <span class="price">od ~2083 zl</span>
-      </div>
-    </a>
-
-    <!-- E - Ogrod Srodziemnomorski (featured) -->
-    <a class="card card-e1 featured" href="projekt_E_ogrod_srodziemnomorski.html">
-      <div>
-        <span class="card-badge">Projekt E &middot; Srodziemnomorski</span>
-        <h2>Ogrod Srodziemnomorski</h2>
-        <p class="desc">Pergola narozna L-ksztaltna, biurko stojace do pracy, fotel ogrodowy, lawka bambusowa, doniczki metalowe wiszace z nawadnianiem, bluszcz na scianie wschodniej, rynna doniczkowa, lawenda w ciezkich okraglych donicach, girlanda solarna + lampki LED.</p>
-        <div class="tags">
-          <span class="tag">biurko stojace</span>
-          <span class="tag">pergola narozna</span>
-          <span class="tag">bluszcz + lawenda</span>
-          <span class="tag">dzien / wieczor</span>
-          <span class="tag">konfigurator IVAR</span>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;justify-content:space-between;">
-        <div class="tags" style="justify-content:flex-end;">
-          <span class="tag" style="background:rgba(212,149,106,0.2);color:#d4956a;border-color:rgba(212,149,106,0.3);">AKTUALNY PROJEKT</span>
-        </div>
         <div class="price-row">
-          <span class="hint">Praca + wieczorny relaks z lawenda</span>
-          <span class="price">od ~3612 zl</span>
+          <span class="hint">Oaza zamiast tarasu</span>
+          <span class="price">od ~2083 zl</span>
         </div>
       </div>
     </a>
 
     <!-- E - Vibe Coding Studio -->
     <a class="card card-e2" href="projekt_E_vibe_coding_studio.html">
-      <div>
+      <div class="card-thumb">
+        <img src="img/projekt_E_vibe_preview.gif" alt="Vibe Coding Studio 3D" loading="lazy">
+        <span class="thumb-3d">3D</span>
+      </div>
+      <div class="card-body">
         <span class="card-badge">Projekt E alt &middot; Vibe Coding</span>
         <h2>Vibe Coding Studio</h2>
         <p class="desc">Wieczorny balkon pod laptop: kompaktowy blat, neonowy LED glow, coffee corner, organizacja kabli i miejski ambient.</p>
@@ -469,16 +581,20 @@
           <span class="tag">nocny klimat</span>
           <span class="tag">RGB akcenty</span>
         </div>
-      </div>
-      <div class="price-row">
-        <span class="hint">Flow, laptop i rytual pracy</span>
-        <span class="price">koncept 3D</span>
+        <div class="price-row">
+          <span class="hint">Flow, laptop i rytual pracy</span>
+          <span class="price">koncept 3D</span>
+        </div>
       </div>
     </a>
 
     <!-- F -->
     <a class="card card-f" href="projekt_F_sunrise_art_lab.html">
-      <div>
+      <div class="card-thumb">
+        <img src="img/projekt_F_preview.gif" alt="Sunrise Art Lab 3D" loading="lazy">
+        <span class="thumb-3d">3D</span>
+      </div>
+      <div class="card-body">
         <span class="card-badge">Projekt F &middot; Creative</span>
         <h2>Sunrise Art Lab</h2>
         <p class="desc">Jasny balkon do porannej kawy, szkicowania i lekkiej ekspozycji. Wiecej koloru, wiecej swiatla, artystyczny vibe.</p>
@@ -487,10 +603,10 @@
           <span class="tag">artystyczny vibe</span>
           <span class="tag">lekki premium</span>
         </div>
-      </div>
-      <div class="price-row">
-        <span class="hint">Energia i inspiracja co rano</span>
-        <span class="price">koncept 3D</span>
+        <div class="price-row">
+          <span class="hint">Energia i inspiracja co rano</span>
+          <span class="price">koncept 3D</span>
+        </div>
       </div>
     </a>
 
@@ -507,7 +623,7 @@
     </div>
     <div class="sdg-banner-text">
       <h3>Wplyw na Cele Zrownowazonego Rozwoju ONZ</h3>
-      <p>~30 roslin, 8.2 kg CO&#8322;/rok, 300 wizyt zapylaczy, 600 L wody zaoszcz. &mdash; jeden balkon, realny wplyw</p>
+      <p>~30 roslin, 8.2 kg CO&#8322;/rok, 300 wizyt zapylaczy &mdash; jeden balkon, realny wplyw</p>
     </div>
     <span class="sdg-arrow">&rarr;</span>
   </a>
@@ -519,8 +635,9 @@
   </div>
 
   <div class="footer">
-    Kliknij na projekt aby otworzyc interaktywna wizualizacje 3D &middot;
-    Obsluga: LPM = obrot, Scroll = zoom, PPM = przesuniecie, Klik = linki zakupowe<br>
+    <span class="mobile-hint">Dotknij karty aby otworzyc wizualizacje 3D &middot; GIF preview laduje automatycznie</span>
+    <span class="desktop-hint">Kliknij na projekt aby otworzyc interaktywna wizualizacje 3D &middot;
+    Obsluga: LPM = obrot, Scroll = zoom, PPM = przesuniecie, Klik = linki zakupowe</span><br>
     Balkon 9. pietro, Bydgoszcz &middot; Wizualizacje Three.js z konfiguratorem IVAR
   </div>
 

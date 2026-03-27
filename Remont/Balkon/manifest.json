@@ -1,0 +1,17 @@
+{
+  "name": "Projekty Balkonu 3D",
+  "short_name": "Balkon 3D",
+  "description": "7 interaktywnych wizualizacji Three.js balkonu z konfiguratorem IVAR",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1e1430",
+  "theme_color": "#9b7ec8",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
