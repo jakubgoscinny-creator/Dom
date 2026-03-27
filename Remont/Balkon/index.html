@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="description" content="7 interaktywnych wizualizacji 3D balkonu z konfiguratorem IVAR">
 <link rel="manifest" href="manifest.json">
-<title>Projekty Balkonu 3D</title>
+<title data-i18n="title">Projekty Balkonu 3D</title>
 <style>
   :root {
     --lavender: #9b7ec8;
@@ -74,6 +74,29 @@
     margin: 0 auto;
     padding: calc(20px + var(--safe-top)) 16px calc(20px + var(--safe-bottom));
   }
+
+  /* ---- top bar with lang toggle ---- */
+  .top-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .lang-toggle {
+    display: flex; gap: 0; border-radius: 999px; overflow: hidden;
+    border: 1px solid rgba(155,126,200,0.25); background: rgba(155,126,200,0.08);
+  }
+  .lang-btn {
+    padding: 10px 16px; font-size: 13px; font-weight: 700; min-height: 44px;
+    cursor: pointer; border: none; background: transparent;
+    color: var(--muted); transition: all 0.2s; letter-spacing: 0.05em;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lang-btn.active {
+    background: linear-gradient(135deg, var(--lavender), var(--ivy));
+    color: #fff;
+  }
+  .lang-btn:hover:not(.active) { color: var(--lavender-light); }
 
   /* ---- hero ---- */
   .hero {
@@ -162,7 +185,7 @@
   .lav-dot:nth-child(4) { opacity: 0.6; width: 7px; height: 7px; }
   .lav-dot:nth-child(5) { opacity: 0.4; }
 
-  /* ---- grid (mobile-first: single column) ---- */
+  /* ---- grid (mobile-first) ---- */
   .grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -186,7 +209,6 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     overflow: hidden;
     transition: transform 200ms ease, border-color 200ms ease;
-    /* min touch target */
     min-height: 48px;
     -webkit-tap-highlight-color: rgba(155,126,200,0.15);
   }
@@ -388,10 +410,6 @@
       gap: 18px;
     }
     .featured { grid-column: 1 / -1; }
-    .featured .card-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
     .sdg-dots { max-width: none; }
     .sdg-dot { width: 26px; height: 26px; font-size: 11px; }
     body::before, body::after { width: 90px; opacity: 0.22; }
@@ -430,17 +448,24 @@
 <body>
 <div class="shell">
 
+  <div class="top-bar">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="pl" onclick="setLang('pl')">PL</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
   <header class="hero">
-    <div class="hero-badge">465 x 99-107 cm &middot; 9. pietro &middot; Bydgoszcz</div>
-    <h1>7 projektow balkonu w 3D</h1>
-    <p class="subtitle">
+    <div class="hero-badge" data-i18n="badge">465 x 99-107 cm &middot; 9. pietro &middot; Bydgoszcz</div>
+    <h1 data-i18n="h1">7 projektow balkonu w 3D</h1>
+    <p class="subtitle" data-i18n="subtitle">
       Interaktywne wizualizacje Three.js z konfiguratorem IVAR, trybem dzien/wieczor
       i klikalnymi elementami prowadzacymi do sklepow.
     </p>
     <div class="hero-stats">
-      <div class="stat"><strong>7</strong><span>projektow 3D</span></div>
-      <div class="stat"><strong>IVAR</strong><span>konfigurator</span></div>
-      <div class="stat"><strong>3D</strong><span>obrot / zoom</span></div>
+      <div class="stat"><strong>7</strong><span data-i18n="stat_projects">projektow 3D</span></div>
+      <div class="stat"><strong>IVAR</strong><span data-i18n="stat_config">konfigurator</span></div>
+      <div class="stat"><strong>3D</strong><span data-i18n="stat_controls">obrot / zoom</span></div>
     </div>
   </header>
 
@@ -456,26 +481,26 @@
 
   <section class="grid">
 
-    <!-- E - Ogrod Srodziemnomorski (featured, first on mobile) -->
+    <!-- E - Ogrod Srodziemnomorski (featured) -->
     <a class="card card-e1 featured" href="projekt_E_ogrod_srodziemnomorski.html">
       <div class="card-thumb">
         <img src="img/projekt_E_ogrod_preview.gif" alt="Ogrod Srodziemnomorski 3D" loading="eager">
-        <span class="thumb-badge">AKTUALNY PROJEKT</span>
+        <span class="thumb-badge" data-i18n="current_badge">AKTUALNY PROJEKT</span>
         <span class="thumb-3d">3D</span>
       </div>
       <div class="card-body">
-        <span class="card-badge">Projekt E &middot; Srodziemnomorski</span>
-        <h2>Ogrod Srodziemnomorski</h2>
-        <p class="desc">Pergola narozna, biurko stojace, fotel ogrodowy, lawka bambusowa, doniczki wiszace z nawadnianiem, bluszcz, lawenda, girlanda solarna + lampki LED.</p>
+        <span class="card-badge" data-i18n="e1_badge">Projekt E &middot; Srodziemnomorski</span>
+        <h2 data-i18n="e1_title">Ogrod Srodziemnomorski</h2>
+        <p class="desc" data-i18n="e1_desc">Pergola narozna, biurko stojace, fotel ogrodowy, lawka bambusowa, doniczki wiszace z nawadnianiem, bluszcz, lawenda, girlanda solarna + lampki LED.</p>
         <div class="tags">
-          <span class="tag">biurko stojace</span>
-          <span class="tag">pergola narozna</span>
-          <span class="tag">bluszcz + lawenda</span>
-          <span class="tag">konfigurator IVAR</span>
+          <span class="tag" data-i18n="tag_desk">biurko stojace</span>
+          <span class="tag" data-i18n="tag_pergola">pergola narozna</span>
+          <span class="tag" data-i18n="tag_plants">bluszcz + lawenda</span>
+          <span class="tag" data-i18n="tag_ivar">konfigurator IVAR</span>
         </div>
         <div class="price-row">
-          <span class="hint">Praca + relaks z lawenda</span>
-          <span class="price">od ~3612 zl</span>
+          <span class="hint" data-i18n="e1_hint">Praca + relaks z lawenda</span>
+          <span class="price" data-i18n="e1_price">od ~3612 zl</span>
         </div>
       </div>
     </a>
@@ -487,16 +512,16 @@
         <span class="thumb-3d">3D</span>
       </div>
       <div class="card-body">
-        <span class="card-badge">Projekt A &middot; Kompakt</span>
+        <span class="card-badge" data-i18n="a_badge">Projekt A &middot; Kompakt</span>
         <h2>IVAR 30 cm</h2>
-        <p class="desc">Waski regal IVAR, stolik polokragly, krzesla skladane, lawenda w donicach. Najprostszy i najtanszy start.</p>
+        <p class="desc" data-i18n="a_desc">Waski regal IVAR, stolik polokragly, krzesla skladane, lawenda w donicach. Najprostszy i najtanszy start.</p>
         <div class="tags">
-          <span class="tag">30cm glebokosci</span>
-          <span class="tag">konfigurator IVAR</span>
+          <span class="tag" data-i18n="tag_30cm">30cm glebokosci</span>
+          <span class="tag" data-i18n="tag_ivar">konfigurator IVAR</span>
         </div>
         <div class="price-row">
-          <span class="hint">Prostota i zapas przejscia</span>
-          <span class="price">od ~1486 zl</span>
+          <span class="hint" data-i18n="a_hint">Prostota i zapas przejscia</span>
+          <span class="price" data-i18n="a_price">od ~1486 zl</span>
         </div>
       </div>
     </a>
@@ -508,16 +533,16 @@
         <span class="thumb-3d">3D</span>
       </div>
       <div class="card-body">
-        <span class="card-badge">Projekt B &middot; Storage+</span>
+        <span class="card-badge" data-i18n="b_badge">Projekt B &middot; Storage+</span>
         <h2>IVAR 50 cm</h2>
-        <p class="desc">IVAR 50cm z wieksza przestrzenia na przechowywanie, stolik skladany, krzesla, bluszcz na kracie.</p>
+        <p class="desc" data-i18n="b_desc">IVAR 50cm z wieksza przestrzenia na przechowywanie, stolik skladany, krzesla, bluszcz na kracie.</p>
         <div class="tags">
-          <span class="tag">50cm glebokosci</span>
-          <span class="tag">konfigurator IVAR</span>
+          <span class="tag" data-i18n="tag_50cm">50cm glebokosci</span>
+          <span class="tag" data-i18n="tag_ivar">konfigurator IVAR</span>
         </div>
         <div class="price-row">
-          <span class="hint">Praktyczny balans</span>
-          <span class="price">od ~1618 zl</span>
+          <span class="hint" data-i18n="b_hint">Praktyczny balans</span>
+          <span class="price" data-i18n="b_price">od ~1618 zl</span>
         </div>
       </div>
     </a>
@@ -529,17 +554,17 @@
         <span class="thumb-3d">3D</span>
       </div>
       <div class="card-body">
-        <span class="card-badge">Projekt C &middot; Mood</span>
+        <span class="card-badge" data-i18n="c_badge">Projekt C &middot; Mood</span>
         <h2>Premium Hygge</h2>
-        <p class="desc">Ciepla atmosfera, lampiony, poduszki, swiatla LED. Balkon jako przytulny mikro-salon. Tryb dzien/wieczor.</p>
+        <p class="desc" data-i18n="c_desc">Ciepla atmosfera, lampiony, poduszki, swiatla LED. Balkon jako przytulny mikro-salon. Tryb dzien/wieczor.</p>
         <div class="tags">
           <span class="tag">hygge</span>
-          <span class="tag">dzien / wieczor</span>
-          <span class="tag">konfigurator IVAR</span>
+          <span class="tag" data-i18n="tag_daynight">dzien / wieczor</span>
+          <span class="tag" data-i18n="tag_ivar">konfigurator IVAR</span>
         </div>
         <div class="price-row">
-          <span class="hint">Klimat i relaks</span>
-          <span class="price">od ~1998 zl</span>
+          <span class="hint" data-i18n="c_hint">Klimat i relaks</span>
+          <span class="price" data-i18n="c_price">od ~1998 zl</span>
         </div>
       </div>
     </a>
@@ -551,17 +576,17 @@
         <span class="thumb-3d">3D</span>
       </div>
       <div class="card-body">
-        <span class="card-badge">Projekt D &middot; Green</span>
+        <span class="card-badge" data-i18n="d_badge">Projekt D &middot; Green</span>
         <h2>Premium Jungle</h2>
-        <p class="desc">Miejska dzungla: ziola na polkach, rosliny zwisajace, gesta zielona scenografia. Tryb dzien/wieczor.</p>
+        <p class="desc" data-i18n="d_desc">Miejska dzungla: ziola na polkach, rosliny zwisajace, gesta zielona scenografia. Tryb dzien/wieczor.</p>
         <div class="tags">
           <span class="tag">urban jungle</span>
-          <span class="tag">dzien / wieczor</span>
-          <span class="tag">konfigurator IVAR</span>
+          <span class="tag" data-i18n="tag_daynight">dzien / wieczor</span>
+          <span class="tag" data-i18n="tag_ivar">konfigurator IVAR</span>
         </div>
         <div class="price-row">
-          <span class="hint">Oaza zamiast tarasu</span>
-          <span class="price">od ~2083 zl</span>
+          <span class="hint" data-i18n="d_hint">Oaza zamiast tarasu</span>
+          <span class="price" data-i18n="d_price">od ~2083 zl</span>
         </div>
       </div>
     </a>
@@ -573,17 +598,17 @@
         <span class="thumb-3d">3D</span>
       </div>
       <div class="card-body">
-        <span class="card-badge">Projekt E alt &middot; Vibe Coding</span>
+        <span class="card-badge" data-i18n="e2_badge">Projekt E alt &middot; Vibe Coding</span>
         <h2>Vibe Coding Studio</h2>
-        <p class="desc">Wieczorny balkon pod laptop: kompaktowy blat, neonowy LED glow, coffee corner, organizacja kabli i miejski ambient.</p>
+        <p class="desc" data-i18n="e2_desc">Wieczorny balkon pod laptop: kompaktowy blat, neonowy LED glow, coffee corner, organizacja kabli i miejski ambient.</p>
         <div class="tags">
           <span class="tag">work + chill</span>
-          <span class="tag">nocny klimat</span>
-          <span class="tag">RGB akcenty</span>
+          <span class="tag" data-i18n="tag_night">nocny klimat</span>
+          <span class="tag" data-i18n="tag_rgb">RGB akcenty</span>
         </div>
         <div class="price-row">
-          <span class="hint">Flow, laptop i rytual pracy</span>
-          <span class="price">koncept 3D</span>
+          <span class="hint" data-i18n="e2_hint">Flow, laptop i rytual pracy</span>
+          <span class="price" data-i18n="e2_price">koncept 3D</span>
         </div>
       </div>
     </a>
@@ -595,17 +620,17 @@
         <span class="thumb-3d">3D</span>
       </div>
       <div class="card-body">
-        <span class="card-badge">Projekt F &middot; Creative</span>
+        <span class="card-badge" data-i18n="f_badge">Projekt F &middot; Creative</span>
         <h2>Sunrise Art Lab</h2>
-        <p class="desc">Jasny balkon do porannej kawy, szkicowania i lekkiej ekspozycji. Wiecej koloru, wiecej swiatla, artystyczny vibe.</p>
+        <p class="desc" data-i18n="f_desc">Jasny balkon do porannej kawy, szkicowania i lekkiej ekspozycji. Wiecej koloru, wiecej swiatla, artystyczny vibe.</p>
         <div class="tags">
-          <span class="tag">morning ritual</span>
-          <span class="tag">artystyczny vibe</span>
-          <span class="tag">lekki premium</span>
+          <span class="tag" data-i18n="tag_morning">morning ritual</span>
+          <span class="tag" data-i18n="tag_art">artystyczny vibe</span>
+          <span class="tag" data-i18n="tag_lightprem">lekki premium</span>
         </div>
         <div class="price-row">
-          <span class="hint">Energia i inspiracja co rano</span>
-          <span class="price">koncept 3D</span>
+          <span class="hint" data-i18n="f_hint">Energia i inspiracja co rano</span>
+          <span class="price" data-i18n="f_price">koncept 3D</span>
         </div>
       </div>
     </a>
@@ -622,8 +647,8 @@
       <span class="sdg-dot" style="background:#BF8B2E">12</span>
     </div>
     <div class="sdg-banner-text">
-      <h3>Wplyw na Cele Zrownowazonego Rozwoju ONZ</h3>
-      <p>~30 roslin, 8.2 kg CO&#8322;/rok, 300 wizyt zapylaczy &mdash; jeden balkon, realny wplyw</p>
+      <h3 data-i18n="sdg_title">Wplyw na Cele Zrownowazonego Rozwoju ONZ</h3>
+      <p data-i18n="sdg_desc">~30 roslin, 8.2 kg CO&#8322;/rok, 300 wizyt zapylaczy &mdash; jeden balkon, realny wplyw</p>
     </div>
     <span class="sdg-arrow">&rarr;</span>
   </a>
@@ -635,12 +660,152 @@
   </div>
 
   <div class="footer">
-    <span class="mobile-hint">Dotknij karty aby otworzyc wizualizacje 3D &middot; GIF preview laduje automatycznie</span>
-    <span class="desktop-hint">Kliknij na projekt aby otworzyc interaktywna wizualizacje 3D &middot;
+    <span class="mobile-hint" data-i18n="footer_mobile">Dotknij karty aby otworzyc wizualizacje 3D &middot; GIF preview laduje automatycznie</span>
+    <span class="desktop-hint" data-i18n="footer_desktop">Kliknij na projekt aby otworzyc interaktywna wizualizacje 3D &middot;
     Obsluga: LPM = obrot, Scroll = zoom, PPM = przesuniecie, Klik = linki zakupowe</span><br>
-    Balkon 9. pietro, Bydgoszcz &middot; Wizualizacje Three.js z konfiguratorem IVAR
+    <span data-i18n="footer_location">Balkon 9. pietro, Bydgoszcz &middot; Wizualizacje Three.js z konfiguratorem IVAR</span>
   </div>
 
 </div>
+
+<script>
+var currentLang = 'pl';
+var T = {
+  en: {
+    title: '3D Balcony Projects',
+    badge: '465 x 99-107 cm &middot; 9th floor &middot; Bydgoszcz, Poland',
+    h1: '7 balcony projects in 3D',
+    subtitle: 'Interactive Three.js visualizations with IVAR configurator, day/evening mode and clickable elements linking to stores.',
+    stat_projects: '3D projects',
+    stat_config: 'configurator',
+    stat_controls: 'rotate / zoom',
+    current_badge: 'CURRENT PROJECT',
+    e1_badge: 'Project E &middot; Mediterranean',
+    e1_title: 'Mediterranean Garden',
+    e1_desc: 'L-shaped corner pergola, standing desk, garden armchair, bamboo bench, hanging metal pots with irrigation, ivy, lavender, solar garland + LED lights.',
+    e1_hint: 'Work + lavender relaxation',
+    e1_price: 'from ~3612 PLN',
+    a_badge: 'Project A &middot; Compact',
+    a_desc: 'Narrow IVAR shelf, half-round table, folding chairs, lavender pots. Simplest and cheapest start.',
+    a_hint: 'Simplicity with walking space',
+    a_price: 'from ~1486 PLN',
+    b_badge: 'Project B &middot; Storage+',
+    b_desc: 'IVAR 50cm with more storage, folding table, chairs, ivy on trellis.',
+    b_hint: 'Practical balance',
+    b_price: 'from ~1618 PLN',
+    c_badge: 'Project C &middot; Mood',
+    c_desc: 'Warm atmosphere, lanterns, cushions, LED lights. Balcony as a cozy micro-lounge. Day/evening mode.',
+    c_hint: 'Ambiance and relaxation',
+    c_price: 'from ~1998 PLN',
+    d_badge: 'Project D &middot; Green',
+    d_desc: 'Urban jungle: herbs on shelves, hanging plants, dense green scenery. Day/evening mode.',
+    d_hint: 'Oasis instead of terrace',
+    d_price: 'from ~2083 PLN',
+    e2_badge: 'Project E alt &middot; Vibe Coding',
+    e2_desc: 'Evening laptop balcony: compact desk, neon LED glow, coffee corner, cable management and urban ambient.',
+    e2_hint: 'Flow, laptop and work ritual',
+    e2_price: '3D concept',
+    f_badge: 'Project F &middot; Creative',
+    f_desc: 'Bright balcony for morning coffee, sketching and light display. More color, more light, artistic vibe.',
+    f_hint: 'Energy and inspiration every morning',
+    f_price: '3D concept',
+    tag_desk: 'standing desk',
+    tag_pergola: 'corner pergola',
+    tag_plants: 'ivy + lavender',
+    tag_ivar: 'IVAR configurator',
+    tag_30cm: '30cm depth',
+    tag_50cm: '50cm depth',
+    tag_daynight: 'day / evening',
+    tag_night: 'night ambiance',
+    tag_rgb: 'RGB accents',
+    tag_morning: 'morning ritual',
+    tag_art: 'artistic vibe',
+    tag_lightprem: 'light premium',
+    sdg_title: 'Impact on UN Sustainable Development Goals',
+    sdg_desc: '~30 plants, 8.2 kg CO&#8322;/yr, 300 pollinator visits &mdash; one balcony, real impact',
+    footer_mobile: 'Tap a card to open 3D visualization &middot; GIF preview loads automatically',
+    footer_desktop: 'Click a project to open interactive 3D visualization &middot; Controls: LMB = rotate, Scroll = zoom, RMB = pan, Click = store links',
+    footer_location: 'Balcony 9th floor, Bydgoszcz &middot; Three.js visualizations with IVAR configurator'
+  },
+  pl: {
+    title: 'Projekty Balkonu 3D',
+    badge: '465 x 99-107 cm &middot; 9. pietro &middot; Bydgoszcz',
+    h1: '7 projektow balkonu w 3D',
+    subtitle: 'Interaktywne wizualizacje Three.js z konfiguratorem IVAR, trybem dzien/wieczor i klikalnymi elementami prowadzacymi do sklepow.',
+    stat_projects: 'projektow 3D',
+    stat_config: 'konfigurator',
+    stat_controls: 'obrot / zoom',
+    current_badge: 'AKTUALNY PROJEKT',
+    e1_badge: 'Projekt E &middot; Srodziemnomorski',
+    e1_title: 'Ogrod Srodziemnomorski',
+    e1_desc: 'Pergola narozna, biurko stojace, fotel ogrodowy, lawka bambusowa, doniczki wiszace z nawadnianiem, bluszcz, lawenda, girlanda solarna + lampki LED.',
+    e1_hint: 'Praca + relaks z lawenda',
+    e1_price: 'od ~3612 zl',
+    a_badge: 'Projekt A &middot; Kompakt',
+    a_desc: 'Waski regal IVAR, stolik polokragly, krzesla skladane, lawenda w donicach. Najprostszy i najtanszy start.',
+    a_hint: 'Prostota i zapas przejscia',
+    a_price: 'od ~1486 zl',
+    b_badge: 'Projekt B &middot; Storage+',
+    b_desc: 'IVAR 50cm z wieksza przestrzenia na przechowywanie, stolik skladany, krzesla, bluszcz na kracie.',
+    b_hint: 'Praktyczny balans',
+    b_price: 'od ~1618 zl',
+    c_badge: 'Projekt C &middot; Mood',
+    c_desc: 'Ciepla atmosfera, lampiony, poduszki, swiatla LED. Balkon jako przytulny mikro-salon. Tryb dzien/wieczor.',
+    c_hint: 'Klimat i relaks',
+    c_price: 'od ~1998 zl',
+    d_badge: 'Projekt D &middot; Green',
+    d_desc: 'Miejska dzungla: ziola na polkach, rosliny zwisajace, gesta zielona scenografia. Tryb dzien/wieczor.',
+    d_hint: 'Oaza zamiast tarasu',
+    d_price: 'od ~2083 zl',
+    e2_badge: 'Projekt E alt &middot; Vibe Coding',
+    e2_desc: 'Wieczorny balkon pod laptop: kompaktowy blat, neonowy LED glow, coffee corner, organizacja kabli i miejski ambient.',
+    e2_hint: 'Flow, laptop i rytual pracy',
+    e2_price: 'koncept 3D',
+    f_badge: 'Projekt F &middot; Creative',
+    f_desc: 'Jasny balkon do porannej kawy, szkicowania i lekkiej ekspozycji. Wiecej koloru, wiecej swiatla, artystyczny vibe.',
+    f_hint: 'Energia i inspiracja co rano',
+    f_price: 'koncept 3D',
+    tag_desk: 'biurko stojace',
+    tag_pergola: 'pergola narozna',
+    tag_plants: 'bluszcz + lawenda',
+    tag_ivar: 'konfigurator IVAR',
+    tag_30cm: '30cm glebokosci',
+    tag_50cm: '50cm glebokosci',
+    tag_daynight: 'dzien / wieczor',
+    tag_night: 'nocny klimat',
+    tag_rgb: 'RGB akcenty',
+    tag_morning: 'morning ritual',
+    tag_art: 'artystyczny vibe',
+    tag_lightprem: 'lekki premium',
+    sdg_title: 'Wplyw na Cele Zrownowazonego Rozwoju ONZ',
+    sdg_desc: '~30 roslin, 8.2 kg CO&#8322;/rok, 300 wizyt zapylaczy &mdash; jeden balkon, realny wplyw',
+    footer_mobile: 'Dotknij karty aby otworzyc wizualizacje 3D &middot; GIF preview laduje automatycznie',
+    footer_desktop: 'Kliknij na projekt aby otworzyc interaktywna wizualizacje 3D &middot; Obsluga: LPM = obrot, Scroll = zoom, PPM = przesuniecie, Klik = linki zakupowe',
+    footer_location: 'Balkon 9. pietro, Bydgoszcz &middot; Wizualizacje Three.js z konfiguratorem IVAR'
+  }
+};
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(function (b) {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  document.querySelectorAll('[data-i18n]').forEach(function (el) {
+    var key = el.dataset.i18n;
+    if (T[lang] && T[lang][key] !== undefined) {
+      if (el.tagName === 'TITLE') el.textContent = T[lang][key];
+      else el.innerHTML = T[lang][key];
+    }
+  });
+  try { localStorage.setItem('sdg-lang', lang); } catch (e) {}
+}
+
+// Restore saved language
+try {
+  var saved = localStorage.getItem('sdg-lang');
+  if (saved && T[saved]) setLang(saved);
+} catch (e) {}
+</script>
 </body>
 </html>
