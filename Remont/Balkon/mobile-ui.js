@@ -11,6 +11,17 @@
 (function () {
   'use strict';
 
+  /* ── i18n ── */
+  var LANG = 'pl';
+  try { LANG = localStorage.getItem('sdg-lang') || 'pl'; } catch (e) {}
+  var L = {
+    pl: { back: '&#8592; Projekty', info: 'Info', legend: 'Legenda', ivar: 'IVAR',
+          infoTitle: 'Informacje o projekcie', legendTitle: 'Legenda kolorow', ivarTitle: 'Konfigurator IVAR' },
+    en: { back: '&#8592; Projects', info: 'Info', legend: 'Legend', ivar: 'IVAR',
+          infoTitle: 'Project information', legendTitle: 'Color legend', ivarTitle: 'IVAR Configurator' }
+  };
+  var t = L[LANG] || L.pl;
+
   if (window.innerWidth >= 768) return;
   // Don't run if GIF fallback is active (gif-recorder.js handles that)
   if (document.getElementById('gif-fallback')) return;
@@ -102,7 +113,7 @@
     var backBtn = document.createElement('a');
     backBtn.className = 'mui-btn mui-back';
     backBtn.href = 'index.html';
-    backBtn.innerHTML = '&#8592; Projekty';
+    backBtn.innerHTML = t.back;
 
     // Mode toggle (only if toggleMode exists)
     var modeBtn = document.createElement('button');
@@ -148,9 +159,9 @@
 
     // Determine which tabs to show
     var tabs = [];
-    if (infoEl) tabs.push({ id: 'info', label: 'Info', icon: 'i' });
-    if (legendEl) tabs.push({ id: 'legend', label: 'Legenda', icon: '&#9632;' });
-    if (ivarEl) tabs.push({ id: 'ivar', label: 'IVAR', icon: '&#9881;' });
+    if (infoEl) tabs.push({ id: 'info', label: t.info, icon: 'i' });
+    if (legendEl) tabs.push({ id: 'legend', label: t.legend, icon: '&#9632;' });
+    if (ivarEl) tabs.push({ id: 'ivar', label: t.ivar, icon: '&#9881;' });
 
     if (tabs.length === 0) return;
 
@@ -164,7 +175,7 @@
       var infoSection = document.createElement('div');
       infoSection.className = 'mui-section';
       infoSection.dataset.tab = 'info';
-      infoSection.innerHTML = '<h3>Informacje o projekcie</h3>';
+      infoSection.innerHTML = '<h3>' + t.infoTitle + '</h3>';
       // Clone content, preserving live elements for cost updates
       var infoClone = infoEl.cloneNode(true);
       infoClone.style.cssText = 'display:block!important;position:static;background:none;border:none;' +
@@ -178,7 +189,7 @@
       var legendSection = document.createElement('div');
       legendSection.className = 'mui-section';
       legendSection.dataset.tab = 'legend';
-      legendSection.innerHTML = '<h3>Legenda kolorow</h3>';
+      legendSection.innerHTML = '<h3>' + t.legendTitle + '</h3>';
       var legendClone = legendEl.cloneNode(true);
       legendClone.style.cssText = 'display:block!important;position:static;background:none;border:none;' +
         'max-width:none;padding:0;backdrop-filter:none;color:#e8e0f4;font-size:13px;line-height:1.8;';
@@ -191,7 +202,7 @@
       var ivarSection = document.createElement('div');
       ivarSection.className = 'mui-section';
       ivarSection.dataset.tab = 'ivar';
-      ivarSection.innerHTML = '<h3>Konfigurator IVAR</h3>';
+      ivarSection.innerHTML = '<h3>' + t.ivarTitle + '</h3>';
       // For IVAR we MOVE the original (not clone) to keep event handlers working
       ivarEl.style.cssText = 'display:block!important;position:static;background:none;border:none;' +
         'width:100%;max-width:none;max-height:none;padding:0;backdrop-filter:none;color:#e8e0f4;font-size:13px;';

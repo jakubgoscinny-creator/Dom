@@ -30,15 +30,32 @@
   const IS_MOBILE = window.innerWidth < 768;
   const WANT_RECORD = location.search.includes('record');
 
+  /* ── i18n ── */
+  var LANG = 'pl';
+  try { LANG = localStorage.getItem('sdg-lang') || 'pl'; } catch (e) {}
+  var L = {
+    pl: {
+      back: '&#8592; Projekty', project: 'Projekt', from: 'od',
+      open3d: 'Otworz widok 3D', prev: '&#8592; Poprzedni', next: 'Nastepny &#8594;',
+      concept: 'koncept'
+    },
+    en: {
+      back: '&#8592; Projects', project: 'Project', from: 'from',
+      open3d: 'Open 3D view', prev: '&#8592; Previous', next: 'Next &#8594;',
+      concept: 'concept'
+    }
+  };
+  var t = L[LANG] || L.pl;
+
   /* ── project navigation order for swipe ── */
   var PROJECTS = [
-    { id: 'projekt_E_ogrod', file: 'projekt_E_ogrod_srodziemnomorski.html', name: 'Ogrod Srodziemnomorski', badge: 'E', price: '~3612 zl' },
-    { id: 'projekt_A', file: 'projekt_A_ivar30.html', name: 'IVAR 30 cm', badge: 'A', price: '~1486 zl' },
-    { id: 'projekt_B', file: 'projekt_B_ivar50.html', name: 'IVAR 50 cm', badge: 'B', price: '~1618 zl' },
-    { id: 'projekt_C', file: 'projekt_C_premium_hygge.html', name: 'Premium Hygge', badge: 'C', price: '~1998 zl' },
-    { id: 'projekt_D', file: 'projekt_D_premium_jungle.html', name: 'Premium Jungle', badge: 'D', price: '~2083 zl' },
-    { id: 'projekt_E_vibe', file: 'projekt_E_vibe_coding_studio.html', name: 'Vibe Coding Studio', badge: 'E2', price: 'koncept' },
-    { id: 'projekt_F', file: 'projekt_F_sunrise_art_lab.html', name: 'Sunrise Art Lab', badge: 'F', price: 'koncept' }
+    { id: 'projekt_E_ogrod', file: 'projekt_E_ogrod_srodziemnomorski.html', name: LANG === 'en' ? 'Mediterranean Garden' : 'Ogrod Srodziemnomorski', badge: 'E', price: '~3612 ' + (LANG === 'en' ? 'PLN' : 'zl') },
+    { id: 'projekt_A', file: 'projekt_A_ivar30.html', name: 'IVAR 30 cm', badge: 'A', price: '~1486 ' + (LANG === 'en' ? 'PLN' : 'zl') },
+    { id: 'projekt_B', file: 'projekt_B_ivar50.html', name: 'IVAR 50 cm', badge: 'B', price: '~1618 ' + (LANG === 'en' ? 'PLN' : 'zl') },
+    { id: 'projekt_C', file: 'projekt_C_premium_hygge.html', name: 'Premium Hygge', badge: 'C', price: '~1998 ' + (LANG === 'en' ? 'PLN' : 'zl') },
+    { id: 'projekt_D', file: 'projekt_D_premium_jungle.html', name: 'Premium Jungle', badge: 'D', price: '~2083 ' + (LANG === 'en' ? 'PLN' : 'zl') },
+    { id: 'projekt_E_vibe', file: 'projekt_E_vibe_coding_studio.html', name: 'Vibe Coding Studio', badge: 'E2', price: t.concept },
+    { id: 'projekt_F', file: 'projekt_F_sunrise_art_lab.html', name: 'Sunrise Art Lab', badge: 'F', price: t.concept }
   ];
   var currentIdx = PROJECTS.findIndex(function (p) { return p.id === PROJECT; });
   if (currentIdx < 0) currentIdx = 0;
@@ -119,8 +136,8 @@
       '.mfb-dot.active{width:20px;border-radius:3px;background:#9b7ec8;}' +
       '</style>' +
       '<div class="mfb-top">' +
-        '<a class="mfb-back" href="index.html">&#8592; Projekty</a>' +
-        '<span class="mfb-badge">Projekt ' + cur.badge + '</span>' +
+        '<a class="mfb-back" href="index.html">' + t.back + '</a>' +
+        '<span class="mfb-badge">' + t.project + ' ' + cur.badge + '</span>' +
       '</div>' +
       '<div class="mfb-dots">' +
         PROJECTS.map(function (_, i) {
@@ -130,18 +147,18 @@
       '<div class="mfb-media" id="mfb-media-wrap"></div>' +
       '<div class="mfb-info">' +
         '<div class="mfb-title">' + cur.name + '</div>' +
-        '<div class="mfb-price">od ' + cur.price + '</div>' +
+        '<div class="mfb-price">' + t.from + ' ' + cur.price + '</div>' +
         '<div class="mfb-actions">' +
-          '<button class="mfb-btn mfb-btn-3d" id="mfb-open3d">Otworz widok 3D</button>' +
+          '<button class="mfb-btn mfb-btn-3d" id="mfb-open3d">' + t.open3d + '</button>' +
         '</div>' +
       '</div>' +
       '<div class="mfb-nav">' +
         '<a class="mfb-nav-btn" href="' + PROJECTS[prevIdx].file + '">' +
-          '<span class="mfb-nav-label">&#8592; Poprzedni</span>' +
+          '<span class="mfb-nav-label">' + t.prev + '</span>' +
           '<span>' + PROJECTS[prevIdx].name + '</span>' +
         '</a>' +
         '<a class="mfb-nav-btn" href="' + PROJECTS[nextIdx].file + '">' +
-          '<span class="mfb-nav-label">Nastepny &#8594;</span>' +
+          '<span class="mfb-nav-label">' + t.next + '</span>' +
           '<span>' + PROJECTS[nextIdx].name + '</span>' +
         '</a>' +
       '</div>';
