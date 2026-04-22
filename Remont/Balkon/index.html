@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Balkon 3D">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="description" content="7 interaktywnych wizualizacji 3D balkonu z konfiguratorem IVAR">
+<meta name="description" content="8 projektow balkonu: 7 wizualizacji 3D z konfiguratorem IVAR + kalkulator fotowoltaiki balkonowej dla Bydgoszczy">
 <link rel="manifest" href="manifest.json">
 <title data-i18n="title">Projekty Balkonu 3D</title>
 <style>
@@ -342,6 +342,35 @@
   .card-e1 { --accent: #d4956a; --glow: rgba(212,149,106,0.4); }
   .card-e2 { --accent: #57d5ff; --glow: rgba(87,213,255,0.4); }
   .card-f { --accent: #e88aaf; --glow: rgba(232,138,175,0.4); }
+  .card-g { --accent: #e8a040; --glow: rgba(232,160,64,0.4); }
+
+  .thumb-solar {
+    width: 100%;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(255,204,102,0.35), transparent 55%),
+      linear-gradient(135deg, #2a1f38 0%, #3a2e5a 50%, #1e1430 100%);
+    color: #ffd580;
+    font-size: 48px;
+    position: relative;
+  }
+  .thumb-solar::after {
+    content: 'PV';
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #e8a040, #d97706);
+    color: #fff;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px rgba(217,119,6,0.4);
+  }
 
   /* ---- featured card ---- */
   .featured .card-thumb .thumb-badge {
@@ -457,13 +486,13 @@
 
   <header class="hero">
     <div class="hero-badge" data-i18n="badge">465 x 99-107 cm &middot; 9. pietro &middot; Bydgoszcz</div>
-    <h1 data-i18n="h1">7 projektow balkonu w 3D</h1>
+    <h1 data-i18n="h1">8 projektow balkonu w 3D</h1>
     <p class="subtitle" data-i18n="subtitle">
       Interaktywne wizualizacje Three.js z konfiguratorem IVAR, trybem dzien/wieczor
       i klikalnymi elementami prowadzacymi do sklepow.
     </p>
     <div class="hero-stats">
-      <div class="stat"><strong>7</strong><span data-i18n="stat_projects">projektow 3D</span></div>
+      <div class="stat"><strong>8</strong><span data-i18n="stat_projects">projektow 3D</span></div>
       <div class="stat"><strong>IVAR</strong><span data-i18n="stat_config">konfigurator</span></div>
       <div class="stat"><strong>3D</strong><span data-i18n="stat_controls">obrot / zoom</span></div>
     </div>
@@ -613,6 +642,27 @@
       </div>
     </a>
 
+    <!-- G - Fotowoltaika Balkonowa (calculator + community proposal) -->
+    <a class="card card-g" href="Fotowoltaika/">
+      <div class="card-thumb">
+        <div class="thumb-solar" aria-hidden="true">&#9728;</div>
+      </div>
+      <div class="card-body">
+        <span class="card-badge" data-i18n="g_badge">Projekt G &middot; Decyzja zakupowa</span>
+        <h2 data-i18n="g_title">Fotowoltaika Balkonowa</h2>
+        <p class="desc" data-i18n="g_desc">Kalkulator PVGIS + wizualizator 3D Three.js. Dwa tryby: balkon indywidualny (600-800W pionowo na balustradzie) i propozycja dla wspolnoty (25 kWp na dachu + magazyn 20 kWh + modernizacja ppoz). Grant OZE BGK, deadline 30.06.2026.</p>
+        <div class="tags">
+          <span class="tag">PVGIS</span>
+          <span class="tag" data-i18n="g_tag_twotracks">2 tryby</span>
+          <span class="tag" data-i18n="g_tag_calc">kalkulator + 3D</span>
+        </div>
+        <div class="price-row">
+          <span class="hint" data-i18n="g_hint">Dokladna decyzja, nie demo</span>
+          <span class="price" data-i18n="g_price">analiza 15 lat</span>
+        </div>
+      </div>
+    </a>
+
     <!-- F -->
     <a class="card card-f" href="projekt_F_sunrise_art_lab.html">
       <div class="card-thumb">
@@ -674,7 +724,7 @@ var T = {
   en: {
     title: '3D Balcony Projects',
     badge: '465 x 99-107 cm &middot; 9th floor &middot; Bydgoszcz, Poland',
-    h1: '7 balcony projects in 3D',
+    h1: '8 balcony projects in 3D',
     subtitle: 'Interactive Three.js visualizations with IVAR configurator, day/evening mode and clickable elements linking to stores.',
     stat_projects: '3D projects',
     stat_config: 'configurator',
@@ -709,6 +759,13 @@ var T = {
     f_desc: 'Bright balcony for morning coffee, sketching and light display. More color, more light, artistic vibe.',
     f_hint: 'Energy and inspiration every morning',
     f_price: '3D concept',
+    g_badge: 'Project G &middot; Purchase decision',
+    g_title: 'Balcony Photovoltaics',
+    g_desc: 'PVGIS calculator + Three.js 3D visualizer. Two modes: individual balcony (600-800W vertical on balustrade) and community proposal (25 kWp rooftop + 20 kWh battery + fire-safety modernization). Grant OZE BGK, deadline 2026-06-30.',
+    g_hint: 'Real purchase decision, not a demo',
+    g_price: '15-year analysis',
+    g_tag_twotracks: '2 modes',
+    g_tag_calc: 'calculator + 3D',
     tag_desk: 'standing desk',
     tag_pergola: 'corner pergola',
     tag_plants: 'ivy + lavender',
@@ -730,7 +787,7 @@ var T = {
   pl: {
     title: 'Projekty Balkonu 3D',
     badge: '465 x 99-107 cm &middot; 9. pietro &middot; Bydgoszcz',
-    h1: '7 projektow balkonu w 3D',
+    h1: '8 projektow balkonu w 3D',
     subtitle: 'Interaktywne wizualizacje Three.js z konfiguratorem IVAR, trybem dzien/wieczor i klikalnymi elementami prowadzacymi do sklepow.',
     stat_projects: 'projektow 3D',
     stat_config: 'konfigurator',
@@ -765,6 +822,13 @@ var T = {
     f_desc: 'Jasny balkon do porannej kawy, szkicowania i lekkiej ekspozycji. Wiecej koloru, wiecej swiatla, artystyczny vibe.',
     f_hint: 'Energia i inspiracja co rano',
     f_price: 'koncept 3D',
+    g_badge: 'Projekt G &middot; Decyzja zakupowa',
+    g_title: 'Fotowoltaika Balkonowa',
+    g_desc: 'Kalkulator PVGIS + wizualizator 3D Three.js. Dwa tryby: balkon indywidualny (600-800W pionowo na balustradzie) i propozycja dla wspolnoty (25 kWp na dachu + magazyn 20 kWh + modernizacja ppoz). Grant OZE BGK, deadline 30.06.2026.',
+    g_hint: 'Dokladna decyzja, nie demo',
+    g_price: 'analiza 15 lat',
+    g_tag_twotracks: '2 tryby',
+    g_tag_calc: 'kalkulator + 3D',
     tag_desk: 'biurko stojace',
     tag_pergola: 'pergola narozna',
     tag_plants: 'bluszcz + lawenda',

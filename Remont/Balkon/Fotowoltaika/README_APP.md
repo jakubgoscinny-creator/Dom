@@ -1,4 +1,6 @@
-# app/ — kalkulator i wizualizator fotowoltaiki balkonowej
+# README_APP — kalkulator i wizualizator fotowoltaiki balkonowej
+
+*Plik `index.html` kalkulatora znajduje się w root folderu `Fotowoltaika/`. Deploy na `/Dom/Remont/Balkon/Fotowoltaika/` (bez podfolderu `app/`).*
 
 Pojedyncza strona HTML z inline CSS i modułem ES JS. Trzy warstwy:
 
@@ -24,7 +26,7 @@ Ograniczenie: niektóre przeglądarki restrykcyjnie traktują `fetch` z `file://
 ### Wariant B — lokalny HTTP serwer (zalecane)
 
 ```powershell
-cd C:\Users\jakub\OneDrive\Dokumenty\Claude\Dom\Remont\Balkon\Fotowoltaika\app
+cd C:\Users\jakub\OneDrive\Dokumenty\Claude\Dom\Remont\Balkon\Fotowoltaika
 python -m http.server 8080
 ```
 
@@ -33,7 +35,7 @@ Otwórz `http://localhost:8080`.
 ### Wariant C — `npx serve`
 
 ```powershell
-cd C:\Users\jakub\OneDrive\Dokumenty\Claude\Dom\Remont\Balkon\Fotowoltaika\app
+cd C:\Users\jakub\OneDrive\Dokumenty\Claude\Dom\Remont\Balkon\Fotowoltaika
 npx serve -p 8080
 ```
 
@@ -47,13 +49,11 @@ Wszystkie zależności ładowane z HTTPS CDN. Aplikacja nie ma lokalnego bundlin
 
 ## Deploy na GitHub Pages
 
-Projekt jest zagnieżdżony w repozytorium `Dom/` i publikowany na ścieżce `/Dom/Remont/Balkon/Fotowoltaika/app/`. Jeśli linkujemy z `../index.html` (strona matka serii balkon) do tego kalkulatora, URL to:
+Projekt jest zagnieżdżony w repozytorium `Dom/` i publikowany na ścieżce `/Dom/Remont/Balkon/Fotowoltaika/`. Strona matka serii `Balkon/` linkuje do tego kalkulatora jako 8. karta. URL:
 
 ```
-https://jakubgoscinny-creator.github.io/Dom/Remont/Balkon/Fotowoltaika/app/
+https://jakubgoscinny-creator.github.io/Dom/Remont/Balkon/Fotowoltaika/
 ```
-
-Jeśli chcemy żeby kalkulator był pod `.../Fotowoltaika/`, nie `.../Fotowoltaika/app/`, należy przenieść `index.html` o poziom wyżej albo utworzyć symlink/kopię. Decyzja do podjęcia w Fazie 4 (deploy).
 
 Deploy:
 ```powershell
@@ -94,12 +94,12 @@ Chrome DevTools 390×844 jest **preview, nie proof** (PLAYBOOK §2.8). Dopóki n
 - **Brak zapisu stanu** — przeładowanie strony resetuje parametry do defaultów. LocalStorage można dodać jeśli Jakub chce.
 - **Brak eksportu** (PDF / share link) — planowane w kolejnej iteracji po Fazie 3, gdy `biznes/` i `plan/` będą gotowe.
 
-## Mapa plików (app/)
+## Mapa plików aplikacji
 
 ```
-app/
-├── index.html   — całość: HTML, CSS, ES module JS (inline)
-└── README.md    — ten plik
+Fotowoltaika/
+├── index.html      — całość: HTML, CSS, ES module JS (inline)
+└── README_APP.md   — ten plik
 ```
 
 Jedna strona, jedno wdrożenie. Celowo bez bundlera, bez npm, bez framework'a — spójnie z resztą serii `Balkon/` (każdy projekt to jeden samowystarczalny HTML).

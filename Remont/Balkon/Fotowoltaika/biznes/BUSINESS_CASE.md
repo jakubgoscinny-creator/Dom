@@ -1,6 +1,6 @@
 # Business case — fotowoltaika dla Jakuba i wspólnoty
 
-Analiza finansowa dwóch równoległych scenariuszy: (A) balkonowa PV indywidualna na balkonie Jakuba, (B) propozycja dla wspólnoty dachowa PV + magazyn energii + skoordynowana gruntowna modernizacja ppoż (zakres C). Liczby pochodzą z `research/PVGIS_RAW.json` (PVGIS API 2026-04-21), `research/STAN_RYNKU_2026.md` (ceny), `research/WSPOLNOTA_SCENARIUSZ.md` (CAPEX wspólnotowy), oraz silnika kalkulatora w `app/index.html`.
+Analiza finansowa dwóch równoległych scenariuszy: (A) balkonowa PV indywidualna na balkonie Jakuba, (B) propozycja dla wspólnoty dachowa PV + magazyn energii + skoordynowana gruntowna modernizacja ppoż (zakres C). Liczby pochodzą z `research/PVGIS_RAW.json` (PVGIS API 2026-04-21), `research/STAN_RYNKU_2026.md` (ceny), `research/WSPOLNOTA_SCENARIUSZ.md` (CAPEX wspólnotowy), oraz silnika kalkulatora w `index.html`.
 
 ## Streszczenie (5 bullets)
 

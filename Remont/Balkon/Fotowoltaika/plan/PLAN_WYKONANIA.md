@@ -17,13 +17,13 @@ Dwie ścieżki, zgodnie z [biznes/REKOMENDACJA.md](../biznes/REKOMENDACJA.md). �
 ### Faza A.1 — Due diligence (tydzień 1)
 
 - A.1.1 **Ściągnąć fakturę energetyczną**: z ENEA SA (lub innego sprzedawcy) za ostatnie 12 miesięcy. Ustalić stawkę PLN/kWh brutto, taryfę (G11 vs G12w), roczne zużycie. Kto: Jakub. Koszt: 0.
-- A.1.2 **Podstawić liczby do kalkulatora** w `app/index.html`. Ustalić czy payback <10 lat dla 600W. Kto: Jakub. Koszt: 0.
+- A.1.2 **Podstawić liczby do kalkulatora** w `index.html`. Ustalić czy payback <10 lat dla 600W. Kto: Jakub. Koszt: 0.
 - A.1.3 **Inspekcja balustrady przez konstruktora** — umówić wizję. Cel: opinia techniczna o nośności + antyrdzewka stref korozji. Kto: Jakub kontaktuje, konstruktor wykonuje. Koszt: 300-800 PLN (`UNCONFIRMED`). Czas: 2-5 dni.
 - A.1.4 **GO/NO-GO**: jeśli stawka + inspekcja dają payback <10 lat i konstruktor akceptuje obciążenie — idź dalej. Jeśli nie — przerwij ścieżkę A, rozważ Ścieżkę B lub odroczenie.
 
 ### Faza A.2 — Zgoda wspólnoty (tygodnie 2-7)
 
-- A.2.1 **Przygotować wniosek z wizualizacją**: zdjęcie balkonu + rendering z 2 panelami PV na zewnętrznej stronie balustrady, specyfikacja zestawu, gwarancja demontażu. Kto: Jakub. Czas: 2-3 dni. Koszt: 0 (można użyć screenshotu z `app/index.html` Three.js).
+- A.2.1 **Przygotować wniosek z wizualizacją**: zdjęcie balkonu + rendering z 2 panelami PV na zewnętrznej stronie balustrady, specyfikacja zestawu, gwarancja demontażu. Kto: Jakub. Czas: 2-3 dni. Koszt: 0 (można użyć screenshotu z `index.html` Three.js).
 - A.2.2 **Kontakt z zarządem wspólnoty**: złożenie wniosku. Czas reakcji: 14 dni na analizę. Kto: Jakub.
 - A.2.3 **Zebranie wspólnoty**: głosowanie uchwały. Quorum 50%+1 obecnych. Może być zdalne (przez obieg listy do podpisów) lub fizyczne zebranie. Czas od wniosku do uchwały: typowo 3-4 tygodnie.
 - A.2.4 **Podpisanie aneksu do regulaminu porządkowego** z klauzulami: (a) demontaż przy remoncie elewacji, (b) czystość paneli, (c) zakaz ingerencji w konstrukcję wspólną. Kto: Jakub + zarząd. Czas: 1 tydzień po uchwale.

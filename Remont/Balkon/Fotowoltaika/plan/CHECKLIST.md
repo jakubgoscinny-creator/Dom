@@ -7,7 +7,7 @@ Drukowana lista kroków dla obu ścieżek. Format Markdown z checkboxami działa
 ## Przed decyzją o ścieżce (wspólne, tydzień 0-1)
 
 - [ ] Pobrać własną fakturę energetyczną (ENEA SA / inny sprzedawca) — stawka PLN/kWh brutto, taryfa, zużycie roczne
-- [ ] Podstawić swoje liczby do kalkulatora w `app/index.html` (pola: stawka, zużycie, taryfa, auto-konsumpcja)
+- [ ] Podstawić swoje liczby do kalkulatora w `index.html` (pola: stawka, zużycie, taryfa, auto-konsumpcja)
 - [ ] Sprawdzić payback balkonowy 600W i 800W dla twoich liczb — czy <10 lat?
 - [ ] Zapytać administratora wspólnoty o: liczbę mieszkań, wysokość zużycia energii części wspólnych za 2024-2025, stan dachu, stan instalacji ppoż, plany modernizacji ppoż w 2026
 - [ ] Zrobić zdjęcie piwnicy technicznej / rozdzielni głównej — sprawdzić czy istnieje kandydat na pomieszczenie magazynu energii
@@ -26,7 +26,7 @@ Drukowana lista kroków dla obu ścieżek. Format Markdown z checkboxami działa
 
 ### A.2 Zgoda wspólnoty (tygodnie 2-7)
 
-- [ ] Przygotować wniosek: wizualizacja balkonu z panelami (screenshot z `app/index.html` Three.js), specyfikacja techniczna zestawu, gwarancja demontażu przy remoncie elewacji
+- [ ] Przygotować wniosek: wizualizacja balkonu z panelami (screenshot z `index.html` Three.js), specyfikacja techniczna zestawu, gwarancja demontażu przy remoncie elewacji
 - [ ] Złożyć wniosek do zarządu wspólnoty (pisemnie, za potwierdzeniem odbioru)
 - [ ] Poczekać na analizę zarządu (14 dni standardowo)
 - [ ] Uczestniczyć w zebraniu wspólnoty — prezentacja, odpowiedzi na pytania

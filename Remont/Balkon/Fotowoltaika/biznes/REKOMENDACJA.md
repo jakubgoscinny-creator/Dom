@@ -44,7 +44,7 @@ Zapisać do `CONTINUITY.md` z flagą `REVISIT` i pilnować w kalendarzu.
 
 ## Następna akcja (dziś / do 15.05.2026)
 
-1. **Pobrać swoją fakturę energetyczną** (ENEA SA lub inny sprzedawca) i podstawić stawkę + zużycie do kalkulatora w `app/index.html` — potwierdzić czy założenie 1,00 PLN/kWh i 2 800 kWh/rok jest rozsądne dla Jakuba.
+1. **Pobrać swoją fakturę energetyczną** (ENEA SA lub inny sprzedawca) i podstawić stawkę + zużycie do kalkulatora w `index.html` — potwierdzić czy założenie 1,00 PLN/kWh i 2 800 kWh/rok jest rozsądne dla Jakuba.
 2. **Umówić rozmowę z zarządem wspólnoty** (telefon/mail do administratora budynku) — przedstawić [PROPOZYCJA_DLA_WSPOLNOTY.md](PROPOZYCJA_DLA_WSPOLNOTY.md) jako 1-stronicowy pitch. Cel: uzyskać zgodę na wprowadzenie punktu do porządku obrad najbliższego zebrania.
 3. **Zebrać 2-3 oferty lokalnych firm PV w Bydgoszczy** do przedstawienia zarządowi (Columbus Energy, Solwis, lokalne firmy). Oferta obejmuje: 25 kWp dachowa + 20 kWh magazyn + wyłącznik PV Stop + rzeczoznawca ppoż PV — **plus opcję rozszerzenia o modernizację ppoż budynku (zakres C)** jako osobny koszt kwalifikowany poza Grant OZE.
 4. **Sprawdzić stan pomieszczenia technicznego w piwnicy** — czy jest kandydat na magazyn energii EI60/REI60/EI30 (rozdzielnia główna, pompownia, suszarnia). Jakub może zajrzeć sam + sfotografować.
