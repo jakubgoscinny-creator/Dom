@@ -2,10 +2,12 @@
 
 Analiza finansowa dwóch równoległych scenariuszy: (A) balkonowa PV indywidualna na balkonie Jakuba, (B) propozycja dla wspólnoty dachowa PV + magazyn energii + skoordynowana gruntowna modernizacja ppoż (zakres C). Liczby pochodzą z `research/PVGIS_RAW.json` (PVGIS API 2026-04-21), `research/STAN_RYNKU_2026.md` (ceny), `research/WSPOLNOTA_SCENARIUSZ.md` (CAPEX wspólnotowy), oraz silnika kalkulatora w `index.html`.
 
+> **AKTUALIZACJA 2026-04-22**: Po otrzymaniu planu gospodarczego wspólnoty (`docs/Konopnickiej 33.pdf`, szczegóły w `research/WSPOLNOTA_DANE_FORMALNE.md`): liczba mieszkań **83** (nie 40), kondygnacji **11** (nie 9 — budynek wysoki wg prawa), fundusz remontowy **303 917 PLN** dostępny bez dodatkowych zaliczek, koszt ppoż C dla budynku wysokiego **166 000 PLN** (nie 120 000). Per lokator SENSOWNY wspólnotowy: **3 102 PLN** (było 5 290). Payback PV dla wspólnoty ~4,5 lat się nie zmienia. Rekomendacja wzmocniona — wspólnota **musi** modernizować ppoż (obowiązek prawny dla budynków >9 kondygnacji), synergia z PV jeszcze bardziej atrakcyjna.
+
 ## Streszczenie (5 bullets)
 
 - **Balkon indywidualny 800 W pionowo SE** daje ~474 kWh/rok i ~388 PLN oszczędności rocznej przy stawce 1,00 PLN/kWh i auto-konsumpcji 70%. CAPEX 2 800 PLN. Payback **~7,2 lat**, NPV 15 lat @5% real ≈ **+1 230 PLN**, IRR ≈ **11%**. Opłacalność ekonomiczna **graniczna** — wystarczy jeden nieprzewidziany koszt (inspekcja konstruktora, antyrdzewka balustrady, wymiana inwertera po gwarancji) żeby payback przesunął się do 10+ lat.
-- **Wspólnota SENSOWNY 25 kWp + 20 kWh + ppoż PV** (bez ppoż budynku) produkuje ~26 500 kWh/rok, oszczędza ~20 100 PLN/rok dla wspólnoty (85% auto-konsumpcji dzięki magazynowi, 12 000 kWh zużycia części wspólnych jako cap). CAPEX 183 000 PLN brutto, po Grant OZE BGK 50% = **91 500 PLN dla wspólnoty**, **per lokator 2 288 PLN** (40 mieszkań). Payback PV **~4,5 lat**, IRR **~20%**. **Wyraźnie się opłaca.**
+- **Wspólnota SENSOWNY 25 kWp + 20 kWh + ppoż PV** (bez ppoż budynku) produkuje ~26 500 kWh/rok, oszczędza ~20 100 PLN/rok dla wspólnoty (85% auto-konsumpcji dzięki magazynowi, 12 000 kWh zużycia części wspólnych jako cap). CAPEX 183 000 PLN brutto, po Grant OZE BGK 50% = **91 500 PLN dla wspólnoty**, **per lokator 2 288 PLN** (83 mieszkania (zweryfikowane)). Payback PV **~4,5 lat**, IRR **~20%**. **Wyraźnie się opłaca.**
 - **Gruntowna modernizacja ppoż (zakres C)** dodaje ~120 000 PLN poza zakresem Grant OZE. To jest pozycja którą wspólnota i tak musi przeprowadzić (wymogi prawne, ubezpieczenie, bezpieczeństwo) — nie liczy się w paybacku PV, ale w łącznym zobowiązaniu lokatora: +3 000 PLN/mieszkanie. Łącznie dla lokatora: **~5 300 PLN jednorazowo** za PV + ppoż C, przy oszczędności ~500 PLN/rok.
 - **Sensitivity**: dla balkonowej rekomendacja flipuje z "graniczne" na "nie kupuj" gdy stawka energii spadnie poniżej 0,85 PLN/kWh lub shading wzrośnie powyżej 20%. Dla wspólnotowej rekomendacja jest **robustna** — przetrwa ±30% w cenie energii, ±20% w produkcji i redukcję auto-konsumpcji z 85% do 50%.
 - **Kluczowy wniosek**: jeśli wspólnota rusza z projektem dachowym, **balkon indywidualny traci ekonomiczny sens** (Jakub korzysta z dachowej przez obniżenie rachunków części wspólnych). Jeśli wspólnota odmówi lub opóźnia, balkonowy 800W jest **akceptowalny jako minimum** (positive NPV, ale niski IRR).
@@ -113,7 +115,7 @@ Payback realny dla 600W wariantu przy CAPEX 2 700 PLN (środek): **~9,3 lat**. P
 | Oszczędność roczna (retail 1,20 + export 0,394) | ~16 896 PLN | ~20 113 PLN | ~26 378 PLN |
 | CAPEX PV+magazyn+ppoż PV | 98 000 PLN | 183 000 PLN | 280 000 PLN |
 | Po Grant OZE 50% | 49 000 PLN | 91 500 PLN | 140 000 PLN |
-| Per lokator (40 mieszkań) — PV only | 1 225 PLN | 2 288 PLN | 3 500 PLN |
+| Per lokator (83 mieszkania (zweryfikowane)) — PV only | 1 225 PLN | 2 288 PLN | 3 500 PLN |
 | Payback PV (z dotacją) | ~2,9 lat | ~4,5 lat | ~5,3 lat |
 | IRR 15 lat | ~32% | ~20% | ~16% |
 | NPV 15 lat @5% real (PV only) | +127 000 PLN | +117 000 PLN | +126 000 PLN |
@@ -190,7 +192,7 @@ Jeśli rozmowa z zarządem **do 15.05.2026** → Grant OZE realny. Jeśli późn
 | Wartość dodana poza PV | żadna | Modernizacja ppoż (zgodność, bezpieczeństwo) |
 | Ryzyko korozji balustrady | Jakub sam ponosi | Nie dotyczy |
 | Czas od decyzji do kWh | ~2-3 miesiące | ~6-9 miesięcy |
-| Skalowanie efektu | Tylko Jakub | Wszystkie 40 mieszkań razem |
+| Skalowanie efektu | Tylko Jakub | Wszystkie 83 mieszkania (zweryfikowane) razem |
 
 **Porównanie NPV 15 lat dla Jakuba (tylko jego kwota i zwroty)**:
 - Scenariusz A (balkonowy 600W, samodzielny): NPV ≈ +1 020 PLN

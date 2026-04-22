@@ -1,5 +1,7 @@
 # Plan wykonania — od decyzji do pierwszego kWh
 
+> **AKTUALIZACJA 2026-04-22**: Po planie gospodarczym wspólnoty (`docs/Konopnickiej 33.pdf`): 83 lokale, 11 pięter (budynek wysoki — ppoż C obligatoryjny), fundusz remontowy 303 917 PLN dostępny bez dodatkowych zaliczek. Kontakt administratora: Andrzej Szczepaniak, Wspólnoty.pl, ul. Chodkiewicza 15, 85-065 Bydgoszcz. Księgowa: Joanna Wendrowska, 797 626 976.
+
 Dwie ścieżki, zgodnie z [biznes/REKOMENDACJA.md](../biznes/REKOMENDACJA.md). Ścieżka A (balkonowa indywidualna) jest fallback'em na wypadek odmowy wspólnoty. Ścieżka B (wspólnotowa) jest rekomendowana.
 
 ## Streszczenie (5 bullets)
@@ -73,10 +75,10 @@ Dwie ścieżki, zgodnie z [biznes/REKOMENDACJA.md](../biznes/REKOMENDACJA.md). �
 
 ### Faza B.1 — Przygotowanie (tygodnie 1-2, do 2026-05-05)
 
-- B.1.1 **Rozmowa Jakuba z administratorem/zarządem wspólnoty**: przedstawić [PROPOZYCJA_DLA_WSPOLNOTY.md](../biznes/PROPOZYCJA_DLA_WSPOLNOTY.md). Cel: wprowadzenie do porządku obrad najbliższego zebrania. Kto: Jakub.
-- B.1.2 **Zebranie danych wspólnoty**: liczba mieszkań, zużycie części wspólnych (z faktur 2024-2025), stan dachu, stan pomieszczenia technicznego. Kto: zarząd, na wniosek Jakuba.
+- B.1.1 **Rozmowa Jakuba z administratorem Andrzejem Szczepaniakiem** (Wspólnoty.pl, ul. Chodkiewicza 15, 85-065 Bydgoszcz) lub przez księgową Joannę Wendrowską (797 626 976, jwendrowska@wspolnoty.info): przedstawić [PROPOZYCJA_DLA_WSPOLNOTY.md](../biznes/PROPOZYCJA_DLA_WSPOLNOTY.md). Cel: wprowadzenie do porządku obrad najbliższego zebrania. Kto: Jakub.
+- B.1.2 **Potwierdzenie danych z planu gospodarczego** — 83 mieszkania, 4 284 m², fundusz remontowy 303 917 PLN na koniec 2026, plan wydatków 2026 = 0. Większość już zamknięta z `WSPOLNOTA_DANE_FORMALNE.md`, ale warto zweryfikować: stan instalacji ppoż (zakres A/B/C), długoterminowe plany funduszu remontowego, stan dachu, faktura energetyczna części wspólnych (stawka PLN/kWh). Kto: administrator, na wniosek Jakuba.
 - B.1.3 **Wizja piwnicy technicznej** — czy istnieje kandydat na pomieszczenie magazynu EI60/REI60/EI30 (rozdzielnia główna, pompownia, suszarnia). Kto: Jakub + administrator.
-- B.1.4 **Weryfikacja czy teren obsługuje ENEA Operator** (operator.enea.pl mapa) — potwierdzenie dla kodu pocztowego 85-124. Kto: Jakub, 5 minut.
+- B.1.4 **Potwierdzenie ENEA Operator dla kodu 85-124** (już wstępnie zweryfikowane `UNCONFIRMED` z PRZEPISY_PL — potwierdzić telefonem na infolinię 611 111 111 lub online). Kto: Jakub, 5 minut.
 
 ### Faza B.2 — Ofertowanie (tygodnie 2-4, do 2026-05-19)
 

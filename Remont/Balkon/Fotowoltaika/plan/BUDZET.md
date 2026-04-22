@@ -1,11 +1,13 @@
 # Budżet — pełne PLN rozpisanie obu ścieżek
 
+> **AKTUALIZACJA 2026-04-22 (Faza 5 post-dokument wspólnoty)**: Po otrzymaniu planu gospodarczego (`docs/Konopnickiej 33.pdf`) — wspólnota ma **83 lokale (nie 40), 11 pięter (nie 9 → budynek wysoki, kategoria W)**. Koszt ppoż C rewizja **120 000 → 166 000 PLN** (obowiązek prawny DSO + oddymianie dla budynku wysokiego). Per lokator **3 102 PLN** (nie 5 290). Finansowanie z funduszu remontowego 303 917 PLN na koniec 2026 — **bez podnoszenia zaliczek**. Szczegółowe liczby w `research/WSPOLNOTA_DANE_FORMALNE.md §7`.
+
 Dwie ścieżki z pełnymi pozycjami. Wszystkie kwoty brutto chyba że wskazano inaczej. VAT 8% dla instalacji w budynkach mieszkalnych do 300 m² (ustawa VAT art. 41 ust. 12). Dane z `research/PRODUKTY.md`, `research/WSPOLNOTA_SCENARIUSZ.md`, `biznes/BUSINESS_CASE.md`.
 
 ## Streszczenie
 
 - **Ścieżka A (balkon Jakuba indywidualnie)**: **3 050-4 700 PLN jednorazowo**. Sanity check vs. STAN_RYNKU_2026.md: PLN/Wp wynosi 3,81-5,88 vs. typowe 3,13-3,75 PLN/W dla zestawów 800W. Zakres górny odzwierciedla dodatki (inspekcja, antyrdzewka).
-- **Ścieżka B (wspólnota, PV + magazyn + ppoż C)**: **303 000 PLN brutto**, po Grant OZE 50% **211 500 PLN**. Na lokator (40 mieszkań): **5 290 PLN jednorazowo** lub **~150 PLN/mies. przez 3 lata** przez fundusz remontowy.
+- **Ścieżka B (wspólnota, PV + magazyn + ppoż C)**: **303 000 PLN brutto**, po Grant OZE 50% **211 500 PLN**. Na lokator (83 mieszkania): **5 290 PLN jednorazowo** lub **~150 PLN/mies. przez 3 lata** przez fundusz remontowy.
 - **Rezerwa**: **10% dodatkowo** na obie ścieżki jako bufor na nieprzewidziane (typowa praktyka w budownictwie).
 
 ---
@@ -114,18 +116,22 @@ Dwie ścieżki z pełnymi pozycjami. Wszystkie kwoty brutto chyba że wskazano i
 | Montaż wyłącznika PV Stop + rozdzielnia | 1 500 PLN |
 | **Razem robocizna PV** | **15 000 PLN** |
 
-### B.6 Modernizacja ppoż budynku — zakres C (bez Grant OZE, finansowanie osobne)
+### B.6 Modernizacja ppoż budynku — zakres C dla budynku wysokiego 11p. (OBOWIĄZEK PRAWNY, bez Grant OZE)
 
-| Pozycja | Kwota brutto |
-|---|---|
-| PWP (Przeciwpożarowy Wyłącznik Prądu) główny budynku | 15 000 PLN |
-| Oświetlenie ewakuacyjne klatek (autonomiczne LED) | 12 000 PLN |
-| Autonomiczne czujki dymu w częściach wspólnych (~20 szt. × 150 PLN + montaż) | 6 000 PLN |
-| DSO (Dźwiękowy System Ostrzegawczy) — 9 pięter, głośniki + centrala | 35 000 PLN |
-| Modernizacja systemu oddymiania (jeśli wymagany) | 25 000 PLN |
-| Modernizacja hydrantów + znaki ewakuacyjne | 12 000 PLN |
-| Robocizna + projekt ppoż budynku | 15 000 PLN |
-| **Razem ppoż C** | **120 000 PLN** |
+**Budynek 11-piętrowy Konopnickiej 33 = kategoria W (wysoki) wg rozporządzenia o warunkach technicznych § 8**. Zakres C wymogów prawnych (nie "opcjonalna modernizacja"):
+
+| Pozycja | Kwota brutto | Obowiązek prawny |
+|---|---|---|
+| PWP (Przeciwpożarowy Wyłącznik Prądu) główny budynku | 18 000 PLN | TAK |
+| Oświetlenie ewakuacyjne klatek (autonomiczne LED) | 16 000 PLN | TAK dla wysokich |
+| Autonomiczne czujki dymu w częściach wspólnych (~30 szt. × 200 PLN + montaż) | 8 000 PLN | TAK |
+| **DSO (Dźwiękowy System Ostrzegawczy)** — 11 pięter, głośniki + centrala | 42 000 PLN | **TAK dla budynków wysokich** |
+| **Oddymianie klatek schodowych** — klapy oddymiające | 40 000 PLN | **TAK dla wysokich § 245** |
+| Hydranty wewnętrzne 25/33 mm na każdej kondygnacji + znaki ewakuacyjne | 20 000 PLN | TAK |
+| Robocizna + projekt ppoż budynku (rzeczoznawca ppoż, projekt dla kategorii W) | 22 000 PLN | — |
+| **Razem ppoż C dla 11p.** | **166 000 PLN** | |
+
+**To nie jest "opcjonalna modernizacja" — to jest obowiązek prawny** wynikający z rozporządzenia Ministra Infrastruktury z 12.04.2002 w sprawie warunków technicznych budynków i ich usytuowania, §§ 207-263 dla kategorii W. Jeśli obecna instalacja ppoż bloku nie spełnia tych wymogów (co jest prawdopodobne dla bloku z lat 70-80), wspólnota **ma obowiązek dostosowania**, niezależnie od projektu PV.
 
 ### B.7 Podsumowanie Ścieżki B
 
@@ -137,24 +143,29 @@ Dwie ścieżki z pełnymi pozycjami. Wszystkie kwoty brutto chyba że wskazano i
 | Dokumentacja PV (B.4) | 12 000 | 6 000 | 6 000 |
 | Robocizna PV (B.5) | 15 000 | 7 500 | 7 500 |
 | **Podsuma PV + magazyn + ppoż PV** | **172 200** | **86 100** | **86 100** |
-| Ppoż budynku (B.6) — poza grantem | 120 000 | 0 | 120 000 |
-| **RAZEM** | **292 200** | **86 100** | **206 100** |
-| **Z buforem 10%** | **321 420** | **94 710** | **226 710** |
+| Ppoż budynku (B.6) — poza grantem, OBOWIĄZEK PRAWNY dla 11p. | 166 000 | 0 | 166 000 |
+| **RAZEM** | **338 200** | **86 100** | **252 100** |
+| **Z buforem 10%** | **372 020** | **94 710** | **277 310** |
 
 **Drobne uwagi**:
 - Kwota 86 100 PLN dotacji to realna szacunkowa. W [BUSINESS_CASE §3.1](../biznes/BUSINESS_CASE.md) i [WSPOLNOTA_SCENARIUSZ §3.5](../research/WSPOLNOTA_SCENARIUSZ.md) używałem zaokrąglenia 91 500 PLN (50% z 183 000). Różnica wynika z różnic w detalowaniu B.1-B.5 — 172 200 vs. 183 000. Użyj węższego rzędu w pitchu dla wspólnoty (86-92 k), bez pretensji do precyzji przed realnym ofertowaniem.
-- Ppoż budynku 120 000 PLN jest **orientacyjne** dla bloku wielorodzinnego 9-kondygnacyjnego, 40 mieszkań. Dokładny kosztorys pojawi się po wizji rzeczoznawcy.
+- Ppoż budynku 166 000 PLN jest **rewizją dla kategorii W (wysoki, 11 pięter)** zgodnie z `research/WSPOLNOTA_DANE_FORMALNE.md §2.2`. Dokładny kosztorys pojawi się po wizji rzeczoznawcy ppoż z uprawnieniami do budynków wysokich.
 
-### B.8 Per lokator (przy 40 mieszkaniach)
+### B.8 Per lokator (83 mieszkania, potwierdzone z planu gospodarczego 2026)
 
 | Kategoria | Kwota na mieszkanie |
 |---|---|
-| PV + magazyn + adaptacja + dokumentacja + robocizna (po dotacji) | 2 152 PLN |
-| Ppoż budynku C | 3 000 PLN |
-| **Razem na mieszkanie** | **5 152 PLN** |
-| Z buforem 10% | **5 668 PLN** |
+| PV + magazyn + adaptacja + dokumentacja + robocizna (po dotacji 50% Grant OZE) | 1 037 PLN |
+| Ppoż budynku C dla budynku wysokiego 11p. (obowiązek prawny) | 2 000 PLN |
+| **Razem na mieszkanie** | **3 037 PLN** |
+| Z buforem 10% | **3 341 PLN** |
 
-Rozłożone w funduszu remontowym na 3 lata: **~155 PLN/mies. dodatkowo**. Wariantowo na 5 lat: **~95 PLN/mies.**
+**Finansowanie z funduszu remontowego — BEZ dodatkowych zaliczek**:
+- Stan funduszu remontowego na koniec 2026: 303 917 PLN (plan gospodarczy 2026)
+- Koszt projektu z buforem: 277 310 PLN (91% stanu funduszu)
+- Bufor po realizacji: ~26 000 PLN
+- Obecne zaliczki 1,80 PLN/m² × 12 mies. = **91 897 PLN/rok** — bez zmian
+- Odbudowa funduszu do stanu pre-projektowego: ~3 lata (2029)
 
 ### B.9 Kalkulacja roczna kosztów operacyjnych wspólnoty (przez 15 lat)
 

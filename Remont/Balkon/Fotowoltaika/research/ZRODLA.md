@@ -120,6 +120,14 @@ Do porównania cenowego i dojrzałości rynku, nie do cytowania jako polski kosz
 - `../../zdjęcia/INDEX.md` — lokalnie — indeks zdjęć balkonu z opisami — wygenerowany wcześniej — 2026-04-21 (data inspekcji).
 - `../../zdjęcia/*.JPEG`, `*.PNG` — lokalnie — dwanaście zdjęć + folder `zachodnia_sciana/` — 2026-04-21.
 
+## 7. Dokumenty wspólnoty mieszkaniowej (prymarne)
+
+- `../docs/Konopnickiej 33.pdf` — **Wspólnota Mieszkaniowa ul. Konopnickiej 33** — "Plan gospodarczy Wspólnoty Mieszkaniowej na rok 2026", data wydruku 27.02.2026, 2 strony, 346,2 KB — 2026-04-22 (data analizy). **Dokument oficjalny** podpisany przez księgową (Joanna Wendrowska), administratora (Andrzej Szczepaniak, Wspólnoty.pl) i członka zarządu. Zawiera: pełne dane formalne wspólnoty (NIP 9532425130, adres, administrator), dane techniczne nieruchomości (4 284 m², 83 lokale mieszkalne), plan finansowy 2026 (przychody, koszty, fundusz remontowy 303 917 PLN na koniec 2026), stawki i opłaty. Zamyka większość `UNCONFIRMED` dla wspólnoty Jakuba. Szczegółowe streszczenie w `WSPOLNOTA_DANE_FORMALNE.md`.
+
+## 8. Źródła ustne / potwierdzenia od użytkownika
+
+- Jakub Gościnny — potwierdzenie 2026-04-22 — liczba kondygnacji budynku: **11 pięter** (nie 9 jak wskazywały zdjęcia "wysokie, 8-10 pięter"). Klasyfikacja prawna: budynek wysoki (W, 10-18 kondygnacji) → obligatoryjne wymogi ppoż.
+
 ## Polityka aktualizacji
 
 Każda nowa cena, liczba, fakt dodawany do dowolnego pliku w projekcie **musi** wylądować tu z URL, datą dostępu i jednolinijkową uwagą. Źródła pokazują wiek kalkulacji — jeśli budżet sporządzony w maju wciąż powołuje się na źródło z kwietnia, akceptowalne. Jeśli w lipcu powołujemy się na kwiecień — zweryfikuj.

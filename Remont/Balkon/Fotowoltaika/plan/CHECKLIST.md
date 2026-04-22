@@ -154,12 +154,26 @@ Drukowana lista kroków dla obu ścieżek. Format Markdown z checkboxami działa
 
 ## Notatki do druku (puste pola)
 
-**Numer mieszkania Jakuba**: _________
+**Numer mieszkania Jakuba**: **84** (M. Konopnickiej 33/84, 85-124 Bydgoszcz)
+
+**Dane wspólnoty (z planu gospodarczego 2026)**:
+- Nazwa: Wspólnota Mieszkaniowa ul. Konopnickiej 33
+- NIP: 9532425130
+- Liczba lokali: 83
+- Powierzchnia: 4 284,09 m²
+- Liczba pięter: 11 (budynek wysoki, kategoria W)
+- Fundusz remontowy koniec 2026 (prognoza): 303 917,91 PLN
 
 **Dane kontaktowe administratora wspólnoty**:
-Nazwa: __________________
-Telefon: _________________
-E-mail: _________________
+- Nazwa: **Wspólnoty.pl** (Andrzej Szczepaniak)
+- Adres: **ul. Chodkiewicza 15, 85-065 Bydgoszcz**
+- REGON: 092525828
+- Telefon: 0513240307 `UNCONFIRMED` (odczyt z pieczęci PDF)
+
+**Dane księgowej**:
+- Imię i nazwisko: **Joanna Wendrowska**
+- Telefon: **797 626 976**
+- E-mail: **jwendrowska@wspolnoty.info**
 
 **Wybrany wykonawca PV**:
 Firma: ___________________

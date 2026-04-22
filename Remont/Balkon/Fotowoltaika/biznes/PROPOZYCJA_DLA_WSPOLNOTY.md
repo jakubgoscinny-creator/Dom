@@ -1,12 +1,20 @@
-# Propozycja dla zarządu wspólnoty mieszkaniowej
+# Propozycja dla zarządu Wspólnoty Mieszkaniowej ul. Konopnickiej 33
 
-**Do przedłożenia na najbliższym zebraniu wspólnoty. Przygotowana do druku jako 2-stronicowy dokument. Autor: Jakub Gościnny, lokator.**
+**Do przedłożenia na najbliższym zebraniu wspólnoty. Przygotowana do druku jako 2-stronicowy dokument.**
+
+**Wnioskodawca**: Jakub Gościnny, lokal **84** (M. Konopnickiej 33/84, 85-124 Bydgoszcz).
+**Adresat**: Zarząd Wspólnoty Mieszkaniowej + administrator Wspólnoty.pl Andrzej Szczepaniak, ul. Chodkiewicza 15, 85-065 Bydgoszcz.
+**Wspólnota**: 83 lokale mieszkalne, powierzchnia 4 284 m², 11 pięter (budynek wysoki wg prawa budowlanego), NIP 9532425130.
+
+> **Wszystkie liczby w tym dokumencie bazują na oficjalnym planie gospodarczym wspólnoty na rok 2026 (27.02.2026) oraz ofertach rynkowych PV 2026. Finansowanie zakłada wykorzystanie obecnego funduszu remontowego (303 917 PLN na koniec 2026) + Grant OZE BGK 50%. Bez podnoszenia zaliczek lokatorów.**
 
 ---
 
 ## Propozycja
 
-Wspólnota w 2026 ma do wykonania **modernizację instalacji przeciwpożarowej** (PWP główny, DSO, oświetlenie ewakuacyjne klatek, czujki dymu w częściach wspólnych, oddymianie, hydranty — zakres C zgodny z obowiązującymi przepisami). Szacunkowy koszt tej modernizacji: **~120 000 PLN brutto**, pokryty z funduszu remontowego.
+Wspólnota w 2026 ma **obowiązek prawny** modernizacji instalacji przeciwpożarowej zgodnie z wymogami dla **budynku wysokiego** (11 pięter = kategoria W wg rozporządzenia o warunkach technicznych § 8). Obligatoryjne elementy: PWP główny, DSO (dźwiękowy system ostrzegawczy), oświetlenie ewakuacyjne klatek, czujki dymu w częściach wspólnych, oddymianie klatek schodowych, hydranty wewnętrzne 25/33 mm na każdej kondygnacji. **To nie jest opcja — to obowiązek wynikający z prawa budowlanego** dla budynków o 10+ kondygnacjach mieszkalnych.
+
+Szacunkowy koszt samodzielnej modernizacji ppoż dla budynku 11-piętrowego: **~166 000 PLN brutto**, pokryty z funduszu remontowego (obecny stan 212 020 PLN, prognoza końca 2026: 303 917 PLN).
 
 Proponuję **skoordynować** tę modernizację z projektem **dachowej fotowoltaiki 25 kWp + magazynu energii 20 kWh dla części wspólnych bloku**. Dlaczego:
 
@@ -28,10 +36,17 @@ Proponuję **skoordynować** tę modernizację z projektem **dachowej fotowoltai
 | Wyłącznik PV Stop + rzeczoznawca ppoż PV | 10 000 PLN | 5 000 PLN | 5 000 PLN |
 | Dokumentacja projektowa PV | 8 000 PLN | 4 000 PLN | 4 000 PLN |
 | **Razem PV + magazyn + ppoż PV** | **183 000 PLN** | **91 500 PLN** | **91 500 PLN** |
-| Modernizacja ppoż budynku (zakres C, bez dotacji) | 120 000 PLN | — | 120 000 PLN |
-| **ŁĄCZNIE** | **303 000 PLN** | **91 500 PLN** | **211 500 PLN** |
+| Modernizacja ppoż budynku wysokiego 11p. (zakres C) | 166 000 PLN | — | 166 000 PLN |
+| **ŁĄCZNIE** | **349 000 PLN** | **91 500 PLN** | **257 500 PLN** |
 
-**Koszt na jeden lokal** (zakładając 40 mieszkań we wspólnocie): **~5 290 PLN jednorazowo**. Rozłożone w funduszu remontowym na 3 lata to **~150 PLN miesięcznie dodatkowo** na mieszkanie. Weryfikacja dokładnej liczby mieszkań i obecnego salda funduszu — zarząd.
+**Finansowanie — z funduszu remontowego**. Stan funduszu:
+- Na początek 2026: **212 020,71 PLN** (źródło: Plan gospodarczy 2026, 27.02.2026)
+- Prognoza końca 2026: **303 917,91 PLN** (przy obecnych zaliczkach 91 897 PLN/rok, brak innych planowanych wydatków)
+- Koszt projektu: 257 500 PLN = **85% prognozowanego stanu funduszu**
+- **Bufor po realizacji: ~46 400 PLN** (15% funduszu zostaje na drobne awarie)
+- Odbudowa funduszu do stanu przed-projektowego: ~2,8 lat (2029)
+
+**Koszt per lokal** (83 mieszkania): **~3 102 PLN jednorazowo** — wliczone w roczny fundusz remontowy, **BEZ podnoszenia zaliczek** od lokatorów. Ze standardowego funduszu remontowego 1,80 PLN/m² × średnia 51,6 m² × 12 miesięcy = **~1 114 PLN/rok/lokator** już płaconych w zaliczkach. Projekt wykorzystuje skumulowany fundusz, nie generuje nowych obciążeń dla lokatorów.
 
 ---
 
@@ -39,10 +54,11 @@ Proponuję **skoordynować** tę modernizację z projektem **dachowej fotowoltai
 
 ### Finansowo
 
-- **Obniżenie rachunków za prąd części wspólnych**: ~20 000 PLN rocznie od 2027 (pierwszy pełny rok produkcji)
-- **Zwrot inwestycji PV+magazyn**: ~4,5 lat
-- **W horyzoncie 15 lat**: ~300 000 PLN oszczędności (przed waloryzacją cen energii) — **3× więcej niż zainwestowane 91 500 PLN**
-- **Modernizacja ppoż** się nie zwraca finansowo, ale jest wymogiem prawnym i warunkiem ubezpieczenia
+- **Obniżenie rachunków za prąd części wspólnych**: ~20 000 PLN rocznie od 2027 (obecny plan 2026: 12 000 PLN/rok za energię el. części wspólnej — PV pokryje to z nadwyżką i wyeksportuje ~14 500 kWh/rok do sieci)
+- **Zwrot inwestycji PV+magazyn** (po Grant OZE): ~4,5 lat
+- **W horyzoncie 15 lat**: ~300 000 PLN oszczędności dla wspólnoty (przed waloryzacją cen energii) — **3× więcej niż zainwestowane 91 500 PLN**
+- **Modernizacja ppoż** jest obowiązkiem prawnym (budynek wysoki) — wspólnota i tak musi ją wykonać, PV dokłada synergię wykonawczą (wspólny rzeczoznawca, jeden projekt, ~15-20% oszczędności w łącznym koszcie vs. dwa osobne projekty)
+- **Stawki energii rosną**: plan gospodarczy 2026 pokazuje +10% w centralnym ogrzewaniu i podgrzaniu wody vs 2025 — sąsiedzi widzą to na rachunkach, naturalny argument za oszczędzaniem
 
 ### Prawnie i bezpieczeństwowo
 
@@ -115,7 +131,7 @@ Wymagane quorum: **50% + 1 głos obecnych członków** (art. 23 ust. 2 ustawy o 
 
 ## Kontakt z lokatorem wnioskodawcą
 
-Jakub Gościnny — mieszkanie nr **[uzupełnić]**, telefon **[uzupełnić]**, e-mail: jakub.goscinny@gmail.com.
+Jakub Gościnny — lokal **84** (M. Konopnickiej 33/84, 85-124 Bydgoszcz), e-mail: jakub.goscinny@gmail.com.
 
 Pełna dokumentacja techniczna i ekonomiczna (z PVGIS, sensitivity analysis, porównaniem alternatyw): `/Dom/Remont/Balkon/Fotowoltaika/` na dysku OneDrive Jakuba, do udostępnienia zarządowi w wersji PDF na życzenie.
 

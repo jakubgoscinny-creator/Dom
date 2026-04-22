@@ -4,13 +4,15 @@
 
 Scope wprowadzony w sesji 2026-04-21 przez Jakuba w odpowiedzi na pierwszy checkpoint: "dodaj do scopu propozycje dla wspolnoty na wlasne magazyny energii i fotowoltaike" + "bedziemy musieli poprawic instalacje pozarnicza".
 
+> **AKTUALIZACJA 2026-04-22**: Po otrzymaniu planu gospodarczego wspólnoty (`docs/Konopnickiej 33.pdf`, szczegółowo w `WSPOLNOTA_DANE_FORMALNE.md`), wiele `UNCONFIRMED` w tym pliku zamknięto. **83 lokale** (nie 40), **11 pięter** (nie 9), **fundusz remontowy 303 917 PLN** na koniec 2026, **koszt ppoż C dla 11-piętrowego 166 000 PLN** (nie 120 000 — budynek wysoki, obligatoryjne DSO + oddymianie). **Per lokator 3 102 PLN** (zamiast 5 290). Pozostałe sekcje tego pliku zawierają wcześniejsze kalkulacje dla 40 mieszkań — rozstrzygające liczby w `WSPOLNOTA_DANE_FORMALNE.md §7`.
+
 ## Streszczenie (5 bullets)
 
 - Scenariusz wspólnotowy ma **znacząco lepszą ekonomikę** niż indywidualna balkonowa PV na 9. piętrze SE: dach bloku oferuje orientację optymalną (S, 30° tilt) bez nawisu = **1 060 kWh/kWp/rok** vs **697 kWh/kWp/rok** dla mojego balkonu pionowo SE. To 52% więcej na każdym wat mocy zainstalowanej.
 - **Grant OZE BGK 50%** (deadline 30 czerwca 2026) czyni inwestycję dla wspólnoty atrakcyjną jeśli uda się zmieścić w harmonogram: uchwała + dokumentacja + wniosek BGK przed końcem czerwca. Kluczowy realny deadline: **maj 2026**.
 - **Nowelizacja Prawa budowlanego od 7.01.2026 dla magazynów energii** ustanowiła progi 10/30/300 kWh, z których **magazyn 20 kWh dla wspólnoty** wpada w pole "pomieszczenie techniczne EI60/REI60/EI30 bez zgłoszenia budowy" — to najtańsza klasa formalności, ale wymaga pomieszczenia spełniającego wymogi (`UNCONFIRMED` czy wspólnota Jakuba je ma).
 - **"Poprawa instalacji pożarniczej"** zauważona przez Jakuba to może być równocześnie argument i wyzwanie: jeśli wspólnota i tak musi modernizować ppoż, można to zsynchronizować z PV (wyłącznik PV Stop + pomieszczenie magazynu) i rozłożyć koszt. Jeśli modernizacja ppoż jest niezależna, dodaje do budżetu łącznego.
-- **Reality check**: wspólnotowa PV + magazyn + adaptacja ppoż może kosztować **150 000-200 000 PLN brutto** przed dotacją, **75 000-100 000 PLN po Grant OZE**. Dla wspólnoty 40 mieszkań to **~2 000-2 500 PLN na lokator** jednorazowo, z oszczędnością roczną **~10 000-15 000 PLN** po stronie wspólnoty = **prosty payback 6-10 lat** dla wspólnoty. Czy to warto vs indywidualna balkonowa — zależy od profilu Jakuba (patrz `biznes/`).
+- **Reality check**: wspólnotowa PV + magazyn + adaptacja ppoż może kosztować **150 000-200 000 PLN brutto** przed dotacją, **75 000-100 000 PLN po Grant OZE**. Dla wspólnoty 83 mieszkań (potwierdzone w `WSPOLNOTA_DANE_FORMALNE.md §2`) to **~2 000-2 500 PLN na lokator** jednorazowo, z oszczędnością roczną **~10 000-15 000 PLN** po stronie wspólnoty = **prosty payback 6-10 lat** dla wspólnoty. Czy to warto vs indywidualna balkonowa — zależy od profilu Jakuba (patrz `biznes/`).
 
 ---
 
@@ -20,7 +22,7 @@ Scope wprowadzony w sesji 2026-04-21 przez Jakuba w odpowiedzi na pierwszy check
 
 Konsekwencje dla wspólnot mieszkaniowych:
 - Stawka za energię dla części wspólnych skoczyła do pełnej rynkowej — zależnie od taryfy C11 (komercyjna jednofazowa) lub B23 (średnia moc) to ~0,90-1,20 PLN/kWh brutto `UNCONFIRMED` — potrzebna faktura wspólnoty
-- Tydzień 40 mieszkań zużywa w częściach wspólnych 8 000 - 18 000 kWh/rok = **8 000-20 000 PLN rachunku rocznego** po tarczy vs **4 000-10 000 PLN** podczas tarczy
+- Tydzień 83 mieszkań (potwierdzone w `WSPOLNOTA_DANE_FORMALNE.md §2`) zużywa w częściach wspólnych 8 000 - 18 000 kWh/rok = **8 000-20 000 PLN rachunku rocznego** po tarczy vs **4 000-10 000 PLN** podczas tarczy
 - Wzrost rachunku o ~100% jest realny i widoczny dla lokatorów — to **naturalny moment polityczny do wdrożenia uchwały o PV**, kiedy sąsiedzi dostają wyższe rachunki i szukają rozwiązania
 
 **Drugi problem**: od 2026 nowe regulacje magazynów energii (7.01.2026) ustanawiają jasne ramy, ale też wymagają **dostosowania pomieszczeń technicznych** — jeśli wspólnota ma tylko prowizoryczną piwnicę techniczną, trzeba ją zmodernizować do EI60/REI60/EI30.
@@ -107,7 +109,7 @@ Jakub wskazał: "będziemy musieli poprawić instalację pożarniczą". To wymag
 | Robocizna | 8 000 | 8 640 |  |
 | **Razem brutto** | | **100 440** |  |
 | **Po Grant OZE 50%** | | **~50 000** |  |
-| **Na lokator (40 mieszkań)** | | **~1 250 PLN** | Jednorazowo |
+| **Na lokator (83 mieszkań (potwierdzone w `WSPOLNOTA_DANE_FORMALNE.md §2`))** | | **~1 250 PLN** | Jednorazowo |
 
 Oszczędność roczna: ~12 000 PLN (częściowa auto-konsumpcja, nadmiar do sieci)
 Payback: **~4,2 lat** dla całej wspólnoty, **~8 lat** dla pojedynczego lokatora (amortyzacja udziału)
@@ -124,7 +126,7 @@ Payback: **~4,2 lat** dla całej wspólnoty, **~8 lat** dla pojedynczego lokator
 | Robocizna łączna | 15 000 |  |
 | **Razem brutto** | **~196 500** |  |
 | **Po Grant OZE 50%** | **~100 000** |  |
-| **Na lokator (40 mieszkań)** | **~2 500 PLN** |  |
+| **Na lokator (83 mieszkań (potwierdzone w `WSPOLNOTA_DANE_FORMALNE.md §2`))** | **~2 500 PLN** |  |
 
 Oszczędność roczna: ~14 000-16 000 PLN (wyższa dzięki magazynowi = więcej auto-konsumpcji)
 Payback: **~7 lat** dla wspólnoty
@@ -141,7 +143,7 @@ Payback: **~7 lat** dla wspólnoty
 | Robocizna łączna | 25 000 |  |
 | **Razem brutto** | **~327 000** |  |
 | **Po Grant OZE 50% (PV + magazyn)** | **~235 000** | Modernizacja ppoż poza grantem (`UNCONFIRMED` — do sprawdzenia regulamin BGK) |
-| **Na lokator (40 mieszkań)** | **~5 900 PLN** |  |
+| **Na lokator (83 mieszkań (potwierdzone w `WSPOLNOTA_DANE_FORMALNE.md §2`))** | **~5 900 PLN** |  |
 
 Oszczędność roczna: ~20 000 PLN (duża auto-konsumpcja, model prosumenta zbiorowego z udziałem lokatorów)
 Payback: **~11 lat** dla wspólnoty
@@ -149,7 +151,7 @@ Payback: **~11 lat** dla wspólnoty
 ### 3.4 Ocena scenariuszy
 
 - **MINIMUM** jest najbezpieczniejszy i najprostszy. Nie pokrywa zużycia części wspólnych w 100%, ale redukuje rachunek o ~60-70%. Payback <5 lat = dobry.
-- **SENSOWNY** dodaje magazyn i zwiększa auto-konsumpcję. Pomieszczenie techniczne musi być dostępne. Payback 7 lat. **Prawdopodobnie najlepszy kompromis dla wspólnoty 40-mieszkaniowej.**
+- **SENSOWNY** dodaje magazyn i zwiększa auto-konsumpcję. Pomieszczenie techniczne musi być dostępne. Payback 7 lat. **Prawdopodobnie najlepszy kompromis dla wspólnoty 83-mieszkaniowej.**
 - **MAKSYMALNY** obejmuje modernizację ppoż, której wspólnota i tak może potrzebować (Jakub!). Synergia jest, ale koszt łączny duży. Payback 11 lat — akceptowalny tylko jeśli wspólnota wartościuje oddzielnie "komfort i bezpieczeństwo ppoż" (który ma własny koszt utracony).
 
 ### 3.5 Scenariusz rzeczywisty dla wspólnoty Jakuba (decyzje 2026-04-21, ppoż zakres C)
@@ -183,7 +185,7 @@ Jakub w checkpoint'cie Fazy 1 potwierdził że wspólnota planuje **gruntowną m
 | **Podsuma ppoż budynku** | **120 000** | **0** |
 | **RAZEM brutto** | **327 000** | |
 | **Po Grant OZE 50% (tylko PV+magazyn+ppoż PV)** | **223 500** | |
-| **Na lokator (40 mieszkań)** | **~5 600 PLN** | |
+| **Na lokator (83 mieszkań (potwierdzone w `WSPOLNOTA_DANE_FORMALNE.md §2`))** | **~5 600 PLN** | |
 
 Koszt na lokator: **~5 600 PLN jednorazowo**. Rozłożone w czynszu/funduszu remontowym na 3-5 lat to **~95-155 PLN miesięcznie dodatkowo na mieszkanie** (do negocjacji z zarządem).
 

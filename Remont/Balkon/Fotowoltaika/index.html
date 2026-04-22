@@ -814,7 +814,7 @@ body[data-mode="wspolnota"] .metric-payback .metric-value::before { content: "";
         <legend data-i18n-pl="Skala wspólnoty" data-i18n-en="Community scale">Skala wspólnoty</legend>
         <div class="field">
           <label for="f-units" data-i18n-pl="Liczba mieszkań w bloku" data-i18n-en="Number of flats">Liczba mieszkań w bloku</label>
-          <input class="input-field" type="number" id="f-units" name="units" value="40" inputmode="decimal">
+          <input class="input-field" type="number" id="f-units" name="units" value="83" inputmode="decimal">
         </div>
         <div class="field">
           <label for="f-commonKwh" data-i18n-pl="Roczne zużycie części wspólnych (kWh)" data-i18n-en="Annual common-area consumption (kWh)">Roczne zużycie części wspólnych (kWh)</label>
@@ -1092,7 +1092,7 @@ function computeBalcony(p) {
    ============================================= */
 function readCommunityParams() {
   return {
-    units: parseFloat(document.getElementById('f-units').value) || 40,
+    units: parseFloat(document.getElementById('f-units').value) || 83,
     commonKwh: parseFloat(document.getElementById('f-commonKwh').value) || 12000,
     pvKwp: parseFloat(document.getElementById('f-pvKwp').value) || 25,
     batteryKwh: parseFloat(document.getElementById('f-batteryKwh').value) || 20,
@@ -1494,7 +1494,7 @@ balconyGroup.add(catNet);
    ============================================= */
 function buildBlock() {
   const g = new THREE.Group();
-  const blockW = 32, blockD = 12, floors = 9;
+  const blockW = 32, blockD = 12, floors = 11;  // Konopnickiej 33 — 11 pięter (budynek wysoki wg prawa)
   const blockH = 2.9 * floors;
 
   // Bryła bloku

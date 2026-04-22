@@ -1,5 +1,7 @@
 # Matryca ryzyk — prawdopodobieństwo × wpływ × mitygacja
 
+> **AKTUALIZACJA 2026-04-22**: Po planie gospodarczym wspólnoty (303 917 PLN funduszu na koniec 2026) **R-B-3 (BGK odrzuca wniosek)** zyskuje plan B — realizacja bez dotacji nadal finansowalna z funduszu. Per lokator rośnie z 3 102 PLN do ~5 000 PLN, ale nadal wykonalne. **Nowe ryzyko R-B-8**: konflikt z przyszłymi dużymi remontami jeśli fundusz remontowy ma długoterminowe plany (elewacja, wymiana windy) — do weryfikacji u administratora. 11 pięter dodaje też **R-Z-3**: rzeczoznawca ppoż dla budynków wysokich rzadziej dostępny, wyższe honorarium.
+
 Skala: prawdopodobieństwo **L** (low, <20%), **M** (medium, 20-60%), **H** (high, >60%). Wpływ podobnie. Ryzyka o kombinacji **H×H** lub **M×H** wymagają aktywnej mitygacji, nie tylko obserwacji.
 
 ## Streszczenie priorytetowe
