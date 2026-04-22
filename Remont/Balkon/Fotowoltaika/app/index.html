@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="day">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Kalkulator i wizualizator fotowoltaiki balkonowej — Bydgoszcz, balkon 465×99-107 cm SE, 9. piętro. Dwa scenariusze: balkon indywidualny i propozycja dla wspólnoty (dach + magazyn).">
+<title>Fotowoltaika balkonowa · kalkulator i wizualizator — Balkon 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* =============================================
+   DESIGN.md TOKENY — dzień (default)
+   ============================================= */
+:root[data-theme="day"] {
+  --surface-page: #fbf9f4;
+  --surface-card: #ffffff;
+  --surface-sunken: #f2ede4;
+  --surface-elevated: #ffffff;
+
+  --ink-primary: #1a1814;
+  --ink-secondary: #4a4640;
+  --ink-muted: #8a8378;
+  --ink-inverse: #fbf9f4;
+
+  --accent-sun: #d97706;
+  --accent-sun-hover: #b45309;
+  --accent-sun-soft: #fef3c7;
+  --accent-sky: #0284c7;
+  --accent-leaf: #65a30d;
+
+  --semantic-positive: #15803d;
+  --semantic-negative: #b91c1c;
+  --semantic-caution: #ca8a04;
+  --semantic-info: #0369a1;
+
+  --border-hairline: #e5ddd0;
+  --border-strong: #c4bba8;
+  --border-focus: #d97706;
+
+  --shadow-xs: 0 1px 2px rgba(42, 34, 20, 0.04);
+  --shadow-sm: 0 1px 3px rgba(42, 34, 20, 0.06), 0 1px 2px rgba(42, 34, 20, 0.04);
+  --shadow-md: 0 4px 6px rgba(42, 34, 20, 0.07), 0 2px 4px rgba(42, 34, 20, 0.04);
+  --shadow-lg: 0 10px 15px rgba(42, 34, 20, 0.08), 0 4px 6px rgba(42, 34, 20, 0.04);
+  --shadow-focus: 0 0 0 3px var(--accent-sun-soft);
+}
+
+/* =============================================
+   DESIGN.md TOKENY — noc
+   ============================================= */
+:root[data-theme="night"] {
+  --surface-page: #141210;
+  --surface-card: #1f1c18;
+  --surface-sunken: #0d0c0a;
+  --surface-elevated: #29251f;
+
+  --ink-primary: #f5efe3;
+  --ink-secondary: #c4bba8;
+  --ink-muted: #7a7368;
+  --ink-inverse: #141210;
+
+  --accent-sun: #f59e0b;
+  --accent-sun-hover: #fbbf24;
+  --accent-sun-soft: #3d2a0a;
+  --accent-sky: #38bdf8;
+  --accent-leaf: #84cc16;
+
+  --semantic-positive: #22c55e;
+  --semantic-negative: #ef4444;
+  --semantic-caution: #eab308;
+  --semantic-info: #38bdf8;
+
+  --border-hairline: #2a2620;
+  --border-strong: #4a4238;
+  --border-focus: #f59e0b;
+
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-focus: 0 0 0 3px var(--accent-sun-soft);
+}
+
+/* =============================================
+   Skala typograficzna
+   ============================================= */
+:root {
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: 2.5rem;
+  --text-4xl: 3.5rem;
+  --text-headline: clamp(2rem, 6vw + 1rem, 3.5rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+  --space-12: 6rem;
+
+  --content-max-w: 1440px;
+  --content-padding-mobile: 1rem;
+  --content-padding-tablet: 1.5rem;
+  --content-padding-desktop: 2rem;
+
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* =============================================
+   Reset + base
+   ============================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html {
+  font-size: 16px;
+  background: var(--surface-page);
+  color: var(--ink-primary);
+  transition: background 400ms, color 400ms;
+}
+body {
+  font-family: var(--font-body);
+  line-height: 1.5;
+  min-height: 100vh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.2; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent-sky); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button { font-family: inherit; cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =============================================
+   Layout container
+   ============================================= */
+.container {
+  max-width: var(--content-max-w);
+  margin: 0 auto;
+  padding: 0 var(--content-padding-mobile);
+}
+@media (min-width: 768px) {
+  .container { padding: 0 var(--content-padding-tablet); }
+}
+@media (min-width: 1280px) {
+  .container { padding: 0 var(--content-padding-desktop); }
+}
+
+/* =============================================
+   Header
+   ============================================= */
+.header {
+  position: sticky;
+  top: env(safe-area-inset-top);
+  z-index: 50;
+  background: var(--surface-page);
+  border-bottom: 1px solid var(--border-hairline);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-3);
+  gap: var(--space-3);
+}
+.breadcrumb {
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+}
+.breadcrumb a { color: inherit; }
+.toolbar { display: flex; gap: var(--space-2); align-items: center; }
+
+/* Toggle buttons (language, theme) */
+.btn-ghost {
+  background: transparent;
+  border: none;
+  color: var(--ink-secondary);
+  font-size: var(--text-sm);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms, background 150ms;
+}
+.btn-ghost:hover { background: var(--surface-sunken); color: var(--ink-primary); }
+.btn-ghost:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
+.btn-ghost[aria-pressed="true"] { color: var(--accent-sun); font-weight: 600; }
+
+/* =============================================
+   Hero
+   ============================================= */
+.hero {
+  padding-block: var(--space-6) var(--space-5);
+}
+.hero h1 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--ink-primary);
+  letter-spacing: -0.02em;
+}
+.hero p {
+  font-size: var(--text-base);
+  color: var(--ink-secondary);
+  margin-top: var(--space-2);
+  max-width: 60ch;
+}
+@media (min-width: 768px) {
+  .hero h1 { font-size: var(--text-3xl); }
+}
+
+/* =============================================
+   Mode switch (balkon / wspólnota)
+   ============================================= */
+.mode-switch {
+  display: flex;
+  gap: var(--space-2);
+  background: var(--surface-sunken);
+  padding: var(--space-1);
+  border-radius: 0.75rem;
+  margin-bottom: var(--space-5);
+  overflow-x: auto;
+}
+.mode-btn {
+  flex: 1;
+  min-width: fit-content;
+  padding: 0.625rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--ink-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 200ms;
+  min-height: 44px;
+  white-space: nowrap;
+}
+.mode-btn[aria-pressed="true"] {
+  background: var(--surface-card);
+  color: var(--ink-primary);
+  box-shadow: var(--shadow-sm);
+  font-weight: 600;
+}
+
+/* =============================================
+   Metric tiles (3 headline numbers)
+   ============================================= */
+.metrics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+@media (min-width: 768px) {
+  .metrics { grid-template-columns: repeat(3, 1fr); }
+}
+.metric {
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: 1rem;
+  padding: var(--space-5);
+  box-shadow: var(--shadow-md);
+}
+.metric-label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-headline);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--ink-primary);
+  line-height: 1.0;
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+.metric-unit {
+  font-size: 0.4em;
+  color: var(--ink-secondary);
+  font-weight: 400;
+}
+.metric-delta {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+  margin-top: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* metric-specific accent */
+.metric-production .metric-value { color: var(--ink-primary); }
+.metric-savings .metric-value { color: var(--accent-leaf); }
+.metric-payback .metric-value { color: var(--accent-sun); }
+
+/* =============================================
+   UNCONFIRMED badge
+   ============================================= */
+.badge-unconfirmed {
+  display: inline-block;
+  background: var(--semantic-caution);
+  color: var(--ink-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+[data-theme="night"] .badge-unconfirmed {
+  color: var(--ink-inverse);
+}
+
+/* =============================================
+   Viewport (Three.js canvas + controls)
+   ============================================= */
+.viewport {
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: 1rem;
+  overflow: hidden;
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+.viewport-canvas {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  background: var(--surface-sunken);
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.viewport-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y pinch-zoom;
+}
+.viewport-placeholder {
+  text-align: center;
+  padding: var(--space-5);
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.viewport-placeholder strong {
+  display: block;
+  color: var(--ink-primary);
+  font-size: var(--text-lg);
+  font-family: var(--font-display);
+  margin-bottom: var(--space-2);
+}
+.viewport-controls {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.viewport-controls label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  font-weight: 500;
+}
+.viewport-controls .value-display {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-primary);
+  font-weight: 600;
+}
+
+/* =============================================
+   Slider (range)
+   ============================================= */
+input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: var(--surface-sunken);
+  border-radius: 3px;
+}
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: var(--surface-sunken);
+  border-radius: 3px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  background: var(--accent-sun);
+  border: 3px solid var(--surface-card);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+  margin-top: -9px;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: var(--accent-sun);
+  border: 3px solid var(--surface-card);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+}
+input[type="range"]:focus-visible {
+  outline: none;
+}
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--accent-sun-soft);
+}
+
+/* =============================================
+   Calculator form
+   ============================================= */
+.calculator {
+  background: var(--surface-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 1rem;
+  padding: var(--space-5);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-6);
+}
+.calculator h2 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.01em;
+}
+.calc-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 var(--space-5) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.calc-fieldset legend {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.field-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  font-weight: 500;
+}
+.field-inline .value-display {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-primary);
+  font-weight: 600;
+  min-width: 4ch;
+  text-align: right;
+}
+.field label {
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  font-weight: 500;
+}
+.input-field, .select-field {
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-hairline);
+  border-radius: 0.375rem;
+  padding: 0.625rem 0.875rem;
+  font-size: var(--text-base);
+  font-family: var(--font-body);
+  min-height: 44px;
+  color: var(--ink-primary);
+  transition: border-color 150ms, background 150ms;
+  width: 100%;
+}
+.input-field[type="number"] {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.input-field:focus, .select-field:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-focus);
+}
+
+/* =============================================
+   Details (collapsible)
+   ============================================= */
+.details-section {
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: 1rem;
+  padding: 0;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-6);
+  overflow: hidden;
+}
+.details-section summary {
+  list-style: none;
+  padding: var(--space-4) var(--space-5);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-base);
+  color: var(--ink-primary);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+.details-section summary::-webkit-details-marker { display: none; }
+.details-section summary::after {
+  content: "▾";
+  font-size: var(--text-base);
+  color: var(--ink-muted);
+  transition: transform 200ms;
+}
+.details-section[open] summary::after { transform: rotate(180deg); }
+.details-content {
+  padding: 0 var(--space-5) var(--space-5);
+  border-top: 1px solid var(--border-hairline);
+}
+.details-content p { font-size: var(--text-sm); color: var(--ink-secondary); margin-top: var(--space-3); }
+
+/* =============================================
+   Comparison table
+   ============================================= */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  margin-top: var(--space-3);
+}
+.compare-table caption {
+  text-align: left;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink-primary);
+  padding-block: var(--space-3);
+  caption-side: top;
+}
+.compare-table th,
+.compare-table td {
+  text-align: right;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border-hairline);
+  font-variant-numeric: tabular-nums;
+}
+.compare-table th:first-child,
+.compare-table td:first-child {
+  text-align: left;
+  font-family: var(--font-body);
+  color: var(--ink-secondary);
+}
+.compare-table thead th {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+  border-bottom: 2px solid var(--border-strong);
+}
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table tbody td {
+  font-family: var(--font-mono);
+  color: var(--ink-primary);
+}
+.compare-table tr.is-recommended td {
+  background: var(--accent-sun-soft);
+  font-weight: 600;
+}
+
+/* =============================================
+   UNCONFIRMED action panel
+   ============================================= */
+.unconfirmed-panel {
+  background: var(--surface-card);
+  border: 1px solid var(--semantic-caution);
+  border-left-width: 4px;
+  border-radius: 0.75rem;
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+.unconfirmed-panel h3 {
+  font-size: var(--text-base);
+  margin-bottom: var(--space-3);
+  color: var(--ink-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.unconfirmed-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.unconfirmed-panel li {
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  line-height: 1.5;
+}
+.unconfirmed-panel li .badge-unconfirmed { flex-shrink: 0; margin-top: 2px; }
+
+/* =============================================
+   Source citation inline
+   ============================================= */
+.cite {
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+  font-family: var(--font-body);
+}
+.cite a {
+  color: var(--accent-sky);
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+
+/* =============================================
+   Footer
+   ============================================= */
+.footer {
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--border-hairline);
+  margin-top: var(--space-8);
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}
+.footer p { margin-bottom: var(--space-2); }
+
+/* =============================================
+   Responsive — tablet 2-col
+   ============================================= */
+@media (min-width: 768px) {
+  .main-grid {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    gap: var(--space-5);
+    align-items: start;
+  }
+  .main-grid > .calculator { grid-column: 1; }
+  .main-grid > .viewport { grid-column: 2; grid-row: 1 / span 2; }
+}
+@media (min-width: 1280px) {
+  .main-grid {
+    grid-template-columns: 32% 48% 20%;
+  }
+  .main-grid > .sidebar-report { grid-column: 3; }
+}
+
+/* =============================================
+   Specific scenario states
+   ============================================= */
+body[data-mode="wspolnota"] .metric-savings .metric-value::before,
+body[data-mode="wspolnota"] .metric-payback .metric-value::before { content: ""; }
+
+/* Hidden until JS bootstraps */
+.js-hidden { display: none; }
+</style>
+</head>
+<body data-mode="balkon">
+
+<header class="header">
+  <div class="container header-inner">
+    <nav class="breadcrumb">
+      <a href="../../">← Projekty Balkonu 3D</a>
+    </nav>
+    <div class="toolbar">
+      <button class="btn-ghost" id="lang-toggle" aria-pressed="true" aria-label="Język polski / Polish language">PL</button>
+      <button class="btn-ghost" id="theme-toggle" aria-label="Przełącz dzień/noc" title="Dzień/noc">☀</button>
+    </div>
+  </div>
+</header>
+
+<main class="container" id="main">
+
+  <section class="hero">
+    <h1 data-i18n-pl="Fotowoltaika na balkon SE, Bydgoszcz 9. piętro" data-i18n-en="Balcony photovoltaics SE, Bydgoszcz 9th floor">Fotowoltaika na balkon SE, Bydgoszcz 9. piętro</h1>
+    <p data-i18n-pl="Kalkulator i wizualizator dla balkonu 465 × 99-107 cm. Dwie ścieżki: instalacja balkonowa dla pojedynczego mieszkania i propozycja dla wspólnoty (dach bloku + magazyn energii + gruntowna modernizacja ppoż). Każda liczba ma źródło w <a href='../research/ZRODLA.md'>research/ZRODLA.md</a>."
+       data-i18n-en="Calculator and visualizer for a 465 × 99-107 cm balcony. Two scenarios: single-flat balcony install, and a building community proposal (rooftop + battery + fire-safety modernization). Every number traces to a source in <a href='../research/ZRODLA.md'>research/ZRODLA.md</a>.">
+      Kalkulator i wizualizator dla balkonu 465 × 99-107 cm. Dwie ścieżki: instalacja balkonowa dla pojedynczego mieszkania i propozycja dla wspólnoty (dach bloku + magazyn energii + gruntowna modernizacja ppoż). Każda liczba ma źródło w <a href="../research/ZRODLA.md">research/ZRODLA.md</a>.
+    </p>
+  </section>
+
+  <section class="mode-switch" role="tablist" aria-label="Wybierz scenariusz">
+    <button class="mode-btn" data-mode="balkon" aria-pressed="true" role="tab">
+      <span data-i18n-pl="Mój balkon (indywidualny)" data-i18n-en="My balcony (individual)">Mój balkon (indywidualny)</span>
+    </button>
+    <button class="mode-btn" data-mode="wspolnota" aria-pressed="false" role="tab">
+      <span data-i18n-pl="Wspólnota: dach + magazyn + ppoż" data-i18n-en="Community: rooftop + battery + fire-safety">Wspólnota: dach + magazyn + ppoż</span>
+    </button>
+  </section>
+
+  <section class="metrics" aria-label="Kluczowe liczby">
+    <div class="metric metric-production">
+      <div class="metric-label" data-i18n-pl="Roczna produkcja" data-i18n-en="Annual production">Roczna produkcja</div>
+      <div class="metric-value">
+        <span id="metric-production-value">474</span><span class="metric-unit">kWh</span>
+      </div>
+      <div class="metric-delta">
+        <span data-i18n-pl="±12% wariancja między latami, PVGIS SARAH2" data-i18n-en="±12% inter-annual variance, PVGIS SARAH2">±12% wariancja między latami, PVGIS SARAH2</span>
+      </div>
+    </div>
+    <div class="metric metric-savings">
+      <div class="metric-label" data-i18n-pl="Roczna oszczędność" data-i18n-en="Annual savings">Roczna oszczędność</div>
+      <div class="metric-value">
+        <span id="metric-savings-value">380</span><span class="metric-unit">PLN</span>
+      </div>
+      <div class="metric-delta">
+        <span class="badge-unconfirmed">UNCONFIRMED</span>
+        <span data-i18n-pl="stawka 1,00 PLN/kWh zakładana — podstaw swoją" data-i18n-en="assumed rate 1.00 PLN/kWh — substitute yours">stawka 1,00 PLN/kWh zakładana — podstaw swoją</span>
+      </div>
+    </div>
+    <div class="metric metric-payback">
+      <div class="metric-label" data-i18n-pl="Prosty payback" data-i18n-en="Simple payback">Prosty payback</div>
+      <div class="metric-value">
+        <span id="metric-payback-value">7,4</span><span class="metric-unit" data-i18n-pl="lat" data-i18n-en="yr">lat</span>
+      </div>
+      <div class="metric-delta">
+        <span data-i18n-pl="Dla zestawu 2 800 PLN" data-i18n-en="For 2 800 PLN kit">Dla zestawu 2 800 PLN</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="viewport" aria-label="Wizualizacja 3D balkonu z panelami">
+    <div class="viewport-canvas" id="threejs-mount">
+      <canvas id="threejs-canvas" aria-label="Scena 3D: balkon z panelami (tryb balkon) lub blok z panelami na dachu (tryb wspólnota)"></canvas>
+      <noscript><div class="viewport-placeholder"><strong>Wizualizacja 3D wymaga JavaScript</strong><span>Włącz JS, aby zobaczyć balkon i dach bloku z panelami.</span></div></noscript>
+    </div>
+    <div class="viewport-controls">
+      <label class="field-inline">
+        <span data-i18n-pl="Godzina słońca" data-i18n-en="Sun hour">Godzina słońca</span>
+        <span class="value-display" id="sun-display">13:00</span>
+      </label>
+      <input type="range" id="sun-slider" min="6" max="20" value="13" step="0.5" aria-label="Godzina słońca 6-20">
+    </div>
+  </section>
+
+  <section class="calculator" aria-label="Parametry kalkulatora">
+    <h2 data-i18n-pl="Parametry twojego przypadku" data-i18n-en="Your parameters">Parametry twojego przypadku</h2>
+    <form id="calc-form" autocomplete="off">
+
+      <fieldset class="calc-fieldset" data-mode-show="balkon">
+        <legend data-i18n-pl="Geometria balkonu" data-i18n-en="Balcony geometry">Geometria balkonu</legend>
+        <div class="field">
+          <label for="f-length" data-i18n-pl="Długość (cm)" data-i18n-en="Length (cm)">Długość (cm)</label>
+          <input class="input-field" type="number" id="f-length" name="length" value="465" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="f-railHeight" data-i18n-pl="Wysokość balustrady (cm)" data-i18n-en="Balustrade height (cm)">Wysokość balustrady (cm)</label>
+          <input class="input-field" type="number" id="f-railHeight" name="railHeight" value="80" inputmode="decimal">
+        </div>
+      </fieldset>
+
+      <fieldset class="calc-fieldset" data-mode-show="wspolnota">
+        <legend data-i18n-pl="Skala wspólnoty" data-i18n-en="Community scale">Skala wspólnoty</legend>
+        <div class="field">
+          <label for="f-units" data-i18n-pl="Liczba mieszkań w bloku" data-i18n-en="Number of flats">Liczba mieszkań w bloku</label>
+          <input class="input-field" type="number" id="f-units" name="units" value="40" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="f-commonKwh" data-i18n-pl="Roczne zużycie części wspólnych (kWh)" data-i18n-en="Annual common-area consumption (kWh)">Roczne zużycie części wspólnych (kWh)</label>
+          <input class="input-field" type="number" id="f-commonKwh" name="commonKwh" value="12000" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="f-pvKwp" data-i18n-pl="Moc PV na dachu (kWp)" data-i18n-en="Rooftop PV power (kWp)">Moc PV na dachu (kWp)</label>
+          <input class="input-field" type="number" id="f-pvKwp" name="pvKwp" value="25" inputmode="decimal" step="1">
+        </div>
+        <div class="field">
+          <label for="f-batteryKwh" data-i18n-pl="Pojemność magazynu (kWh)" data-i18n-en="Battery capacity (kWh)">Pojemność magazynu (kWh)</label>
+          <input class="input-field" type="number" id="f-batteryKwh" name="batteryKwh" value="20" inputmode="decimal" step="1">
+        </div>
+      </fieldset>
+
+      <fieldset class="calc-fieldset">
+        <legend data-i18n-pl="Orientacja i montaż" data-i18n-en="Orientation and mounting">Orientacja i montaż</legend>
+        <div class="field">
+          <label for="f-orientation" data-i18n-pl="Kierunek balkonu / dachu" data-i18n-en="Balcony / roof orientation">Kierunek balkonu / dachu</label>
+          <select class="select-field" id="f-orientation" name="orientation">
+            <option value="S">S — południe (0°)</option>
+            <option value="SE" selected>SE — południowy wschód (-45°)</option>
+            <option value="E">E — wschód (-90°)</option>
+            <option value="SW">SW — południowy zachód (+45°)</option>
+            <option value="W">W — zachód (+90°)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-inline">
+            <span data-i18n-pl="Odchylenie od pionu" data-i18n-en="Tilt from vertical">Odchylenie od pionu</span>
+            <span class="value-display"><span id="tilt-display">0</span>°</span>
+          </label>
+          <input type="range" id="f-tilt" name="tilt" min="0" max="60" value="0" step="5" aria-label="Odchylenie 0-60 stopni">
+        </div>
+        <div class="field">
+          <label class="field-inline">
+            <span data-i18n-pl="Zacienienie" data-i18n-en="Shading">Zacienienie</span>
+            <span class="value-display"><span id="shading-display">15</span>%</span>
+          </label>
+          <input type="range" id="f-shading" name="shading" min="0" max="50" value="15" step="1" aria-label="Zacienienie 0-50 procent">
+        </div>
+      </fieldset>
+
+      <fieldset class="calc-fieldset" data-mode-show="balkon">
+        <legend data-i18n-pl="Instalacja balkonowa" data-i18n-en="Balcony install">Instalacja balkonowa</legend>
+        <div class="field">
+          <label for="f-power" data-i18n-pl="Moc paneli" data-i18n-en="Panel power">Moc paneli</label>
+          <select class="select-field" id="f-power" name="power">
+            <option value="300">300 W · 1 panel</option>
+            <option value="600">600 W · 2 × 300 W</option>
+            <option value="800" selected>800 W · 2 × 400 W</option>
+            <option value="860">860 W · 2 × 430 W TOPCon (przetaktowane do 800W AC)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-capex" data-i18n-pl="Cena zestawu (PLN brutto)" data-i18n-en="Kit price (PLN gross)">Cena zestawu (PLN brutto)</label>
+          <input class="input-field" type="number" id="f-capex" name="capex" value="2800" inputmode="decimal" step="100">
+        </div>
+      </fieldset>
+
+      <fieldset class="calc-fieldset">
+        <legend data-i18n-pl="Umowa energetyczna" data-i18n-en="Energy contract">Umowa energetyczna</legend>
+        <div class="field">
+          <label for="f-tariff" data-i18n-pl="Taryfa" data-i18n-en="Tariff">Taryfa</label>
+          <select class="select-field" id="f-tariff" name="tariff">
+            <option value="G11" selected>G11 — stała</option>
+            <option value="G12w">G12w — dwustrefowa</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-rate" data-i18n-pl="Stawka (PLN/kWh brutto)" data-i18n-en="Rate (PLN/kWh gross)">Stawka (PLN/kWh brutto)</label>
+          <input class="input-field" type="number" id="f-rate" name="rate" value="1.00" inputmode="decimal" step="0.01">
+        </div>
+        <div class="field">
+          <label class="field-inline">
+            <span data-i18n-pl="Auto-konsumpcja" data-i18n-en="Self-consumption">Auto-konsumpcja</span>
+            <span class="value-display"><span id="selfconsume-display">70</span>%</span>
+          </label>
+          <input type="range" id="f-selfconsume" name="selfconsume" min="30" max="100" value="70" step="5" aria-label="Auto-konsumpcja 30-100 procent">
+        </div>
+      </fieldset>
+    </form>
+  </section>
+
+  <details class="details-section">
+    <summary data-i18n-pl="Pokaż szczegóły finansowe (IRR, NPV, porównanie mocy)" data-i18n-en="Show financial details (IRR, NPV, power comparison)">Pokaż szczegóły finansowe (IRR, NPV, porównanie mocy)</summary>
+    <div class="details-content">
+      <table class="compare-table">
+        <caption data-i18n-pl="Porównanie wariantów mocy (zakres balkonowy, SE pionowo, shading 15%)" data-i18n-en="Power variants comparison (balcony range, SE vertical, shading 15%)">Porównanie wariantów mocy (zakres balkonowy, SE pionowo, shading 15%)</caption>
+        <thead>
+          <tr>
+            <th data-i18n-pl="Moc" data-i18n-en="Power">Moc</th>
+            <th data-i18n-pl="Produkcja kWh/rok" data-i18n-en="kWh/year">Produkcja kWh/rok</th>
+            <th data-i18n-pl="Oszczędność PLN/rok" data-i18n-en="PLN/year">Oszczędność PLN/rok</th>
+            <th data-i18n-pl="Cena zestawu" data-i18n-en="Kit price">Cena zestawu</th>
+            <th data-i18n-pl="Payback" data-i18n-en="Payback">Payback</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>300 W</td>
+            <td id="cmp-300-kwh">178</td>
+            <td id="cmp-300-pln">143</td>
+            <td id="cmp-300-cap">1 450</td>
+            <td id="cmp-300-pb">10,1 lat</td>
+          </tr>
+          <tr>
+            <td>600 W</td>
+            <td id="cmp-600-kwh">355</td>
+            <td id="cmp-600-pln">285</td>
+            <td id="cmp-600-cap">1 800</td>
+            <td id="cmp-600-pb">6,3 lat</td>
+          </tr>
+          <tr class="is-recommended">
+            <td>800 W</td>
+            <td id="cmp-800-kwh">474</td>
+            <td id="cmp-800-pln">380</td>
+            <td id="cmp-800-cap">2 800</td>
+            <td id="cmp-800-pb">7,4 lat</td>
+          </tr>
+          <tr>
+            <td>860 W TOPCon</td>
+            <td id="cmp-860-kwh">474</td>
+            <td id="cmp-860-pln">380</td>
+            <td id="cmp-860-cap">3 200</td>
+            <td id="cmp-860-pb">8,4 lat</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><span class="badge-unconfirmed">UNCONFIRMED</span> <span data-i18n-pl="wszystkie wartości podstawowe — logika kalkulatora wbudowana w kroku 2d-f Fazy 2. Obecnie stałe liczby ilustrujące układ UI." data-i18n-en="all baseline values — calculator logic lands in phase 2 step 2d-f. Currently static UI illustration.">wszystkie wartości podstawowe — logika kalkulatora wbudowana w kroku 2d-f Fazy 2. Obecnie stałe liczby ilustrujące układ UI.</span></p>
+    </div>
+  </details>
+
+  <section class="unconfirmed-panel">
+    <h3>
+      <span data-i18n-pl="Co trzeba jeszcze potwierdzić" data-i18n-en="Remaining UNCONFIRMED items">Co trzeba jeszcze potwierdzić</span>
+    </h3>
+    <ul>
+      <li><span class="badge-unconfirmed">UNCONFIRMED</span> <span data-i18n-pl="Twoja stawka PLN/kWh z umowy ENEA SA lub innego sprzedawcy — podstaw w polu 'Stawka' powyżej." data-i18n-en="Your PLN/kWh rate from the ENEA SA or other retailer contract — substitute in the 'Rate' field above.">Twoja stawka PLN/kWh z umowy ENEA SA lub innego sprzedawcy — podstaw w polu „Stawka" powyżej.</span></li>
+      <li><span class="badge-unconfirmed">UNCONFIRMED</span> <span data-i18n-pl="Taryfa G11 vs G12w — z umowy. Wpływa na okno auto-konsumpcji." data-i18n-en="G11 vs G12w tariff — from contract. Affects self-consumption window.">Taryfa G11 vs G12w — z umowy. Wpływa na okno auto-konsumpcji.</span></li>
+      <li><span class="badge-unconfirmed">UNCONFIRMED</span> <span data-i18n-pl="Roczne zużycie energii gospodarstwa — z faktury rocznej lub sumy 12 miesięcznych." data-i18n-en="Annual household consumption — from annual invoice or sum of 12 monthlies.">Roczne zużycie energii gospodarstwa — z faktury rocznej lub sumy 12 miesięcznych.</span></li>
+      <li><span class="badge-unconfirmed">UNCONFIRMED</span> <span data-i18n-pl="Stan techniczny balustrady — wymaga opinii konstruktora (widoczna korozja u stóp pionowych prętów)." data-i18n-en="Balustrade structural condition — requires a structural engineer's opinion (visible corrosion at bottom of vertical bars).">Stan techniczny balustrady — wymaga opinii konstruktora (widoczna korozja u stóp pionowych prętów).</span></li>
+      <li><span class="badge-unconfirmed">UNCONFIRMED</span> <span data-i18n-pl="Zgoda wspólnoty — uchwała wymagana zanim zamówimy panele (patrz PRZEPISY_PL.md §1.4)." data-i18n-en="Community consent — resolution required before ordering panels (see PRZEPISY_PL.md §1.4).">Zgoda wspólnoty — uchwała wymagana zanim zamówimy panele (patrz <a href="../research/PRZEPISY_PL.md">PRZEPISY_PL.md</a> §1.4).</span></li>
+      <li data-mode-show="wspolnota" class="js-hidden"><span class="badge-unconfirmed">UNCONFIRMED</span> <span data-i18n-pl="Liczba mieszkań, powierzchnia dachu, stan pomieszczenia technicznego — do ustalenia z zarządem." data-i18n-en="Flat count, roof area, technical room condition — to be established with the board.">Liczba mieszkań, powierzchnia dachu, stan pomieszczenia technicznego — do ustalenia z zarządem.</span></li>
+    </ul>
+  </section>
+
+  <footer class="footer">
+    <p><span data-i18n-pl="Projekt: ósma karta serii" data-i18n-en="Project: eighth tile of series">Projekt: ósma karta serii</span> <a href="https://jakubgoscinny-creator.github.io/Dom/Remont/Balkon/">Balkon 3D</a>.</p>
+    <p><span data-i18n-pl="Dane i źródła:" data-i18n-en="Data and sources:">Dane i źródła:</span> <a href="../research/ZRODLA.md">research/ZRODLA.md</a> · <a href="../research/PVGIS_RAW.json">PVGIS_RAW.json</a> · <a href="../FOTOWOLTAIKA_PLAYBOOK.md">FOTOWOLTAIKA_PLAYBOOK.md</a>. <span data-i18n-pl="Data dostępu źródeł:" data-i18n-en="Source access date:">Data dostępu źródeł:</span> 2026-04-21.</p>
+  </footer>
+
+</main>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* =============================================
+   § 1. PVGIS lookup (z research/PVGIS_RAW.json 2026-04-21)
+   Wartości w kWh/kWp/rok, pre-shading, c-Si, 14% loss.
+   Grid: tilt (kąt od poziomu) × azimuth (0=S, -90=E, +90=W).
+   ============================================= */
+const PVGIS_GRID = {
+  // Realne odpytania PVGIS API (2026-04-21):
+  '90_-45': 697.36,  // pionowo SE
+  '90_0':   736.36,  // pionowo S (sanity check)
+  '60_-45': 917.89,  // odchylony 30° od pionu SE
+  '30_-45': 966.68,  // near-dach SE
+  // Tabela fallback (PVGIS_RECIPE.md), interpolowane z publikacji PVGIS:
+  '30_0':   1060,
+  '60_0':   970,
+  '90_-90': 570,
+  '90_90':  570,
+  '90_45':  697,    // założenie symetrii E/W wokół S
+  '60_45':  917,
+  '30_45':  966,
+  '60_-90': 750,
+  '60_90':  750,
+  '30_-90': 800,
+  '30_90':  800,
+};
+const T_GRID = [30, 60, 90];
+const A_GRID = [-90, -45, 0, 45, 90];
+
+function pvgisLookup(tiltFromHorizon, azimuthDeg) {
+  const t = Math.max(30, Math.min(90, tiltFromHorizon));
+  const a = Math.max(-90, Math.min(90, azimuthDeg));
+  const lowT = T_GRID.filter(x => x <= t).pop() ?? T_GRID[0];
+  const highT = T_GRID.filter(x => x >= t)[0] ?? T_GRID[T_GRID.length-1];
+  const lowA = A_GRID.filter(x => x <= a).pop() ?? A_GRID[0];
+  const highA = A_GRID.filter(x => x >= a)[0] ?? A_GRID[A_GRID.length-1];
+  const v = (tt, aa) => PVGIS_GRID[`${tt}_${aa}`] ?? 700;
+  const ft = highT === lowT ? 0 : (t - lowT) / (highT - lowT);
+  const fa = highA === lowA ? 0 : (a - lowA) / (highA - lowA);
+  const v0 = v(lowT, lowA)  * (1-fa) + v(lowT, highA)  * fa;
+  const v1 = v(highT, lowA) * (1-fa) + v(highT, highA) * fa;
+  return v0 * (1-ft) + v1 * ft;
+}
+
+const ORIENTATION_MAP = { S: 0, SE: -45, E: -90, SW: 45, W: 90 };
+
+/* =============================================
+   § 2. Formatowanie liczb — polski przecinek,
+   wąska spacja nierozdzielająca jako separator tysięcy.
+   ============================================= */
+const NBSP_NARROW = '\u202F';
+function fmtInt(n) {
+  return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, NBSP_NARROW);
+}
+function fmtOne(n) {
+  if (!isFinite(n)) return '∞';
+  return n.toFixed(1).replace('.', ',');
+}
+function fmtTwo(n) {
+  if (!isFinite(n)) return '∞';
+  return n.toFixed(2).replace('.', ',');
+}
+
+/* =============================================
+   § 3. Kalkulator — balkon indywidualny
+   ============================================= */
+function readBalconyParams() {
+  return {
+    panelW: parseFloat(document.getElementById('f-power').value) || 800,
+    orientation: document.getElementById('f-orientation').value,
+    tiltDev: parseFloat(document.getElementById('f-tilt').value) || 0,
+    shading: parseFloat(document.getElementById('f-shading').value) || 0,
+    capex: parseFloat(document.getElementById('f-capex').value) || 2800,
+    rate: parseFloat(document.getElementById('f-rate').value) || 1.0,
+    selfConsume: parseFloat(document.getElementById('f-selfconsume').value) || 70,
+    tariff: document.getElementById('f-tariff').value,
+  };
+}
+
+function computeBalcony(p) {
+  const tiltHorizon = 90 - p.tiltDev;
+  const az = ORIENTATION_MAP[p.orientation] ?? -45;
+  const kWhPerKWp = pvgisLookup(tiltHorizon, az);
+  const annualProduction = (p.panelW / 1000) * kWhPerKWp * (1 - p.shading/100);
+
+  // Net-billing 2026: auto-konsumpcja po stawce detalicznej,
+  // nadwyżka sprzedana po RCE × 1,23 (wsp. korekcyjny od 1.02.2026).
+  const RCE = 0.32;        // PLN/kWh, założenie — UNCONFIRMED aktualne wg TGE
+  const CORR = 1.23;        // wsp. korekcyjny URE od 01.02.2026
+  const exportRate = RCE * CORR;
+
+  const selfKWh = annualProduction * (p.selfConsume / 100);
+  const exportKWh = annualProduction * (1 - p.selfConsume / 100);
+  const annualSavings = selfKWh * p.rate + exportKWh * exportRate;
+  const payback = p.capex / annualSavings;
+
+  return {
+    annualProduction,
+    annualSavings,
+    payback,
+    kWhPerKWp,
+    selfKWh,
+    exportKWh,
+    exportRate,
+  };
+}
+
+/* =============================================
+   § 4. Kalkulator — wspólnota (dach + magazyn + ppoż)
+   Model: prosument lokatorski, Grant OZE BGK 50%.
+   Patrz research/WSPOLNOTA_SCENARIUSZ.md §3.5.
+   ============================================= */
+function readCommunityParams() {
+  return {
+    units: parseFloat(document.getElementById('f-units').value) || 40,
+    commonKwh: parseFloat(document.getElementById('f-commonKwh').value) || 12000,
+    pvKwp: parseFloat(document.getElementById('f-pvKwp').value) || 25,
+    batteryKwh: parseFloat(document.getElementById('f-batteryKwh').value) || 20,
+    orientation: document.getElementById('f-orientation').value,
+    rate: parseFloat(document.getElementById('f-rate').value) || 1.0,
+  };
+}
+
+function computeCommunity(p) {
+  // Dach bloku: tilt optymalny 30° od horyzontu, S (chyba że user zmienił)
+  const az = ORIENTATION_MAP[p.orientation] ?? 0;
+  const kWhPerKWp = pvgisLookup(30, az);
+  const annualProduction = p.pvKwp * kWhPerKWp; // dach nie ma nawisu → brak shading
+
+  // Auto-konsumpcja: bez magazynu ~50% zużycia dziennego, z magazynem do ~85%
+  const hasBattery = p.batteryKwh > 0;
+  const selfRate = hasBattery ? 0.85 : 0.50;
+
+  // Stawki: wspólnota płaci C11/B23 po tarczy (UNCONFIRMED ~1,20 PLN/kWh brutto),
+  // ale user może podać własną — używam wyższą z user_rate i 1,20.
+  const retailRate = Math.max(p.rate, 1.20);
+  const RCE = 0.32; const CORR = 1.23; const exportRate = RCE * CORR;
+
+  // Ile realnie wspólnota skonsumuje: min z produkcji auto-consumable i zużycia części wspólnych
+  const selfConsumed = Math.min(annualProduction * selfRate, p.commonKwh);
+  const exported = Math.max(0, annualProduction - selfConsumed);
+  const annualSavings = selfConsumed * retailRate + exported * exportRate;
+
+  // CAPEX (zgodnie z WSPOLNOTA_SCENARIUSZ §3.5):
+  const pvCost = p.pvKwp * 4000;              // ~4 kPLN/kWp pod klucz na dach płaski
+  const batteryCost = p.batteryKwh * 2250;    // ~2,25 kPLN/kWh LiFePO4 + EMS
+  const roomAdaptation = hasBattery ? 20000 : 0; // adaptacja EI60/REI60/EI30
+  const ppozPv = 10000;                       // wyłącznik PV Stop + rzeczoznawca dla PV
+  const documentation = 8000;                  // projekt PV + odbiór
+  const pvCapexTotal = pvCost + batteryCost + roomAdaptation + ppozPv + documentation;
+
+  // Modernizacja ppoż budynku (zakres C = gruntowna), osobna pula, bez Grant OZE:
+  const ppozBudynek = 120000;
+
+  // Grant OZE BGK 50% tylko na PV + magazyn + ppoż PV + dokumentację
+  const grantOZE = pvCapexTotal * 0.50;
+  const pvAfterGrant = pvCapexTotal - grantOZE;
+
+  // Łączny koszt wspólnoty: PV po dotacji + ppoż budynku
+  const totalWspolnota = pvAfterGrant + ppozBudynek;
+  const perUnitTotal = totalWspolnota / p.units;
+  const perUnitPvOnly = pvAfterGrant / p.units;
+
+  const payback = pvAfterGrant / annualSavings; // payback tylko PV, ppoż ma osobną wartość (zgodność, ubezpieczenie)
+
+  return {
+    annualProduction,
+    annualSavings,
+    payback,
+    kWhPerKWp,
+    selfConsumed,
+    exported,
+    pvCapexTotal,
+    grantOZE,
+    pvAfterGrant,
+    ppozBudynek,
+    totalWspolnota,
+    perUnitTotal,
+    perUnitPvOnly,
+  };
+}
+
+/* =============================================
+   § 5. Update UI — metryki, tabela porównawcza, badges
+   ============================================= */
+function updateMetrics() {
+  const mode = document.body.dataset.mode;
+  let r;
+  if (mode === 'balkon') {
+    r = computeBalcony(readBalconyParams());
+  } else {
+    r = computeCommunity(readCommunityParams());
+  }
+  document.getElementById('metric-production-value').textContent = fmtInt(r.annualProduction);
+  document.getElementById('metric-savings-value').textContent = fmtInt(r.annualSavings);
+  document.getElementById('metric-payback-value').textContent = fmtOne(r.payback);
+  updateDetailsTable();
+}
+
+function updateDetailsTable() {
+  const mode = document.body.dataset.mode;
+  if (mode === 'balkon') {
+    const p = readBalconyParams();
+    const powers = [
+      { w: 300, cap: 1450 },
+      { w: 600, cap: 1800 },
+      { w: 800, cap: 2800 },
+      { w: 860, cap: 3200 },
+    ];
+    powers.forEach(({w, cap}) => {
+      const r = computeBalcony({ ...p, panelW: w, capex: cap });
+      setText(`cmp-${w}-kwh`, fmtInt(r.annualProduction));
+      setText(`cmp-${w}-pln`, fmtInt(r.annualSavings));
+      setText(`cmp-${w}-cap`, fmtInt(cap));
+      setText(`cmp-${w}-pb`, fmtOne(r.payback) + ' lat');
+    });
+  } else {
+    // W trybie wspolnota tabela porownawcza pokazuje 3 scenariusze PV (MIN/SENS/MAX)
+    const p = readCommunityParams();
+    const scenarios = [
+      { label: 'min', pv: 20, bat: 0 },
+      { label: 'sens', pv: 25, bat: 20 },
+      { label: 'max', pv: 40, bat: 30 },
+    ];
+    // W HTML mamy wiersze cmp-300/600/800/860. Mapowanie: pokazujemy na nich scenariusze wspolnoty.
+    const rowIds = ['300', '600', '800', '860'];
+    const mapping = [
+      { rowId: '300', label: 'MIN 20 kWp', pv: 20, bat: 0 },
+      { rowId: '600', label: 'SENS 25 kWp + 20 kWh', pv: 25, bat: 20 },
+      { rowId: '800', label: 'MAX 40 kWp + 30 kWh', pv: 40, bat: 30 },
+      { rowId: '860', label: 'z ppoż C (+120 tys.)', pv: 25, bat: 20, addPpoz: true },
+    ];
+    mapping.forEach(m => {
+      const r = computeCommunity({ ...p, pvKwp: m.pv, batteryKwh: m.bat });
+      const rowFirstCell = document.querySelector(`#cmp-${m.rowId}-kwh`)?.parentElement?.firstElementChild;
+      if (rowFirstCell) rowFirstCell.textContent = m.label;
+      setText(`cmp-${m.rowId}-kwh`, fmtInt(r.annualProduction));
+      setText(`cmp-${m.rowId}-pln`, fmtInt(r.annualSavings));
+      const capDisplay = m.addPpoz ? r.pvAfterGrant + r.ppozBudynek : r.pvAfterGrant;
+      setText(`cmp-${m.rowId}-cap`, fmtInt(capDisplay));
+      setText(`cmp-${m.rowId}-pb`, fmtOne(r.payback) + ' lat');
+    });
+  }
+}
+
+function setText(id, txt) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = txt;
+}
+
+/* =============================================
+   § 6. Three.js — setup wspólny
+   ============================================= */
+const canvas = document.getElementById('threejs-canvas');
+const scene = new THREE.Scene();
+let currentThemeBg = new THREE.Color(0xfbf9f4); // --surface-page day
+const nightBg = new THREE.Color(0x141210);
+scene.background = currentThemeBg;
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+
+function resizeRenderer() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const w = rect.width;
+  const h = rect.height;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / Math.max(h, 1);
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', () => setTimeout(resizeRenderer, 100));
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.minDistance = 3;
+controls.maxDistance = 40;
+controls.maxPolarAngle = Math.PI * 0.48; // zablokuj spod podłogi
+
+// Światła
+const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambient);
+const sun = new THREE.DirectionalLight(0xfff1d9, 1.0);
+sun.position.set(5, 6, 3);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+sun.shadow.camera.near = 0.1;
+sun.shadow.camera.far = 40;
+sun.shadow.camera.left = -10;
+sun.shadow.camera.right = 10;
+sun.shadow.camera.top = 10;
+sun.shadow.camera.bottom = -10;
+scene.add(sun);
+scene.add(sun.target);
+const hemi = new THREE.HemisphereLight(0xfbf9f4, 0x8a7668, 0.35);
+scene.add(hemi);
+
+// Użyjemy dwóch grup które przełączamy visibility (balkon/dach)
+const balconyGroup = new THREE.Group();
+balconyGroup.name = 'balconyGroup';
+scene.add(balconyGroup);
+const roofGroup = new THREE.Group();
+roofGroup.name = 'roofGroup';
+roofGroup.visible = false;
+scene.add(roofGroup);
+
+/* =============================================
+   § 6a. Scena balkonowa
+   Rzeczywiste wymiary balkonu Jakuba: 4,65 × 0,99-1,07 × 0,80
+   ============================================= */
+const L = 4.65, W_wall = 1.07, W_rail = 0.99, H_rail = 0.80, H_slab = 0.17, H_wall = 2.60, H_overhang = 0.25;
+const WT = 0.15;
+
+// Materiały — tonowo spójne z DESIGN.md
+const matSlab = new THREE.MeshStandardMaterial({ color: 0x6d6d6d, roughness: 0.95 });
+const matDeck = new THREE.MeshStandardMaterial({ color: 0x8a7668, roughness: 0.88 });
+const matWall = new THREE.MeshStandardMaterial({ color: 0xebe2d1, roughness: 0.92 });
+const matCeil = new THREE.MeshStandardMaterial({ color: 0xf5efe3, roughness: 0.88 });
+const matRailFrame = new THREE.MeshStandardMaterial({ color: 0x3a2822, roughness: 0.55, metalness: 0.6 });
+const matRailRust  = new THREE.MeshStandardMaterial({ color: 0x7a3a1a, roughness: 0.85, metalness: 0.25 }); // rdza widoczna u stóp prętów
+const matHpl = new THREE.MeshStandardMaterial({ color: 0xc17a40, roughness: 0.65, metalness: 0.1 });
+const matPanelFront = new THREE.MeshStandardMaterial({ color: 0x0b1a3a, roughness: 0.3, metalness: 0.1 });
+const matPanelFrame = new THREE.MeshStandardMaterial({ color: 0x8a8a8a, roughness: 0.4, metalness: 0.7 });
+const matNet = new THREE.MeshStandardMaterial({ color: 0xd4c8a8, roughness: 0.6, transparent: true, opacity: 0.2, wireframe: true, side: THREE.DoubleSide });
+const matGlass = new THREE.MeshPhysicalMaterial({ color: 0x9cc1de, roughness: 0.08, transparent: true, opacity: 0.35, transmission: 0.5 });
+const matPcv = new THREE.MeshStandardMaterial({ color: 0xf2ede4, roughness: 0.4 });
+
+// Płyta betonowa + deck
+const floorShape = new THREE.Shape();
+floorShape.moveTo(0,0); floorShape.lineTo(L,0); floorShape.lineTo(L,W_rail); floorShape.lineTo(0,W_wall); floorShape.closePath();
+const slab = new THREE.Mesh(new THREE.ExtrudeGeometry(floorShape, {depth: H_slab, bevelEnabled:false}), matSlab);
+slab.rotation.x = -Math.PI/2;
+slab.receiveShadow = true;
+balconyGroup.add(slab);
+const deck = new THREE.Mesh(new THREE.ExtrudeGeometry(floorShape, {depth: 0.02, bevelEnabled:false}), matDeck);
+deck.rotation.x = -Math.PI/2;
+deck.position.y = H_slab + 0.02;
+deck.receiveShadow = true;
+balconyGroup.add(deck);
+
+// Tylna ściana (ściana mieszkania)
+const backWall = new THREE.Mesh(new THREE.BoxGeometry(L, H_wall, WT), matWall);
+backWall.position.set(L/2, H_slab + H_wall/2, -WT/2);
+backWall.receiveShadow = true;
+balconyGroup.add(backWall);
+
+// Boczna ściana lita (z lewej patrząc z zewnątrz — strona SE-E)
+const sideWallLeft = new THREE.Mesh(new THREE.BoxGeometry(WT, H_wall, W_wall), matWall);
+sideWallLeft.position.set(-WT/2, H_slab + H_wall/2, W_wall/2);
+sideWallLeft.receiveShadow = true;
+balconyGroup.add(sideWallLeft);
+
+// Boczna ściana (z prawej — krótki fragment, rest otwarty do balkonu sąsiada)
+const sideWallRight = new THREE.Mesh(new THREE.BoxGeometry(WT, H_wall, W_wall * 0.25), matWall);
+sideWallRight.position.set(L + WT/2, H_slab + H_wall/2, W_wall * 0.125);
+balconyGroup.add(sideWallRight);
+
+// Sufit/daszek (nawis piętra wyżej)
+const ceilShape = new THREE.Shape();
+ceilShape.moveTo(0,0); ceilShape.lineTo(L,0); ceilShape.lineTo(L,W_rail); ceilShape.lineTo(0,W_wall); ceilShape.closePath();
+const ceiling = new THREE.Mesh(new THREE.ExtrudeGeometry(ceilShape, {depth: H_overhang, bevelEnabled:false}), matCeil);
+ceiling.rotation.x = -Math.PI/2;
+ceiling.position.y = H_slab + H_wall;
+ceiling.castShadow = true;
+balconyGroup.add(ceiling);
+
+// Drzwi balkonowe + okno
+function mkDoorAndWindow() {
+  const doorX = L * 0.55;
+  const doorW = 0.90, doorH = 2.10;
+  // drzwi PCV
+  const door = new THREE.Mesh(new THREE.BoxGeometry(doorW, doorH, 0.06), matPcv);
+  door.position.set(doorX, H_slab + doorH/2, 0.01);
+  balconyGroup.add(door);
+  // szyba drzwi (górna i dolna)
+  const glassTop = new THREE.Mesh(new THREE.BoxGeometry(doorW-0.1, doorH*0.55, 0.02), matGlass);
+  glassTop.position.set(doorX, H_slab + doorH - (doorH*0.55)/2 - 0.05, 0.04);
+  balconyGroup.add(glassTop);
+  // okno
+  const winX = L * 0.18, winW = 1.20, winH = 1.30, winY = H_slab + 0.90;
+  const win = new THREE.Mesh(new THREE.BoxGeometry(winW, winH, 0.06), matPcv);
+  win.position.set(winX, winY + winH/2, 0.01);
+  balconyGroup.add(win);
+  const winGlass = new THREE.Mesh(new THREE.BoxGeometry(winW-0.1, winH-0.1, 0.02), matGlass);
+  winGlass.position.set(winX, winY + winH/2, 0.04);
+  balconyGroup.add(winGlass);
+}
+mkDoorAndWindow();
+
+/* Balustrada — pionowe pręty + poziome ramy + płyciny HPL
+   Balkon zwęża się do przodu (W_rail < W_wall), więc balustrada jest skośna
+   od punktu (0, W_wall) do (L, W_rail). Wyliczamy oś balustrady. */
+const railOriginX = 0, railOriginZ = W_wall;
+const railEndX = L, railEndZ = W_rail;
+const railLen = Math.hypot(railEndX - railOriginX, railEndZ - railOriginZ);
+const railAngle = Math.atan2(railEndZ - railOriginZ, railEndX - railOriginX);
+
+function buildBalustrade() {
+  const g = new THREE.Group();
+
+  // Rama pozioma dolna
+  const frameBot = new THREE.Mesh(new THREE.BoxGeometry(railLen, 0.05, 0.04), matRailFrame);
+  frameBot.position.set(railLen/2, H_slab + 0.04, 0);
+  g.add(frameBot);
+
+  // Rdza widoczna u podstawy (tam gdzie pręty łączą się z ramą dolną) — segmenty
+  for (let i = 0; i < 10; i++) {
+    const x = (i + 0.5) * (railLen / 10);
+    const rustPatch = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.08, 0.045), matRailRust);
+    rustPatch.position.set(x, H_slab + 0.06, 0);
+    g.add(rustPatch);
+  }
+
+  // Rama pozioma górna
+  const frameTop = new THREE.Mesh(new THREE.BoxGeometry(railLen, 0.06, 0.06), matRailFrame);
+  frameTop.position.set(railLen/2, H_slab + H_rail - 0.03, 0);
+  g.add(frameTop);
+
+  // Pręty pionowe co ~10 cm
+  const barCount = Math.floor(railLen / 0.10);
+  const barGap = railLen / barCount;
+  for (let i = 0; i <= barCount; i++) {
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(0.018, H_rail - 0.08, 0.018), matRailFrame);
+    bar.position.set(i * barGap, H_slab + H_rail/2, 0);
+    g.add(bar);
+  }
+
+  // Płyciny HPL pomarańczowe — dwa pasma między górną i dolną ramą, z przerwą
+  const hplHeight = (H_rail - 0.12) / 2;
+  for (let band = 0; band < 2; band++) {
+    const y = H_slab + 0.05 + band * (hplHeight + 0.02) + hplHeight/2;
+    const hpl = new THREE.Mesh(new THREE.BoxGeometry(railLen - 0.1, hplHeight, 0.015), matHpl);
+    hpl.position.set(railLen/2, y, -0.01);
+    g.add(hpl);
+  }
+
+  // Ustaw grupę na miejscu (pozycja i obrót zgodnie z trapezem balkonu)
+  g.position.set(railOriginX, 0, railOriginZ);
+  g.rotation.y = -railAngle;
+  return g;
+}
+const balustrade = buildBalustrade();
+balconyGroup.add(balustrade);
+
+/* Panele PV — 2 sztuki po zewnętrznej stronie balustrady, pionowo.
+   Wymiary panelu monokrystalicznego ~400W: 1,72 × 1,13 m. Ale wysokość balustrady 0,80 m → panel 1,0 m wystaje do góry.
+   Rzeczywisty montaż: panele opierają się o balustradę, górna krawędź panelu sięga ok. 1,05 m = pod linię balustrady/górnej ramy. */
+const panelW_m = 1.72, panelH_m = 1.13, panelT = 0.04; // grubość z ramką
+
+function buildPanels(tiltDev_deg) {
+  const g = new THREE.Group();
+  g.name = 'pvPanels';
+  const panels = 2;
+  const gap = 0.10;
+  const totalWidth = panels * panelW_m + (panels - 1) * gap;
+  const startX = (railLen - totalWidth) / 2;
+
+  for (let i = 0; i < panels; i++) {
+    const panel = new THREE.Group();
+    // front (ciemnoniebieski)
+    const front = new THREE.Mesh(new THREE.BoxGeometry(panelW_m, panelH_m, panelT), matPanelFront);
+    front.castShadow = true;
+    front.receiveShadow = true;
+    panel.add(front);
+    // ramka
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(panelW_m + 0.03, panelH_m + 0.03, panelT * 0.8), matPanelFrame);
+    frame.position.z = -0.01;
+    panel.add(frame);
+
+    // Panel montowany z dolnym brzegiem na wysokości ramy dolnej balustrady (H_slab + 0.08),
+    // pochylony odpowiednio do "odchylenia od pionu" (tiltDev_deg).
+    const panelBottomY = H_slab + 0.08;
+    const panelCenterY = panelBottomY + panelH_m / 2;
+    panel.position.set(startX + i * (panelW_m + gap) + panelW_m/2, panelCenterY, 0.035);
+    // Odchylenie: dodatnie w górę (panel top pochyla się na zewnątrz). Obracamy wokół osi X grupy.
+    const tiltRad = THREE.MathUtils.degToRad(tiltDev_deg);
+    panel.rotation.x = -tiltRad;
+    g.add(panel);
+  }
+
+  g.position.set(railOriginX, 0, railOriginZ);
+  g.rotation.y = -railAngle;
+  return g;
+}
+let panels = buildPanels(0);
+balconyGroup.add(panels);
+
+// Siatka dla kota — plane wireframe między balustradą a daszkiem
+function buildCatNet() {
+  const g = new THREE.Group();
+  g.name = 'catNet';
+  // Prostokąt rozciągnięty od linii balustrady w górę do daszka
+  const netH = H_wall - H_rail + H_slab * 0 + 0.05;
+  const geom = new THREE.PlaneGeometry(railLen, netH, 24, 8);
+  const net = new THREE.Mesh(geom, matNet);
+  net.position.set(railLen/2, H_slab + H_rail + netH/2 - 0.05, 0);
+  net.rotation.y = Math.PI; // normalna do wewnątrz
+  g.add(net);
+  g.position.set(railOriginX, 0, railOriginZ);
+  g.rotation.y = -railAngle;
+  return g;
+}
+const catNet = buildCatNet();
+catNet.visible = true;
+balconyGroup.add(catNet);
+
+/* =============================================
+   § 6b. Scena dachu bloku (tryb wspólnota)
+   ============================================= */
+function buildBlock() {
+  const g = new THREE.Group();
+  const blockW = 32, blockD = 12, floors = 9;
+  const blockH = 2.9 * floors;
+
+  // Bryła bloku
+  const matBlock = new THREE.MeshStandardMaterial({ color: 0xd9cfbd, roughness: 0.9 });
+  const block = new THREE.Mesh(new THREE.BoxGeometry(blockW, blockH, blockD), matBlock);
+  block.position.set(blockW/2, blockH/2, blockD/2);
+  block.receiveShadow = true;
+  block.castShadow = true;
+  g.add(block);
+
+  // Okna — grid jako mapa tekstury wystarcza, ale dla prostoty dodajemy paski
+  const matWin = new THREE.MeshStandardMaterial({ color: 0xa8bccd, roughness: 0.4, metalness: 0.2, emissive: 0x221810, emissiveIntensity: 0.15 });
+  for (let f = 0; f < floors; f++) {
+    const y = 1.0 + f * 2.9;
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(blockW * 0.9, 1.3, 0.02), matWin);
+    stripe.position.set(blockW/2, y, blockD + 0.01);
+    g.add(stripe);
+    const stripeBack = stripe.clone();
+    stripeBack.position.z = -0.01;
+    g.add(stripeBack);
+  }
+
+  // Podział bloku na mieszkania (pionowe linie balkonów co ~4,7 m)
+  const matBalkonik = new THREE.MeshStandardMaterial({ color: 0x3a2822, roughness: 0.5 });
+  const unitsAcross = Math.round(blockW / 4.65);
+  for (let u = 0; u < unitsAcross; u++) {
+    for (let f = 0; f < floors; f++) {
+      const x = 0.4 + u * (blockW / unitsAcross);
+      const y = 0.1 + f * 2.9;
+      const balk = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.8, 0.1), matBalkonik);
+      balk.position.set(x + 1.75, y + 0.8, blockD + 0.5);
+      g.add(balk);
+    }
+  }
+
+  // Dach płaski
+  const roofY = blockH;
+  const matRoof = new THREE.MeshStandardMaterial({ color: 0x4a4640, roughness: 0.92 });
+  const roof = new THREE.Mesh(new THREE.BoxGeometry(blockW, 0.2, blockD), matRoof);
+  roof.position.set(blockW/2, roofY + 0.1, blockD/2);
+  roof.receiveShadow = true;
+  g.add(roof);
+
+  // Panele PV na dachu pod 30° tilt, azymut S (w lokalnym układzie = -Z)
+  const panelRows = 4, panelCols = 10;
+  const pw = 1.72, ph = 1.13, pgap = 0.3;
+  const tiltRad = THREE.MathUtils.degToRad(30);
+  const panelGrid = new THREE.Group();
+  panelGrid.name = 'roofPanels';
+  const totalGridW = panelCols * pw + (panelCols-1) * 0.3;
+  const totalGridD = panelRows * (ph * Math.cos(tiltRad)) + (panelRows-1) * pgap;
+  const startX = (blockW - totalGridW) / 2;
+  const startZ = (blockD - totalGridD) / 2;
+
+  for (let r = 0; r < panelRows; r++) {
+    for (let c = 0; c < panelCols; c++) {
+      const p = new THREE.Group();
+      const frontM = new THREE.Mesh(new THREE.BoxGeometry(pw, ph, 0.04), matPanelFront);
+      frontM.castShadow = true;
+      p.add(frontM);
+      const frameM = new THREE.Mesh(new THREE.BoxGeometry(pw + 0.03, ph + 0.03, 0.03), matPanelFrame);
+      frameM.position.z = -0.015;
+      p.add(frameM);
+      p.rotation.x = -tiltRad;
+      const cz = startZ + r * (ph * Math.cos(tiltRad) + pgap) + ph * Math.cos(tiltRad)/2;
+      const cy = roofY + 0.3 + (ph * Math.sin(tiltRad)) / 2;
+      const cx = startX + c * (pw + 0.3) + pw/2;
+      p.position.set(cx, cy, cz);
+      panelGrid.add(p);
+    }
+  }
+  g.add(panelGrid);
+
+  // Ikona magazynu energii w piwnicy — sześcian z oznaczeniem w prostym podpisie 3D
+  const matBattery = new THREE.MeshStandardMaterial({ color: 0x65a30d, roughness: 0.6, emissive: 0x1a2a05, emissiveIntensity: 0.3 });
+  const battery = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.2, 0.8), matBattery);
+  battery.position.set(2, -1.5, 2);
+  battery.castShadow = true;
+  g.add(battery);
+  // Odsłona piwnicy (przezroczysty plane)
+  const basementFrame = new THREE.Mesh(new THREE.BoxGeometry(6, 3, 0.02), new THREE.MeshStandardMaterial({ color: 0x1a1814, roughness: 0.9, transparent: true, opacity: 0.3 }));
+  basementFrame.position.set(3, -1.5, 3);
+  basementFrame.rotation.y = Math.PI/2;
+  g.add(basementFrame);
+
+  return g;
+}
+const block = buildBlock();
+roofGroup.add(block);
+
+// Otoczenie — prosta trawa dla obu scen
+const matGround = new THREE.MeshStandardMaterial({ color: 0x7a8a5a, roughness: 0.95 });
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), matGround);
+ground.rotation.x = -Math.PI/2;
+ground.position.y = -3.5;
+ground.receiveShadow = true;
+scene.add(ground);
+
+/* =============================================
+   § 7. Słońce — pozycja z godziny
+   ============================================= */
+function updateSunPosition(hour) {
+  // 6:00 — słońce nisko na wschodzie, 13:00 wysoko południe, 20:00 nisko na zachodzie.
+  // Uproszczenie: dla Bydgoszczy w czerwcu wschód ~4:40, zachód ~21:00; w grudniu wschód ~7:45, zachód ~15:30.
+  // Tutaj przyjmujemy średnie marcowo-październikowe: 6-20 = 14h od wschodu do zachodu.
+  const dayProgress = (hour - 6) / 14; // 0 (6:00) → 1 (20:00)
+  const azimuthRad = (dayProgress - 0.5) * Math.PI; // -π/2 (wschód) → 0 (południe) → π/2 (zachód)
+  // Elewacja — sinus dla prostoty
+  const elevationRad = Math.sin(dayProgress * Math.PI) * (Math.PI * 0.45); // max ~80°
+
+  const dist = 25;
+  // Bydgoszcz: S = +Z? Konwencja sceny: +X = wschód, +Z = południe. Azymut 0 (południe) → sun.z = +
+  const sunX = Math.sin(azimuthRad) * Math.cos(elevationRad) * dist;
+  const sunY = Math.sin(elevationRad) * dist + 2;
+  const sunZ = Math.cos(azimuthRad) * Math.cos(elevationRad) * dist;
+  sun.position.set(sunX, sunY, sunZ);
+  sun.target.position.set(0, 1, 0);
+  sun.target.updateMatrixWorld();
+  // Kolor zmienia się rano/południe/wieczór
+  const warmth = Math.abs(dayProgress - 0.5) * 2; // 0 w południe, 1 na brzegach
+  const r = 1, g = 1 - warmth * 0.3, b = 1 - warmth * 0.5;
+  sun.color.setRGB(r, g, b);
+  // Intensywność spada przy niskim słońcu
+  const elevIntensity = Math.max(0.1, Math.sin(elevationRad));
+  sun.intensity = (isNight() ? 0.15 : 1.0) * elevIntensity;
+}
+
+/* =============================================
+   § 8. Dzień/noc — synchronizacja z :root data-theme
+   ============================================= */
+function isNight() {
+  return document.documentElement.dataset.theme === 'night';
+}
+function applyTheme() {
+  if (isNight()) {
+    scene.background = nightBg;
+    ambient.intensity = 0.18;
+    ambient.color.setHex(0x3a3028);
+    hemi.intensity = 0.15;
+  } else {
+    scene.background = currentThemeBg;
+    ambient.intensity = 0.4;
+    ambient.color.setHex(0xffffff);
+    hemi.intensity = 0.35;
+  }
+  const hr = parseFloat(document.getElementById('sun-slider').value);
+  updateSunPosition(hr);
+}
+
+/* =============================================
+   § 9. Kamera — dla trybu balkon i wspólnota
+   ============================================= */
+function setCameraFor(mode) {
+  if (mode === 'balkon') {
+    camera.position.set(3.5, 2.5, 5.5);
+    controls.target.set(L / 2, 1.2, W_wall / 2);
+  } else {
+    camera.position.set(30, 28, 38);
+    controls.target.set(16, 8, 6);
+  }
+  controls.update();
+}
+
+/* =============================================
+   § 10. Event wiring
+   ============================================= */
+function setSceneForMode(mode) {
+  balconyGroup.visible = mode === 'balkon';
+  roofGroup.visible = mode === 'wspolnota';
+  setCameraFor(mode);
+  applyTheme();
+}
+
+// Language
+const langToggle = document.getElementById('lang-toggle');
+let lang = 'pl';
+langToggle.addEventListener('click', () => {
+  lang = lang === 'pl' ? 'en' : 'pl';
+  document.documentElement.lang = lang;
+  langToggle.textContent = lang.toUpperCase();
+  langToggle.setAttribute('aria-pressed', lang === 'pl' ? 'true' : 'false');
+  document.querySelectorAll('[data-i18n-pl]').forEach(el => {
+    const k = lang === 'pl' ? 'i18nPl' : 'i18nEn';
+    if (el.dataset[k]) el.innerHTML = el.dataset[k];
+  });
+});
+
+// Theme
+const themeToggle = document.getElementById('theme-toggle');
+themeToggle.addEventListener('click', () => {
+  const next = isNight() ? 'day' : 'night';
+  document.documentElement.dataset.theme = next;
+  themeToggle.textContent = next === 'day' ? '☀' : '☾';
+  themeToggle.setAttribute('aria-label', next === 'day' ? 'Przełącz na noc' : 'Przełącz na dzień');
+  applyTheme();
+});
+
+// Mode switch
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.mode;
+    document.body.dataset.mode = mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+    document.querySelectorAll('[data-mode-show]').forEach(el => {
+      el.classList.toggle('js-hidden', el.dataset.modeShow !== mode);
+    });
+    setSceneForMode(mode);
+    updateMetrics();
+  });
+});
+
+// Slider display bindings
+function bindSlider(sliderId, displayId, formatter, onChange) {
+  const slider = document.getElementById(sliderId);
+  const display = document.getElementById(displayId);
+  if (!slider || !display) return;
+  const update = () => {
+    display.textContent = formatter ? formatter(slider.value) : slider.value;
+    if (onChange) onChange(slider.value);
+  };
+  slider.addEventListener('input', update);
+  update();
+}
+
+// Debounced update
+let updateTimer = null;
+function debouncedUpdate(delay = 200) {
+  clearTimeout(updateTimer);
+  updateTimer = setTimeout(updateMetrics, delay);
+}
+
+bindSlider('f-tilt', 'tilt-display', null, (val) => {
+  // Rebuild panels at new tilt
+  balconyGroup.remove(panels);
+  panels.traverse(o => { if (o.geometry) o.geometry.dispose?.(); });
+  panels = buildPanels(parseFloat(val));
+  balconyGroup.add(panels);
+  debouncedUpdate();
+});
+bindSlider('f-shading', 'shading-display', null, () => debouncedUpdate());
+bindSlider('f-selfconsume', 'selfconsume-display', null, () => debouncedUpdate());
+bindSlider('sun-slider', 'sun-display', v => {
+  const h = Math.floor(parseFloat(v));
+  const m = Math.round((parseFloat(v) - h) * 60);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}, (v) => updateSunPosition(parseFloat(v)));
+
+// Input and select listeners (debounced)
+document.querySelectorAll('#calc-form input, #calc-form select').forEach(el => {
+  el.addEventListener('input', () => debouncedUpdate());
+  el.addEventListener('change', () => debouncedUpdate());
+});
+
+// Initial mode-show wiring
+document.querySelectorAll('[data-mode-show]').forEach(el => {
+  el.classList.toggle('js-hidden', el.dataset.modeShow !== document.body.dataset.mode);
+});
+
+/* =============================================
+   § 11. Main loop
+   ============================================= */
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+// Bootstrap
+resizeRenderer();
+setSceneForMode(document.body.dataset.mode);
+updateMetrics();
+updateSunPosition(13);
+animate();
+
+// Re-resize after fonts load (canvas might shift)
+document.fonts?.ready.then(() => setTimeout(resizeRenderer, 50));
+</script>
+
+</body>
+</html>
