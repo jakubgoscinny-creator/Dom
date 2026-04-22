@@ -1,0 +1,212 @@
+{
+  "_metadata": {
+    "purpose": "Surowe odpowiedzi PVGIS API v5_2 dla Bydgoszczy, 1 kWp c-Si, 14% system loss — normalizowane, do skalowania na moc rzeczywistych paneli w kalkulatorze app/.",
+    "access_date": "2026-04-21",
+    "api_endpoint": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc",
+    "location_lat": 53.1235,
+    "location_lon": 18.0084,
+    "location_note": "Centrum Bydgoszczy — współrzędne PVGIS są uśrednione z SARAH2 + ERA5 w siatce ~5 km, więc rozrzut kilkuset metrów w obrębie miasta nie zmienia wyniku w istotnym stopniu. Jakub mieszka przy ul. Marii Konopnickiej (kod pocztowy 85-124), ~1,5 km na południe od centrum — te współrzędne są reprezentatywne.",
+    "orientation_source": "Jakub podał orientację balkonu jako E/S — czyli południowy wschód. W konwencji PVGIS: azimuth = -45°.",
+    "pvgis_azimuth_convention": "0° = południe, -90° = wschód, +90° = zachód, ±180° = północ",
+    "data_sources_used_by_pvgis": {
+      "radiation_db": "PVGIS-SARAH2",
+      "meteo_db": "ERA5",
+      "year_range": "2005-2020",
+      "horizon": "DEM-calculated (uwzględnia rzeźbę terenu, nie uwzględnia budynków sąsiednich)"
+    },
+    "shading_caveat": "Zacienienie od sąsiednich budynków, daszka balkonu (nawis piętra wyżej) i bocznej ściany balkonu NIE jest zawarte w PVGIS. Należy zastosować post-PVGIS multiplier shading_factor z kalkulatora UI. Obserwacje ze zdjęć — patrz OBSERWACJE_Z_ZDJEC.md.",
+    "scaling_formula": "annual_kWh = (E_y from PVGIS) * (panel_Wp / 1000) * (1 - shading_factor)",
+    "sanity_check_vs_recipe_fallback": {
+      "fallback_90deg_south": "~780 kWh/kWp",
+      "measured_90deg_south": 736.36,
+      "diff_pct": -5.6,
+      "verdict": "W tolerancji (~5-10% inter-model variability). Fallback table lekko optymistyczny dla pionowego S.",
+      "fallback_90deg_SE_or_SW": "~700 kWh/kWp",
+      "measured_90deg_SE": 697.36,
+      "verdict_SE": "Doskonała zgodność."
+    }
+  },
+  "results": [
+    {
+      "label": "Pionowo na balustradzie, SE (-45°) — wariant bazowy 'bezpieczny'",
+      "use_case": "Panel mocowany pionowo po zewnętrznej stronie balustrady, bez ramki odchylonej. Najniższa produkcja, ale najniższe ryzyko wiatrowe i najprostszy montaż. Na 9. piętrze zalecany default.",
+      "url": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=53.1235&lon=18.0084&peakpower=1&loss=14&angle=90&aspect=-45&outputformat=json",
+      "inputs": {
+        "location": {"latitude": 53.1235, "longitude": 18.0084, "elevation": 36.0},
+        "meteo_data": {"radiation_db": "PVGIS-SARAH2", "meteo_db": "ERA5", "year_min": 2005, "year_max": 2020, "use_horizon": true, "horizon_db": "DEM-calculated"},
+        "pv_module": {"technology": "c-Si", "peak_power": 1.0, "system_loss": 14.0},
+        "mounting_system": {"fixed": {"slope": {"value": 90, "optimal": false}, "azimuth": {"value": -45, "optimal": false}, "type": "free-standing"}}
+      },
+      "outputs": {
+        "monthly_fixed": [
+          {"month": 1, "E_m": 26.07, "H_i_m": 30.1, "SD_m": 5.1},
+          {"month": 2, "E_m": 38.64, "H_i_m": 45.09, "SD_m": 10.68},
+          {"month": 3, "E_m": 63.35, "H_i_m": 75.73, "SD_m": 12.4},
+          {"month": 4, "E_m": 82.53, "H_i_m": 102.02, "SD_m": 12.52},
+          {"month": 5, "E_m": 83.69, "H_i_m": 106.84, "SD_m": 13.27},
+          {"month": 6, "E_m": 78.26, "H_i_m": 102.44, "SD_m": 9.64},
+          {"month": 7, "E_m": 77.63, "H_i_m": 102.33, "SD_m": 9.9},
+          {"month": 8, "E_m": 78.1, "H_i_m": 101.68, "SD_m": 10.14},
+          {"month": 9, "E_m": 71.02, "H_i_m": 89.45, "SD_m": 11.04},
+          {"month": 10, "E_m": 51.83, "H_i_m": 63.69, "SD_m": 11.86},
+          {"month": 11, "E_m": 24.24, "H_i_m": 29.64, "SD_m": 6.73},
+          {"month": 12, "E_m": 21.98, "H_i_m": 26.05, "SD_m": 5.43}
+        ],
+        "totals_fixed": {
+          "E_d": 1.91,
+          "E_m": 58.11,
+          "E_y": 697.36,
+          "H_i_d": 2.4,
+          "H_i_m": 72.92,
+          "H_i_y": 875.04,
+          "SD_m": 3.18,
+          "SD_y": 38.22,
+          "l_aoi": -3.73,
+          "l_spec": "1.90",
+          "l_tg": -5.54,
+          "l_total": -20.31
+        }
+      }
+    },
+    {
+      "label": "Odchylony 60° od poziomu (30° od pionu), SE — kompromis",
+      "use_case": "Panel na ramce odchylonej na zewnątrz balkonu pod kątem 30° od pionu. Wymaga wspornika wystającego poza balustradę — większe obciążenie wiatrowe, większe ryzyko zerwania, trudniejszy montaż. +32% produkcji vs pionowy.",
+      "url": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=53.1235&lon=18.0084&peakpower=1&loss=14&angle=60&aspect=-45&outputformat=json",
+      "inputs": {
+        "location": {"latitude": 53.1235, "longitude": 18.0084, "elevation": 36.0},
+        "meteo_data": {"radiation_db": "PVGIS-SARAH2", "meteo_db": "ERA5", "year_min": 2005, "year_max": 2020, "use_horizon": true, "horizon_db": "DEM-calculated"},
+        "pv_module": {"technology": "c-Si", "peak_power": 1.0, "system_loss": 14.0},
+        "mounting_system": {"fixed": {"slope": {"value": 60, "optimal": false}, "azimuth": {"value": -45, "optimal": false}, "type": "free-standing"}}
+      },
+      "outputs": {
+        "monthly_fixed": [
+          {"month": 1, "E_m": 28.42, "H_i_m": 32.68, "SD_m": 5.29},
+          {"month": 2, "E_m": 45.01, "H_i_m": 52.13, "SD_m": 11.59},
+          {"month": 3, "E_m": 78.8, "H_i_m": 93.38, "SD_m": 14.37},
+          {"month": 4, "E_m": 110.57, "H_i_m": 135.71, "SD_m": 16.09},
+          {"month": 5, "E_m": 118.14, "H_i_m": 148.81, "SD_m": 17.89},
+          {"month": 6, "E_m": 114.22, "H_i_m": 146.79, "SD_m": 13.36},
+          {"month": 7, "E_m": 112.39, "H_i_m": 145.66, "SD_m": 13.49},
+          {"month": 8, "E_m": 107.63, "H_i_m": 138.7, "SD_m": 13.47},
+          {"month": 9, "E_m": 90.24, "H_i_m": 112.82, "SD_m": 13.68},
+          {"month": 10, "E_m": 61.54, "H_i_m": 74.91, "SD_m": 13.66},
+          {"month": 11, "E_m": 27.42, "H_i_m": 33.2, "SD_m": 7.1},
+          {"month": 12, "E_m": 23.51, "H_i_m": 27.72, "SD_m": 5.47}
+        ],
+        "totals_fixed": {
+          "E_d": 2.51,
+          "E_m": 76.49,
+          "E_y": 917.89,
+          "H_i_d": 3.13,
+          "H_i_m": 95.21,
+          "H_i_y": 1142.52,
+          "SD_m": 3.96,
+          "SD_y": 47.54,
+          "l_aoi": -2.89,
+          "l_spec": "1.81",
+          "l_tg": -5.51,
+          "l_total": -19.66
+        }
+      }
+    },
+    {
+      "label": "Odchylony 30° od poziomu (60° od pionu), SE — near-optimal tilt",
+      "use_case": "Panel położony prawie poziomo jak na dachu. Nierealistyczny dla balkonu — wymagałby mocowania na markizie lub wystającym ramie, co jest nieprzepisowe dla wspólnoty i niebezpieczne na 9. piętrze. Uwzględniony wyłącznie jako górne odniesienie 'sufit produkcji'.",
+      "url": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=53.1235&lon=18.0084&peakpower=1&loss=14&angle=30&aspect=-45&outputformat=json",
+      "inputs": {
+        "location": {"latitude": 53.1235, "longitude": 18.0084, "elevation": 36.0},
+        "meteo_data": {"radiation_db": "PVGIS-SARAH2", "meteo_db": "ERA5", "year_min": 2005, "year_max": 2020, "use_horizon": true, "horizon_db": "DEM-calculated"},
+        "pv_module": {"technology": "c-Si", "peak_power": 1.0, "system_loss": 14.0},
+        "mounting_system": {"fixed": {"slope": {"value": 30, "optimal": false}, "azimuth": {"value": -45, "optimal": false}, "type": "free-standing"}}
+      },
+      "outputs": {
+        "monthly_fixed": [
+          {"month": 1, "E_m": 24.16, "H_i_m": 28.55, "SD_m": 4.11},
+          {"month": 2, "E_m": 41.66, "H_i_m": 48.58, "SD_m": 9.57},
+          {"month": 3, "E_m": 78.89, "H_i_m": 93.36, "SD_m": 12.9},
+          {"month": 4, "E_m": 117.95, "H_i_m": 144.52, "SD_m": 16.08},
+          {"month": 5, "E_m": 131.84, "H_i_m": 165.9, "SD_m": 18.66},
+          {"month": 6, "E_m": 131.35, "H_i_m": 168.39, "SD_m": 14.33},
+          {"month": 7, "E_m": 128.81, "H_i_m": 166.39, "SD_m": 14.4},
+          {"month": 8, "E_m": 117.83, "H_i_m": 151.52, "SD_m": 13.94},
+          {"month": 9, "E_m": 91.93, "H_i_m": 114.86, "SD_m": 13.21},
+          {"month": 10, "E_m": 58.43, "H_i_m": 71.49, "SD_m": 12.14},
+          {"month": 11, "E_m": 24.51, "H_i_m": 30.3, "SD_m": 5.6},
+          {"month": 12, "E_m": 19.32, "H_i_m": 23.56, "SD_m": 4.0}
+        ],
+        "totals_fixed": {
+          "E_d": 2.65,
+          "E_m": 80.56,
+          "E_y": 966.68,
+          "H_i_d": 3.31,
+          "H_i_m": 100.62,
+          "H_i_y": 1207.42,
+          "SD_m": 3.91,
+          "SD_y": 46.87,
+          "l_aoi": -3.19,
+          "l_spec": "1.73",
+          "l_tg": -5.47,
+          "l_total": -19.94
+        }
+      }
+    },
+    {
+      "label": "Sanity check: pionowo, S (0°) — porównanie z fallback z PVGIS_RECIPE.md",
+      "use_case": "Kontrolny call do sprawdzenia zgodności z tabelą fallback w PVGIS_RECIPE.md (oczekiwane ~780, uzyskane 736, różnica -5,6% — w tolerancji modeli atmosferycznych).",
+      "url": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=53.1235&lon=18.0084&peakpower=1&loss=14&angle=90&aspect=0&outputformat=json",
+      "inputs": {
+        "location": {"latitude": 53.1235, "longitude": 18.0084, "elevation": 36.0},
+        "meteo_data": {"radiation_db": "PVGIS-SARAH2", "meteo_db": "ERA5", "year_min": 2005, "year_max": 2020, "use_horizon": true, "horizon_db": "DEM-calculated"},
+        "pv_module": {"technology": "c-Si", "peak_power": 1.0, "system_loss": 14.0},
+        "mounting_system": {"fixed": {"slope": {"value": 90, "optimal": false}, "azimuth": {"value": 0, "optimal": false}, "type": "free-standing"}}
+      },
+      "outputs": {
+        "monthly_fixed": [
+          {"month": 1, "E_m": 33.81, "H_i_m": 38.04, "SD_m": 7.16},
+          {"month": 2, "E_m": 49.74, "H_i_m": 56.95, "SD_m": 14.14},
+          {"month": 3, "E_m": 72.87, "H_i_m": 87.01, "SD_m": 15.69},
+          {"month": 4, "E_m": 85.24, "H_i_m": 106.62, "SD_m": 13.65},
+          {"month": 5, "E_m": 74.35, "H_i_m": 97.53, "SD_m": 9.94},
+          {"month": 6, "E_m": 67.44, "H_i_m": 91.04, "SD_m": 6.2},
+          {"month": 7, "E_m": 70.25, "H_i_m": 95.12, "SD_m": 7.1},
+          {"month": 8, "E_m": 77.82, "H_i_m": 102.87, "SD_m": 9.85},
+          {"month": 9, "E_m": 78.95, "H_i_m": 99.94, "SD_m": 14.37},
+          {"month": 10, "E_m": 64.89, "H_i_m": 78.73, "SD_m": 17.51},
+          {"month": 11, "E_m": 31.9, "H_i_m": 37.9, "SD_m": 9.66},
+          {"month": 12, "E_m": 29.09, "H_i_m": 33.39, "SD_m": 7.66}
+        ],
+        "totals_fixed": {
+          "E_d": 2.02,
+          "E_m": 61.36,
+          "E_y": 736.36,
+          "H_i_d": 2.53,
+          "H_i_m": 77.09,
+          "H_i_y": 925.14,
+          "SD_m": 3.88,
+          "SD_y": 46.51,
+          "l_aoi": -4.42,
+          "l_spec": "2.05",
+          "l_tg": -5.11,
+          "l_total": -20.41
+        }
+      }
+    }
+  ],
+  "summary_table": {
+    "normalized_per_1kWp_before_shading": {
+      "tilt_90_SE_minus45": 697.36,
+      "tilt_60_SE_minus45": 917.89,
+      "tilt_30_SE_minus45": 966.68,
+      "tilt_90_S_0_sanity_check": 736.36
+    },
+    "scaled_examples_kWh_per_year_before_shading": {
+      "300W_vertical_SE": 209.21,
+      "300W_tilt60_SE": 275.37,
+      "600W_vertical_SE": 418.42,
+      "600W_tilt60_SE": 550.73,
+      "800W_vertical_SE": 557.89,
+      "800W_tilt60_SE": 734.31
+    },
+    "notes": "Przed uwzględnieniem zacienienia od nawisu balkonu, ściany bocznej i sąsiednich budynków. Typowy balkon z tymi constraint'ami to shading 10-25%, więc końcowa produkcja realna = values × (1 - shading)."
+  }
+}
