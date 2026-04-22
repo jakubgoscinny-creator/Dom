@@ -317,6 +317,8 @@ Agents add findings here after each phase. Format:
 - `2026-04-21` — Jakub dodał pozycję "poprawa instalacji pożarniczej" do rozważenia — potencjalnie synergia z wyłącznikiem PV Stop i adaptacją pomieszczenia magazynu EI60/REI60/EI30, potencjalnie oddzielny projekt — wpisane do `WSPOLNOTA_SCENARIUSZ.md §2.4` jako trzy warianty A/B/C zakresu modernizacji ppoż, pozostaje `UNCONFIRMED` jaki zakres obowiązuje w bloku Jakuba.
 - `2026-04-21` — Deadline Grant OZE BGK to 30.06.2026 — realny harmonogram wymaga pierwszej rozmowy z zarządem wspólnoty do 15.05.2026 — dodany jako pytanie #2 w checkpoint'cie Fazy 1.
 - `2026-04-21` — WebFetch na Leroy Merlin i Allegro zwracał HTTP 403 (antybot) — ceny zestawów w `PRODUKTY.md` są `UNCONFIRMED` i wymagają weryfikacji przez Jakuba przy zakupie — nie pogarsza to researchu strukturalnego, ale flaguje w budżecie.
+- `2026-04-22` — Faza 2 (app/) i Faza 3 (biznes/ + plan/) komplet. Kalkulator z dwoma trybami (balkon + wspólnota), Three.js z dwiema scenami, business case + 8 plików biznes/plan. Rekomendacja jednoznaczna: Jakub dopycha uchwałę wspólnoty do 15.05.2026 żeby łapać Grant OZE BGK, balkonowa indywidualna jest plan B. NPV Ścieżki B dla Jakuba 2,8× lepsze niż balkonowej mimo wyższego jednorazowego udziału.
+- `2026-04-22` — Ekonomika balkonowej indywidualnej (payback 7-10 lat, NPV 15-letni +1020 PLN dla 600W) jest gorsza niż polskich obligacji skarbowych EDO 10L (NPV real +3238 PLN), co potwierdza rekomendację "nie kupuj indywidualnie" jeśli wspólnotowa jest osiągalna.
 
 ---
 
